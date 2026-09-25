@@ -50,7 +50,7 @@ export function UserIcon(props) {
 export function ChevronRightIcon(props) {
   return (
     <svg {...iconProps} {...props}>
-      <path d="M9 616 6-6 6" />
+      <path d="M9 6l6 6-6 6" />
     </svg>
   )
 }

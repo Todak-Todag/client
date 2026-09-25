@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Header, { HeaderSpacer } from '../../components/layout/Header'
 import BottomBar from "../../components/layout/BottomBar"
 import styles from './SignupPage.module.css'
+import { ChevronRightIcon, UserIcon } from '../../components/ui/Icons'
 
 /*
  * onBack={() => navigate(-1)} 호출되면 navigate(-1)을 실행하는 함수이다.
@@ -23,6 +24,23 @@ function SignupPage() {
       <p className={styles.description}>
         보다 정확한 서비스 매칭을 위해 알맞은 유형을 선택해주세요.
       </p>
+
+      <div className={styles.list}>
+        <button type="button" className={styles.card}>
+          <span className={styles.iconBox}>
+            <UserIcon className={styles.icon} />
+          </span>
+
+          <span className={styles.cardText}>
+            <span className={styles.cardTitle}>사회복지사 회원가입</span>
+            <span className={styles.cardDescription}>
+              todak-todag 수립 및 관리 담당 사회복지사
+            </span>
+          </span>
+
+          <ChevronRightIcon className={styles.chevron} />
+        </button>
+      </div>
 
       <BottomBar />
 
