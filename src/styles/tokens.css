@@ -1,0 +1,31 @@
+/* 공통 디자인 토큰 (모바일 우선) */
+:root {
+  --color-primary: #f97316;
+  --color-primary-dark: #ea640c;
+  --color-primary-light: #fb923c;
+  --color-primary-soft: #fff7ed;
+
+  --color-text: #111827;
+  --color-text-sub: #6b7280;
+  --color-text-muted: #9ca3af;
+  --color-surface: #ffffff;
+  --color-bg: #f9fafb;
+  --color-border: #e5e7eb;
+  --color-disabled: #d1d5db;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --shadow-bar: 0 -2px 12px rgba(17, 24, 39, 0.08);
+
+  --header-height: 56px;
+  --navbar-height: 64px;
+  --bottombar-indicator: 22px;
+
+  --app-max-width: 480px;
+
+  --font-sans: 'Pretendard', system-ui, 'Apple SD Gothic Neo', 'Malgun Gothic',
+    sans-serif;
+}
