@@ -17,7 +17,7 @@ export const NAV_PATH_BY_KEY = {
 
 /** 경로별 헤더 제목 */
 export const TITLE_BY_PATH = {
-  [PATHS.home]: '토닥토닥',
+  [PATHS.home]: '', // 홈은 로고만 표시 (디자인 시안)
   [PATHS.schedule]: '내 일정',
   [PATHS.matching]: '매칭',
   [PATHS.my]: '마이페이지',

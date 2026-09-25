@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
-import Button from '../components/common/Button'
-import { PATHS } from '../routes/paths'
+import Button from '../components/ui/Button'
+import { PATHS } from '../constants/paths'
 
 function NotFoundPage() {
   const navigate = useNavigate()
