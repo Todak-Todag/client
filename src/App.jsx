@@ -6,6 +6,7 @@ import MatchingPage from './pages/patient/MatchingPage'
 import MyPage from './pages/patient/MyPage'
 import NotFoundPage from './pages/NotFoundPage'
 import SchedulePage from './pages/patient/SchedulePage'
+import SignupPage from './pages/user/SignupPage'
 import { PATHS } from './constants/paths'
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         {/* 헤더/네브바 없는 화면 */}
         <Route path={PATHS.login} element={<LoginPage />} />
+        <Route path={PATHS.signup} element={<SignupPage />} />
 
         {/* 헤더 + 네브바가 붙는 화면 */}
         <Route element={<AppLayout />}>
