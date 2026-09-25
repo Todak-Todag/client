@@ -1,0 +1,18 @@
+/* 주황 글자는 대비 5.0:1인 primary-text만 사용 (브랜드 원색은 2.8:1) */
+.notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin: 0;
+  padding: var(--space-sm) var(--page-gutter);
+  background-color: var(--color-primary-soft);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--color-primary-text);
+}
+
+.icon {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+}
