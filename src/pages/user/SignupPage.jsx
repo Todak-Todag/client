@@ -3,6 +3,14 @@ import Header, { HeaderSpacer } from '../../components/layout/Header'
 import BottomBar from "../../components/layout/BottomBar"
 import styles from './SignupPage.module.css'
 
+/*
+ * onBack={() => navigate(-1)} 호출되면 navigate(-1)을 실행하는 함수이다.
+ * 이때 주의할 점은 () => 화살표 함수를 빼고 적으면 화면이 그려지는 순간 바로 실행되는 점이다.
+ * navigate(-1)은 브라우저 뒤로가기와 같다. 숫자 -1은 "한 칸 뒤로" 라는 뜻이다.
+ * 로그인에서 넘어왔으면 로그인으로 돌아간다.
+ * 
+ * 
+ */
 function SignupPage() {
   const navigate = useNavigate()
 
