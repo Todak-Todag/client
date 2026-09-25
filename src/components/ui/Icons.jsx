@@ -47,6 +47,27 @@ export function UserIcon(props) {
   )
 }
 
+export function HospitalIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <rect x="4" y="7" width="16" height="14" rx="2" />
+      <path d="M9 7V4h6v3" />
+      <path d="M12 11v5M9.5 13.5h5" />
+    </svg>
+  )
+}
+
+export function StethoscopeIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M6 3v6a4 4 0 0 0 8 0V3" />
+      <path d="M4.5 3h3M12.5 3h3" />
+      <path d="M10 13v3a5 5 0 0 0 5 5 4 4 0 0 0 4-4v-2" />
+      <circle cx="19" cy="13" r="2" />
+    </svg>
+  )
+}
+
 export function ChevronRightIcon(props) {
   return (
     <svg {...iconProps} {...props}>
