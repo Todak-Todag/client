@@ -1,14 +1,8 @@
 /** 앱 전체에서 사용하는 라우트 경로 */
 export const PATHS = {
   login: '/login',
-<<<<<<< Updated upstream:src/constants/paths.js
-=======
-<<<<<<< Updated upstream:src/routes/paths.js
-=======
   // TODO: 회원가입 화면이 생기면 App.jsx에 라우트 추가 (지금은 /404로 간다)
->>>>>>> Stashed changes:src/constants/paths.js
   signup: '/signup',
->>>>>>> Stashed changes:src/routes/paths.js
   home: '/',
   schedule: '/schedule',
   matching: '/matching',

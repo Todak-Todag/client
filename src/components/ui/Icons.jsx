@@ -46,11 +46,6 @@ export function UserIcon(props) {
     </svg>
   )
 }
-<<<<<<< Updated upstream:src/components/ui/Icons.jsx
-=======
-<<<<<<< Updated upstream:src/components/common/NavIcons.jsx
-=======
->>>>>>> Stashed changes:src/components/common/NavIcons.jsx
 
 export function ClockIcon(props) {
   return (
@@ -77,8 +72,6 @@ export function AlertIcon(props) {
     </svg>
   )
 }
-<<<<<<< Updated upstream:src/components/ui/Icons.jsx
-=======
 
 export function EyeIcon(props) {
   return (
@@ -98,5 +91,3 @@ export function EyeOffIcon(props) {
     </svg>
   )
 }
->>>>>>> Stashed changes:src/components/ui/Icons.jsx
->>>>>>> Stashed changes:src/components/common/NavIcons.jsx
