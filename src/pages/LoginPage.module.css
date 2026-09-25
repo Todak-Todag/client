@@ -1,0 +1,140 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--app-max-width);
+  min-height: 100dvh;
+  margin: 0 auto;
+  /* 하단 고정 바에 가리지 않도록 아래쪽 여백을 더 준다 */
+<<<<<<< Updated upstream
+  padding: 24px 24px
+    calc(24px + var(--bottombar-indicator) + env(safe-area-inset-bottom));
+  background-color: var(--color-surface);
+  font-family: var(--font-sans);
+=======
+  padding: var(--space-lg) var(--page-gutter)
+    calc(
+      var(--space-lg) + var(--bottombar-indicator) + env(safe-area-inset-bottom)
+    );
+  background-color: var(--color-surface);
+>>>>>>> Stashed changes
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+<<<<<<< Updated upstream
+  gap: 10px;
+  margin-bottom: 32px;
+=======
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xl);
+>>>>>>> Stashed changes
+}
+
+.logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.serviceName {
+  margin: 0;
+<<<<<<< Updated upstream
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+=======
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+>>>>>>> Stashed changes
+  color: var(--color-text);
+}
+
+.tagline {
+  margin: 0;
+<<<<<<< Updated upstream
+  font-size: 13px;
+  font-weight: 500;
+=======
+  font-size: var(--text-sm);
+>>>>>>> Stashed changes
+  color: var(--color-text-sub);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+<<<<<<< Updated upstream
+  gap: 10px;
+=======
+  gap: var(--space-xs);
+>>>>>>> Stashed changes
+}
+
+/* 문구가 없을 때도 자리를 차지해 버튼이 밀리지 않게 한다 */
+.formError {
+<<<<<<< Updated upstream
+  min-height: 17px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 17px;
+  text-align: center;
+  color: #ef4444;
+}
+
+.submit {
+  margin-top: 10px;
+}
+
+.signup {
+  margin: 20px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--color-text-sub);
+}
+
+.signupLink {
+  margin-left: 4px;
+  font-weight: 700;
+  color: var(--color-primary);
+=======
+  min-height: calc(var(--text-sm) * var(--leading-normal));
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-normal);
+  text-align: center;
+  color: var(--color-danger);
+}
+
+.submit {
+  margin-top: var(--space-xs);
+}
+
+.signup {
+  margin: var(--space-lg) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-sub);
+  text-align: center;
+}
+
+/* 보이는 글자는 그대로 두고 터치 영역만 44px로 넓힌다 */
+.signupLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  margin-left: var(--space-2xs);
+  font-weight: var(--weight-bold);
+  color: var(--color-primary-text);
+>>>>>>> Stashed changes
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
