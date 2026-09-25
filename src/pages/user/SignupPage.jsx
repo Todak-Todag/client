@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { PATHS } from '../../constants/paths'
 import Header, { HeaderSpacer } from '../../components/layout/Header'
 import BottomBar from "../../components/layout/BottomBar"
 import styles from './SignupPage.module.css'
@@ -40,7 +41,8 @@ const SIGNUP_TYPES = [
  * navigate(-1)은 브라우저 뒤로가기와 같다. 숫자 -1은 "한 칸 뒤로" 라는 뜻이다.
  * 로그인에서 넘어왔으면 로그인으로 돌아간다.
  * 
- * 
+ * <Link> 에서 to는 onClick에 해당하는 속성이다
+ * 눌렀을 때 어디로 가냐?
  */
 function SignupPage() {
   const navigate = useNavigate()
@@ -57,7 +59,11 @@ function SignupPage() {
 
       <div className={styles.list}>
         {SIGNUP_TYPES.map(({key, title, description, Icon}) => (
-          <button key={key} type="button" className={styles.card}>
+          <Link
+            key={key}
+            className={styles.card}
+            to={`${PATHS.signupConsent}?type=${key}`}
+          >
             <span className={styles.iconBox}>
               <Icon className={styles.icon} />
             </span>
@@ -68,7 +74,7 @@ function SignupPage() {
             </span>
 
             <ChevronRightIcon className={styles.chevron} />
-          </button>
+          </Link>
         ))}
       </div>
 

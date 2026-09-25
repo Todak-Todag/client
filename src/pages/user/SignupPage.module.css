@@ -52,6 +52,8 @@
     background-color var(--dur-short) var(--ease-out),
     transform var(--dur-instant) var(--ease-out);
   -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+  color: inherit;
 }
 
 .card:active {

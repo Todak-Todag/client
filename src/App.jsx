@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
+import ConsentPage from './pages/user/ConsentPage'
 import HomePage from './pages/patient/HomePage'
 import LoginPage from './pages/LoginPage'
 import MatchingPage from './pages/patient/MatchingPage'
@@ -16,6 +17,7 @@ function App() {
         {/* 헤더/네브바 없는 화면 */}
         <Route path={PATHS.login} element={<LoginPage />} />
         <Route path={PATHS.signup} element={<SignupPage />} />
+        <Route path={PATHS.signupConsent} element={<ConsentPage />} />
 
         {/* 헤더 + 네브바가 붙는 화면 */}
         <Route element={<AppLayout />}>
