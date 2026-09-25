@@ -30,3 +30,16 @@ export function pickCurrentCarePlan(carePlans) {
   }
   return null
 }
+
+/**
+ * 케어 종료 예정 안내에 쓸 종료일.
+ * 끝난 Care Plan이거나 종료일이 없거나 이미 지났으면 null
+ *
+ * @param {{ status: string, finishDate: string|null } | null} carePlan
+ * @param {string} today 'YYYY-MM-DD'
+ */
+export function getUpcomingFinishDate(carePlan, today) {
+  if (!carePlan?.finishDate || carePlan.status === CARE_PLAN_STATUS.COMPLETED) return null
+  // 'YYYY-MM-DD'는 문자열 비교가 날짜 비교와 같다
+  return carePlan.finishDate >= today ? carePlan.finishDate : null
+}
