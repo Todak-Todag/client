@@ -46,3 +46,29 @@ export function UserIcon(props) {
     </svg>
   )
 }
+
+export function ClockIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+  )
+}
+
+export function PlusIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  )
+}
+
+export function AlertIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7.5v5.5M12 16.5v.01" />
+    </svg>
+  )
+}

@@ -1,6 +1,5 @@
-import '../../styles/tokens.css'
 import styles from './Header.module.css'
-import defaultLogo from '../../../images/logo2.webp'
+import defaultLogo from '../../assets/images/logo2.webp'
 
 /**
  * 화면 최상단에 고정되는 공통 헤더바
@@ -72,7 +71,7 @@ function Header({
     <header className={[styles.header, className].filter(Boolean).join(' ')} {...rest}>
       <div className={styles.side}>{renderLeft()}</div>
       <div className={styles.center}>
-        <h1 className={styles.title}>{title}</h1>
+        {title && <h1 className={styles.title}>{title}</h1>}
       </div>
       <div className={`${styles.side} ${styles.right}`}>{right}</div>
     </header>

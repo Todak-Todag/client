@@ -1,4 +1,3 @@
-import '../../styles/tokens.css'
 import styles from './BottomBar.module.css'
 
 /**

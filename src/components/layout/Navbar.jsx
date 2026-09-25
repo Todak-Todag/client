@@ -1,4 +1,3 @@
-import '../../styles/tokens.css'
 import BottomBar from './BottomBar'
 import styles from './Navbar.module.css'
 import { NAV_ITEMS } from './navItems'

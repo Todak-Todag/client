@@ -3,7 +3,7 @@ import {
   HomeIcon,
   MatchingIcon,
   UserIcon,
-} from './NavIcons'
+} from '../ui/Icons'
 
 /** 네브바 기본 항목 */
 export const NAV_ITEMS = [
