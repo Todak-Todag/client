@@ -1,0 +1,169 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-short) var(--ease-out),
+    border-color var(--dur-short) var(--ease-out),
+    color var(--dur-short) var(--ease-out),
+    transform var(--dur-instant) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+.button[aria-busy='true'] {
+  cursor: progress;
+}
+
+/* size */
+.sm {
+  height: 36px;
+  padding: 0 var(--space-sm);
+  font-size: var(--text-sm);
+}
+
+/* 보이는 크기는 36px로 두고 터치 영역만 44px로 넓힌다 */
+.sm::before {
+  content: '';
+  position: absolute;
+  inset: calc((36px - var(--tap-min)) / 2) 0;
+}
+
+.md {
+  height: var(--tap-min);
+  padding: 0 var(--space-md);
+  font-size: var(--text-base);
+}
+
+.lg {
+  height: 52px;
+  padding: 0 var(--space-lg);
+  font-size: var(--text-md);
+  letter-spacing: var(--tracking-tight);
+}
+
+.block {
+  display: flex;
+  width: 100%;
+}
+
+/* variant: primary */
+.primary {
+  background-color: var(--color-primary-dark);
+  color: var(--color-surface);
+}
+
+.primary:active:not(:disabled) {
+  background-color: var(--color-primary-darker);
+}
+
+/* variant: outline */
+.outline {
+  background-color: var(--color-surface);
+  border-color: var(--color-primary);
+  color: var(--color-primary-text);
+}
+
+.outline:active:not(:disabled) {
+  background-color: var(--color-primary-soft);
+}
+
+/* variant: ghost */
+.ghost {
+  background-color: transparent;
+  color: var(--color-text-sub);
+}
+
+.ghost:active:not(:disabled) {
+  background-color: var(--color-border);
+}
+
+/* variant: dashed — 추가·신청처럼 '새로 만들기' 성격의 보조 동작 */
+.dashed {
+  background-color: var(--color-primary-soft);
+  border: 1.5px dashed var(--color-primary);
+  color: var(--color-primary-text);
+}
+
+.dashed:active:not(:disabled) {
+  background-color: var(--color-surface);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .primary:hover:not(:disabled) {
+    background-color: var(--color-primary-darker);
+  }
+
+  .outline:hover:not(:disabled),
+  .dashed:hover:not(:disabled) {
+    background-color: var(--color-primary-soft);
+  }
+
+  .ghost:hover:not(:disabled) {
+    background-color: var(--color-border);
+    color: var(--color-text);
+  }
+}
+
+/* disabled: 배경·글자·커서 세 가지로 구분 (흰 글자 on 회색은 읽히지 않음) */
+.dashed:disabled {
+  background-color: var(--color-surface);
+  border-color: var(--color-border-strong);
+  color: var(--color-disabled-text);
+}
+
+.primary:disabled,
+.outline:disabled {
+  background-color: var(--color-disabled);
+  border-color: var(--color-disabled);
+  color: var(--color-disabled-text);
+}
+
+.ghost:disabled {
+  color: var(--color-disabled-text);
+}
+
+/* loading 중에는 disabled 스타일 대신 원래 색을 유지해 '처리 중'으로 보이게 한다 */
+.primary[aria-busy='true'] {
+  background-color: var(--color-primary-dark);
+  border-color: transparent;
+  color: var(--color-surface);
+}
+
+.outline[aria-busy='true'] {
+  background-color: var(--color-surface);
+  border-color: var(--color-primary);
+  color: var(--color-primary-text);
+}
+
+.spinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import '../styles/tokens.css'
-import Button from '../components/common/Button'
-import BottomBar from '../components/common/BottomBar'
-import { PATHS } from '../routes/paths'
-import logo from '../../images/logo.webp'
+import Button from '../components/ui/Button'
+import BottomBar from '../components/layout/BottomBar'
+import { PATHS } from '../constants/paths'
+import logo from '../assets/images/logo.webp'
 
 function LoginPage() {
   const navigate = useNavigate()
