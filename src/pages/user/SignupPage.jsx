@@ -4,36 +4,9 @@ import Header, { HeaderSpacer } from '../../components/layout/Header'
 import BottomBar from "../../components/layout/BottomBar"
 import styles from './SignupPage.module.css'
 import {
-  ChevronRightIcon,
-  UserIcon,
-  HospitalIcon,
-  StethoscopeIcon
+  ChevronRightIcon
 } from '../../components/ui/Icons'
-
-/*
- * map은 배열의 강 항목을 다른 것으로 바꿔서 새 배열을 만드는 함수
- * [1, 2, 3].map((n) => n * 2) -> [2, 4, 6]
- */
-const SIGNUP_TYPES = [
-  {
-    key: 'social-worker',
-    title: '사회복지사 회원가입',
-    description: 'todak-todag 수립 및 관리 담당 사회복지사',
-    Icon: UserIcon,
-  },
-  {
-    key: 'hospital',
-    title: '병원 담당자 회원가입',
-    description: '퇴원 예정자 연계 및 환자 프로필 관리',
-    Icon: HospitalIcon
-  },
-  {
-    key: 'provider',
-    title: '서비스 제공자 회원가입',
-    description: '방문진료, 방문간호 서비스 전문 파트너',
-    Icon: StethoscopeIcon
-  }
-]
+import { SIGNUP_TYPES } from '../../features/auth/signupTypes'
 
 /*
  * onBack={() => navigate(-1)} 호출되면 navigate(-1)을 실행하는 함수이다.
