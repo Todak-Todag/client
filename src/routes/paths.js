@@ -1,6 +1,7 @@
 /** 앱 전체에서 사용하는 라우트 경로 */
 export const PATHS = {
   login: '/login',
+  signup: '/signup',
   home: '/',
   schedule: '/schedule',
   matching: '/matching',

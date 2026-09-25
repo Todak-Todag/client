@@ -1,0 +1,81 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--app-max-width);
+  min-height: 100dvh;
+  margin: 0 auto;
+  /* 하단 고정 바에 가리지 않도록 아래쪽 여백을 더 준다 */
+  padding: 24px 24px
+    calc(24px + var(--bottombar-indicator) + env(safe-area-inset-bottom));
+  background-color: var(--color-surface);
+  font-family: var(--font-sans);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.serviceName {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--color-text);
+}
+
+.tagline {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-sub);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 문구가 없을 때도 자리를 차지해 버튼이 밀리지 않게 한다 */
+.formError {
+  min-height: 17px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 17px;
+  text-align: center;
+  color: #ef4444;
+}
+
+.submit {
+  margin-top: 10px;
+}
+
+.signup {
+  margin: 20px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--color-text-sub);
+}
+
+.signupLink {
+  margin-left: 4px;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

@@ -4,6 +4,7 @@ import HomePage from '../pages/HomePage'
 import LoginPage from '../pages/LoginPage'
 import MatchingPage from '../pages/MatchingPage'
 import MyPage from '../pages/MyPage'
+import SignupPage from '../pages/SignupPage'
 import NotFoundPage from '../pages/NotFoundPage'
 import SchedulePage from '../pages/SchedulePage'
 import { PATHS } from './paths'
@@ -14,6 +15,7 @@ function AppRouter() {
       <Routes>
         {/* 헤더/네브바 없는 화면 */}
         <Route path={PATHS.login} element={<LoginPage />} />
+        <Route path={PATHS.signup} element={<SignupPage />} />
 
         {/* 헤더 + 네브바가 붙는 화면 */}
         <Route element={<AppLayout />}>
