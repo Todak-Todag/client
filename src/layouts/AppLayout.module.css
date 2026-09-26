@@ -12,3 +12,21 @@
 .content {
   padding: var(--page-gutter);
 }
+
+.bell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-right: var(--space-2xs);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+}
+
+.bellIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-sub);
+}
