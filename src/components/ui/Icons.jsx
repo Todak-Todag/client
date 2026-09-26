@@ -117,6 +117,14 @@ export function PlusIcon(props) {
   )
 }
 
+export function CloseIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  )
+}
+
 export function AlertIcon(props) {
   return (
     <svg {...iconProps} {...props}>
