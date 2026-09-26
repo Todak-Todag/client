@@ -8,6 +8,11 @@ export function toLocalDateString(date = new Date()) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 }
 
+/** Date → 서버 LocalDateTime 형식 'YYYY-MM-DDTHH:mm:ss' (parseLocalDateTime의 반대) */
+export function toLocalDateTimeString(date) {
+  return `${toLocalDateString(date)}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+}
+
 /**
  * 서버 LocalDateTime('2026-09-01T09:00:00')을 로컬 시간 Date로 바꾼다.
  * 서버 값에는 시간대가 없으므로 한국 시간(기기 로컬)으로 해석한다.
@@ -61,8 +66,10 @@ export function getWeekDates(dateString) {
  */
 export function formatMonthDay(dateString, { weekday = true } = {}) {
   const date = parseLocalDateTime(dateString)
-  const label = `${date.getMonth() + 1}월 ${date.getDate()}일`
-  return weekday ? `${label} (${WEEKDAY_LABELS[date.getDay()]})` : label
+  // 좁은 화면에서 날짜 중간('10월 / 11일', '(일)')이 끊기지 않도록 줄바꿈 없는 공백으로 붙인다.
+  // 기간은 '–' 앞뒤에서만 줄이 바뀐다
+  const label = `${date.getMonth() + 1}월\u00A0${date.getDate()}일`
+  return weekday ? `${label}\u00A0(${WEEKDAY_LABELS[date.getDay()]})` : label
 }
 
 /** '8월 1일 (토) – 8월 30일 (일)'. 둘 중 하나라도 없으면 null */
@@ -100,4 +107,26 @@ export function getMonthCells(year, month) {
     toLocalDateString(new Date(year, month - 1, index + 1)),
   )
   return [...blanks, ...days]
+}
+
+/** '2026-08-27T14:00:00' → '8월 27일 (목) 14:00' */
+export function formatMonthDayTime(value) {
+  return `${formatMonthDay(value.slice(0, 10))} ${formatTime(value)}`
+}
+
+/**
+ * 주 범위 라벨. 같은 달이면 뒤쪽 월을 생략한다.
+ * '2026년 8월 23일 – 29일' · '2026년 8월 30일 – 9월 5일' · '2026년 12월 27일 – 2027년 1월 2일'
+ * @param {Date} start
+ * @param {Date} end
+ */
+export function formatWeekRange(start, end) {
+  const head = `${start.getFullYear()}년 ${start.getMonth() + 1}월 ${start.getDate()}일`
+  if (start.getFullYear() !== end.getFullYear()) {
+    return `${head} – ${end.getFullYear()}년 ${end.getMonth() + 1}월 ${end.getDate()}일`
+  }
+  if (start.getMonth() !== end.getMonth()) {
+    return `${head} – ${end.getMonth() + 1}월 ${end.getDate()}일`
+  }
+  return `${head} – ${end.getDate()}일`
 }
