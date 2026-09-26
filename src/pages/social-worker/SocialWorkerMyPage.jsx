@@ -1,24 +1,16 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { getErrorMessage } from '../../api/client'
-import {
-  logout,
-  updateMe,
-  withdraw,
-} from '../../api/endpoints/auth'
-import Button from '../../components/ui/Button'
-import Input from '../../components/ui/Input'
-import { ChevronRightIcon } from '../../components/ui/Icons'
-import { useAuth } from '../../features/auth/useAuth'
-import { useRegions } from '../../features/auth/useRegions'
-import {
-  PATHS,
-  SOCIAL_WORKER_PATHS,
-} from '../../constants/paths'
-import styles from './SocialWorkerMyPage.module.css'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getErrorMessage } from "../../api/client";
+import { logout, updateMe, withdraw } from "../../api/endpoints/auth";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+import { ChevronRightIcon } from "../../components/ui/Icons";
+import { useAuth } from "../../features/auth/useAuth";
+import { PATHS, SOCIAL_WORKER_PATHS } from "../../constants/paths";
+import styles from "./SocialWorkerMyPage.module.css";
 
-const PHONE_HINT = '숫자만 입력해 주세요 (9~11자리, 하이픈 없이)'
-const NAME_HINT = '한글 또는 영문만 입력할 수 있어요.'
+const PHONE_HINT = "숫자만 입력해 주세요 (9~11자리, 하이픈 없이)";
+const NAME_HINT = "한글 또는 영문만 입력할 수 있어요.";
 
 /**
  * 사회복지사 마이페이지
@@ -27,103 +19,79 @@ const NAME_HINT = '한글 또는 영문만 입력할 수 있어요.'
  * 비밀번호 변경, 로그아웃, 회원 탈퇴 기능을 제공한다.
  */
 function SocialWorkerMyPage() {
-  const navigate = useNavigate()
-  const me = useAuth()
-  const regions = useRegions()
+  const navigate = useNavigate();
+  const me = useAuth();
 
-  const [editing, setEditing] = useState(null)
-  const [value, setValue] = useState('')
-  const [regionId, setRegionId] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
+  const [editing, setEditing] = useState(null);
+  const [value, setValue] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const openTextEdit = (field) => {
-    setEditing(field)
-    setValue(field === 'name' ? me.data.name : me.data.phone)
-    setError('')
-  }
+    setEditing(field);
+    setValue(field === "name" ? me.data.name : me.data.phone);
+    setError("");
+  };
 
   /**
    * 서버에서는 시/도와 시/군/구를 각각 수정하지 않고
    * regionId 단위로 소속 지역을 변경한다.
    */
   const openRegionEdit = () => {
-    setEditing('region')
-    setRegionId(me.data.regionId ?? '')
-    setError('')
-  }
+    setEditing("region");
+    setError("");
+  };
 
   const cancelEdit = () => {
-    setEditing(null)
-    setValue('')
-    setRegionId('')
-    setError('')
-  }
+    setEditing(null);
+    setValue("");
+    setError("");
+  };
 
   const saveText = async () => {
-    setSubmitting(true)
-    setError('')
+    setSubmitting(true);
+    setError("");
 
     try {
-      await updateMe({ [editing]: value })
-      await me.reload()
-      setEditing(null)
+      await updateMe({ [editing]: value });
+      await me.reload();
+      setEditing(null);
     } catch (caught) {
-      setError(getErrorMessage(caught))
+      setError(getErrorMessage(caught));
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
-
-  const saveRegion = async () => {
-    if (!regionId) {
-      setError('지역을 선택해 주세요.')
-      return
-    }
-
-    setSubmitting(true)
-    setError('')
-
-    try {
-      await updateMe({ regionId })
-      await me.reload()
-      setEditing(null)
-    } catch (caught) {
-      setError(getErrorMessage(caught))
-    } finally {
-      setSubmitting(false)
-    }
-  }
+  };
 
   const signOut = async () => {
-    await logout().catch(() => {})
-    navigate(PATHS.login, { replace: true })
-  }
+    await logout().catch(() => {});
+    navigate(PATHS.login, { replace: true });
+  };
 
   // 서버 탈퇴 API에서 현재 비밀번호 확인이 필요해 기존 Provider 흐름과 동일하게 처리한다.
   const removeAccount = async () => {
     const currentPassword = window.prompt(
-      '본인 확인을 위해 현재 비밀번호를 입력해 주세요.',
-    )
+      "본인 확인을 위해 현재 비밀번호를 입력해 주세요.",
+    );
 
-    if (!currentPassword) return
+    if (!currentPassword) return;
 
     try {
-      await withdraw({ currentPassword })
-      navigate(PATHS.login, { replace: true })
+      await withdraw({ currentPassword });
+      navigate(PATHS.login, { replace: true });
     } catch (caught) {
-      window.alert(getErrorMessage(caught))
+      window.alert(getErrorMessage(caught));
     }
-  }
+  };
 
-  if (me.status !== 'success') {
+  if (me.status !== "success") {
     return (
       <p className={styles.state} role="status">
-        {me.status === 'error'
+        {me.status === "error"
           ? getErrorMessage(me.error)
-          : '내 정보를 불러오는 중이에요'}
+          : "내 정보를 불러오는 중이에요"}
       </p>
-    )
+    );
   }
 
   return (
@@ -143,7 +111,7 @@ function SocialWorkerMyPage() {
               variant="secondary"
               block={false}
               className={styles.editButton}
-              onClick={() => openTextEdit('name')}
+              onClick={() => openTextEdit("name")}
             >
               수정
             </Button>
@@ -160,7 +128,7 @@ function SocialWorkerMyPage() {
               variant="secondary"
               block={false}
               className={styles.editButton}
-              onClick={() => openTextEdit('phone')}
+              onClick={() => openTextEdit("phone")}
             >
               수정
             </Button>
@@ -170,7 +138,7 @@ function SocialWorkerMyPage() {
             <div className={styles.infoText}>
               <span className={styles.label}>시/도</span>
               <strong className={styles.value}>
-                {me.data.province || '-'}
+                {me.data.province || "-"}
               </strong>
             </div>
 
@@ -189,7 +157,7 @@ function SocialWorkerMyPage() {
             <div className={styles.infoText}>
               <span className={styles.label}>시/군/구</span>
               <strong className={styles.value}>
-                {me.data.district || '-'}
+                {me.data.district || "-"}
               </strong>
             </div>
 
@@ -205,13 +173,13 @@ function SocialWorkerMyPage() {
           </div>
         </div>
 
-        {(editing === 'name' || editing === 'phone') && (
+        {(editing === "name" || editing === "phone") && (
           <div className={styles.editCard}>
             <Input
-              label={editing === 'name' ? '이름' : '연락처'}
+              label={editing === "name" ? "이름" : "연락처"}
               value={value}
               error={error}
-              hint={editing === 'name' ? NAME_HINT : PHONE_HINT}
+              hint={editing === "name" ? NAME_HINT : PHONE_HINT}
               onChange={(event) => setValue(event.target.value)}
             />
 
@@ -220,63 +188,27 @@ function SocialWorkerMyPage() {
                 취소
               </Button>
 
-              <Button
-                loading={submitting}
-                onClick={saveText}
-              >
+              <Button loading={submitting} onClick={saveText}>
                 저장하기
               </Button>
             </div>
           </div>
         )}
-
-        {editing === 'region' && (
+        {editing === "region" && (
           <div className={styles.editCard}>
-            <label className={styles.selectField}>
-              <span className={styles.selectLabel}>소속 지역</span>
+            <div className={styles.notice}>
+              <strong className={styles.noticeTitle}>
+                소속 지역 변경 기능은 추후 제공될 예정입니다.
+              </strong>
 
-              <select
-                className={styles.select}
-                value={regionId}
-                disabled={regions.status !== 'success'}
-                onChange={(event) => setRegionId(event.target.value)}
-              >
-                <option value="">지역을 선택해 주세요</option>
-
-                {(regions.data ?? []).map((region) => (
-                  <option
-                    key={region.regionId}
-                    value={region.regionId}
-                  >
-                    {region.province} {region.district}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            {regions.status === 'error' && (
-              <p className={styles.error}>
-                {getErrorMessage(regions.error)}
+              <p className={styles.noticeDescription}>
+                현재는 등록된 소속 지역 정보만 확인할 수 있어요.
               </p>
-            )}
+            </div>
 
-            {error && (
-              <p className={styles.error}>
-                {error}
-              </p>
-            )}
-
-            <div className={styles.editActions}>
+            <div className={styles.noticeActions}>
               <Button variant="outline" onClick={cancelEdit}>
-                취소
-              </Button>
-
-              <Button
-                loading={submitting}
-                disabled={regions.status !== 'success'}
-                onClick={saveRegion}
-              >
-                저장하기
+                확인
               </Button>
             </div>
           </div>
@@ -314,7 +246,7 @@ function SocialWorkerMyPage() {
         </div>
       </section>
     </section>
-  )
+  );
 }
 
-export default SocialWorkerMyPage
+export default SocialWorkerMyPage;
