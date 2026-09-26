@@ -32,3 +32,48 @@ export function getNavKeyByPath(pathname) {
   )
   return entry ? entry[0] : 'home'
 }
+
+/** 서비스 제공자 화면 경로 (역할이 달라 화면 구성이 겹치지 않으므로 /provider 아래로 둔다) */
+export const PROVIDER_PATHS = {
+  home: '/provider',
+  schedule: '/provider/schedule',
+  scheduleNew: '/provider/schedule/new',
+  scheduleEdit: '/provider/schedule/:provideWorkId/edit',
+  matching: '/provider/matching',
+  my: '/provider/my',
+  password: '/provider/my/password',
+  result: '/provider/results/:serviceScheduleId',
+  resultDetail: '/provider/results/:serviceScheduleId/detail',
+}
+
+/** 서비스 제공자 네브바 key <-> 경로 매핑 */
+export const PROVIDER_NAV_PATH_BY_KEY = {
+  home: PROVIDER_PATHS.home,
+  schedule: PROVIDER_PATHS.schedule,
+  matching: PROVIDER_PATHS.matching,
+  my: PROVIDER_PATHS.my,
+}
+
+/** 서비스 제공자 경로별 헤더 제목 */
+export const PROVIDER_TITLE_BY_PATH = {
+  [PROVIDER_PATHS.home]: '',
+  [PROVIDER_PATHS.schedule]: '내 일정',
+  [PROVIDER_PATHS.matching]: '매칭',
+  [PROVIDER_PATHS.my]: '마이페이지',
+}
+
+/** 서비스 제공자 화면에서 활성화할 네브바 key를 구한다 */
+export function getProviderNavKeyByPath(pathname) {
+  const entry = Object.entries(PROVIDER_NAV_PATH_BY_KEY).find(([, path]) =>
+    path === PROVIDER_PATHS.home ? pathname === PROVIDER_PATHS.home : pathname.startsWith(path),
+  )
+  return entry ? entry[0] : 'home'
+}
+
+/** ':provideWorkId' 같은 자리를 실제 값으로 바꾼다 */
+export function toPath(path, params) {
+  return Object.entries(params).reduce(
+    (result, [key, value]) => result.replace(`:${key}`, value),
+    path,
+  )
+}
