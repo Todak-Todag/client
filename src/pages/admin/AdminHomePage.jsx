@@ -2,6 +2,7 @@ import { useId, useState } from 'react'
 import { getErrorMessage } from '../../api/client'
 import { approveUser, rejectUser } from '../../api/endpoints/adminUser'
 import Button from '../../components/ui/Button'
+import ConfirmSheet from '../../components/ui/ConfirmSheet'
 import EmptyState from '../../components/common/EmptyState'
 import { AlertIcon, UserIcon } from '../../components/ui/Icons'
 import RejectReasonSheet from '../../features/admin/RejectReasonSheet'
@@ -27,6 +28,7 @@ function AdminHomePage() {
 
   const users = useUserSearch({ role, status })
 
+  const [approveTarget, setApproveTarget] = useState(null)
   const [rejectTarget, setRejectTarget] = useState(null)
   const [processingId, setProcessingId] = useState(null)
   const [notice, setNotice] = useState('')
@@ -46,6 +48,7 @@ function AdminHomePage() {
     try {
       await run()
       users.removeItem(user.userId)
+      setApproveTarget(null)
       setRejectTarget(null)
       setNotice(message)
     } catch (error) {
@@ -55,8 +58,12 @@ function AdminHomePage() {
     }
   }
 
-  const handleApprove = (user) =>
-    handleAction(user, () => approveUser(user.userId), `${user.name} 님을 승인했어요`)
+  const handleApprove = () =>
+    handleAction(
+      approveTarget,
+      () => approveUser(approveTarget.userId),
+      `${approveTarget.name} 님을 승인했어요`,
+    )
 
   const handleReject = (reason) =>
     handleAction(
@@ -110,7 +117,7 @@ function AdminHomePage() {
               <UserCard
                 user={user}
                 processing={processingId === user.userId}
-                onApprove={handleApprove}
+                onApprove={setApproveTarget}
                 onReject={setRejectTarget}
               />
             </li>
@@ -202,6 +209,16 @@ function AdminHomePage() {
       )}
 
       {renderList()}
+
+      <ConfirmSheet
+        open={approveTarget !== null}
+        title="가입 승인"
+        description={`${approveTarget?.name ?? ''} 님의 가입을 승인할까요? 승인하면 바로 로그인할 수 있게 됩니다.`}
+        confirmLabel="승인하기"
+        submitting={processingId === approveTarget?.userId}
+        onClose={() => setApproveTarget(null)}
+        onConfirm={handleApprove}
+      />
 
       <RejectReasonSheet
         key={rejectTarget?.userId}
