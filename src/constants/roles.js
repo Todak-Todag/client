@@ -5,6 +5,8 @@ export const ROLE_LABEL = {
   PATIENT: '퇴원 예정자',
   SERVICE_PROVIDER: '서비스 제공자',
   SOCIAL_WORKER: '사회복지사',
+  ADMIN: '운영자',
+  MASTER: '관리자'
 }
 
 /**
