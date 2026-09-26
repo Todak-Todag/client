@@ -8,10 +8,11 @@ import ScheduleCard, { ScheduleCardSkeleton } from '../../features/schedule/Sche
 import WeekStrip from '../../features/schedule/WeekStrip'
 import { useCurrentCarePlan } from '../../features/care-plan/useCarePlan'
 import { useNow } from '../../hooks/useNow'
-import { useSchedulesByDate } from '../../features/schedule/useSchedules'
-import { PATHS } from '../../constants/paths'
+import { useScheduleDates, useSchedulesByDate } from '../../features/schedule/useSchedules'
+import { PATHS, toPath } from '../../constants/paths'
+import { SCHEDULE_STATUS } from '../../constants/status'
 import {
-  formatDateLabel,
+  formatMonthDay,
   formatTimeRange,
   isDateString,
   toLocalDateString,
@@ -20,7 +21,7 @@ import { getUpcomingFinishDate } from '../../features/care-plan/carePlanStatus'
 import { getScheduleBadge } from '../../features/schedule/scheduleStatus'
 import styles from './SchedulePage.module.css'
 
-/** 퇴원 예정자 일정 상세 화면 (선택한 날짜의 서비스 일정) */
+/** 퇴원 예정자 일정 화면 (선택한 날짜의 서비스 일정 목록) */
 function SchedulePage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const now = useNow()
@@ -31,6 +32,7 @@ function SchedulePage() {
   const selectedDate = isDateString(dateParam) ? dateParam : today
 
   const schedules = useSchedulesByDate(selectedDate)
+  const scheduleDates = useScheduleDates()
   const carePlan = useCurrentCarePlan()
 
   // 날짜를 바꿀 때마다 방문 기록이 쌓이지 않도록 replace (뒤로 가기는 이전 화면으로)
@@ -46,6 +48,10 @@ function SchedulePage() {
   // 케어 종료 안내는 보조 정보라 불러오지 못하면 띠를 숨기기만 한다
   const finishDate =
     carePlan.status === 'success' ? getUpcomingFinishDate(carePlan.data, today) : null
+  // 주 이동은 케어 기간 안으로만. 케어플랜을 모르면 제한하지 않는다
+  const period = carePlan.status === 'success' ? carePlan.data : null
+  // 점 표시도 보조 정보라 실패하면 점 없이 보여준다
+  const markedDates = scheduleDates.status === 'success' ? scheduleDates.data : undefined
 
   const renderSchedules = () => {
     if (schedules.status === 'loading') {
@@ -54,8 +60,8 @@ function SchedulePage() {
           <p className={styles.srOnly} role="status">
             일정을 불러오는 중이에요
           </p>
-          <ScheduleCardSkeleton description />
-          <ScheduleCardSkeleton description />
+          <ScheduleCardSkeleton />
+          <ScheduleCardSkeleton />
         </div>
       )
     }
@@ -103,11 +109,13 @@ function SchedulePage() {
       <ul className={styles.list}>
         {schedules.data.map((schedule) => (
           <li key={schedule.serviceScheduleId}>
+            {/* 서비스 내용은 상세에서 보여주고 목록은 훑어보기 좋게 이름·시간만 */}
             <ScheduleCard
               title={schedule.serviceName ?? '케어 서비스'}
-              description={schedule.serviceContent}
               time={formatTimeRange(schedule.startedAt, schedule.finishedAt)}
               badge={getScheduleBadge(schedule, now)}
+              to={toPath(PATHS.scheduleDetail, { serviceScheduleId: schedule.serviceScheduleId })}
+              dimmed={schedule.status === SCHEDULE_STATUS.CANCELED}
             />
           </li>
         ))}
@@ -118,17 +126,29 @@ function SchedulePage() {
   return (
     <div className={styles.page}>
       <div className={styles.top}>
-        {finishDate && <CareEndNotice finishDate={finishDate} today={today} />}
-        <WeekStrip selectedDate={selectedDate} today={today} onSelect={selectDate} />
+        {finishDate && <CareEndNotice finishDate={finishDate} />}
+        <WeekStrip
+          selectedDate={selectedDate}
+          today={today}
+          onSelect={selectDate}
+          markedDates={markedDates}
+          min={period?.startDate ?? undefined}
+          max={period?.finishDate ?? undefined}
+        />
       </div>
 
       <section
         aria-labelledby="schedule-date-title"
         aria-busy={schedules.status === 'loading'}
       >
-        <h2 id="schedule-date-title" className={styles.srOnly}>
-          {formatDateLabel(selectedDate)} 일정
-        </h2>
+        <div className={styles.dateHead}>
+          <h2 id="schedule-date-title" className={styles.dateTitle}>
+            {formatMonthDay(selectedDate)}
+          </h2>
+          {schedules.status === 'success' && (
+            <p className={styles.count}>{schedules.data.length}건</p>
+          )}
+        </div>
         {renderSchedules()}
       </section>
     </div>
