@@ -14,7 +14,7 @@ export function getScheduleBadge(schedule, now = new Date()) {
       const startedAt = parseLocalDateTime(schedule.startedAt)
       const finishedAt = parseLocalDateTime(schedule.finishedAt)
       if (now < startedAt) return { label: '진행 예정', variant: 'info' }
-      if (now < finishedAt) return { label: '진행중', variant: 'primary' }
+      if (now < finishedAt) return { label: '진행 중', variant: 'primary' }
       // 종료 시각이 지났지만 제공자가 아직 완료 처리하지 않은 상태
       return { label: '완료 확인 중', variant: 'neutral' }
     }
