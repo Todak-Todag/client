@@ -136,6 +136,20 @@ export function useUserSearch({ role, status }) {
 
   const reload = () => setReloadKey((prev) => prev + 1)
 
+  /**
+   * 승인·거절한 사용자를 목록에서 뺀다.
+   * 전체를 다시 불러오면 스크롤 위치가 날아가서 해당 항목만 지운다.
+   */
+  const removeItem = (userId) =>
+    setState((prev) => {
+      if (prev.key !== key) return prev
+
+      const items = prev.items.filter((item) => item.userId !== userId)
+      if (items.length === prev.items.length) return prev
+
+      return { ...prev, items, total: Math.max(0, prev.total - 1) }
+    })
+
   return {
     status: current.status,
     items: current.items,
@@ -146,5 +160,6 @@ export function useUserSearch({ role, status }) {
     moreError: current.moreStatus === 'error' ? current.moreError : null,
     loadMore,
     reload,
+    removeItem,
   }
 }

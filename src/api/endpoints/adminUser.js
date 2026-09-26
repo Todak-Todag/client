@@ -17,3 +17,27 @@ export function searchUsers({ page, size, role, status, signal } = {}) {
     signal,
   })
 }
+
+/**
+ * 회원가입 승인 (운영자·관리자 전용)
+ *
+ * 승인에는 사유를 보내면 안 된다. (서버: USER_APPROVAL_CONFLICT)
+ */
+export function approveUser(userId) {
+  return request(`/admin/users/${userId}/status`, {
+    method: 'PATCH',
+    body: { accept: true },
+  })
+}
+
+/**
+ * 회원가입 거절 (운영자·관리자 전용)
+ *
+ * 거절에는 사유가 반드시 필요하다. (서버: USER_REJECT_CONFLICT)
+ */
+export function rejectUser(userId, rejectReason) {
+  return request(`/admin/users/${userId}/status`, {
+    method: 'PATCH',
+    body: { accept: false, rejectReason },
+  })
+}

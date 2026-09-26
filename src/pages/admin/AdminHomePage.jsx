@@ -1,8 +1,10 @@
 import { useId, useState } from 'react'
 import { getErrorMessage } from '../../api/client'
+import { approveUser, rejectUser } from '../../api/endpoints/adminUser'
 import Button from '../../components/ui/Button'
 import EmptyState from '../../components/common/EmptyState'
 import { AlertIcon, UserIcon } from '../../components/ui/Icons'
+import RejectReasonSheet from '../../features/admin/RejectReasonSheet'
 import UserCard from '../../features/admin/UserCard'
 import { useUserSearch } from '../../features/admin/useUserSearch'
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll'
@@ -25,10 +27,43 @@ function AdminHomePage() {
 
   const users = useUserSearch({ role, status })
 
+  const [rejectTarget, setRejectTarget] = useState(null)
+  const [processingId, setProcessingId] = useState(null)
+  const [notice, setNotice] = useState('')
+  const [actionError, setActionError] = useState('')
+
   const sentinelRef = useInfiniteScroll({
     enabled: users.hasNext && !users.loadingMore && !users.moreError,
     onLoadMore: users.loadMore,
   })
+
+  /** 승인·거절 공통 처리: 성공하면 그 카드만 빼고 안내를 남긴다 */
+  const handleAction = async (user, run, message) => {
+    setProcessingId(user.userId)
+    setActionError('')
+    setNotice('')
+
+    try {
+      await run()
+      users.removeItem(user.userId)
+      setRejectTarget(null)
+      setNotice(message)
+    } catch (error) {
+      setActionError(getErrorMessage(error))
+    } finally {
+      setProcessingId(null)
+    }
+  }
+
+  const handleApprove = (user) =>
+    handleAction(user, () => approveUser(user.userId), `${user.name} 님을 승인했어요`)
+
+  const handleReject = (reason) =>
+    handleAction(
+      rejectTarget,
+      () => rejectUser(rejectTarget.userId, reason),
+      `${rejectTarget.name} 님의 가입을 거절했어요`,
+    )
 
   const renderList = () => {
     if (users.status === 'loading') {
@@ -72,7 +107,12 @@ function AdminHomePage() {
         <ul className={styles.list}>
           {users.items.map((user) => (
             <li key={user.userId}>
-              <UserCard user={user} />
+              <UserCard
+                user={user}
+                processing={processingId === user.userId}
+                onApprove={handleApprove}
+                onReject={setRejectTarget}
+              />
             </li>
           ))}
         </ul>
@@ -149,7 +189,27 @@ function AdminHomePage() {
         </div>
       </div>
 
+      {notice && (
+        <p className={styles.notice} role="status" aria-live="polite">
+          {notice}
+        </p>
+      )}
+
+      {actionError && (
+        <p className={styles.actionError} role="alert">
+          {actionError}
+        </p>
+      )}
+
       {renderList()}
+
+      <RejectReasonSheet
+        key={rejectTarget?.userId}
+        user={rejectTarget}
+        submitting={processingId === rejectTarget?.userId}
+        onClose={() => setRejectTarget(null)}
+        onSubmit={handleReject}
+      />
     </div>
   )
 }
