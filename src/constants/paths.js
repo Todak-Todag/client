@@ -40,6 +40,40 @@ export function getNavKeyByPath(pathname) {
   return entry ? entry[0] : 'home'
 }
 
+/** 병원 담당자 화면 경로 (역할별로 화면 구성이 달라 /hospital 아래로 둔다) */
+export const HOSPITAL_PATHS = {
+  home: '/hospital',
+  schedule: '/hospital/schedule',
+  matching: '/hospital/matching',
+  my: '/hospital/my',
+}
+
+/** 병원 담당자 네브바 key <-> 경로 매핑 */
+export const HOSPITAL_NAV_PATH_BY_KEY = {
+  home: HOSPITAL_PATHS.home,
+  schedule: HOSPITAL_PATHS.schedule,
+  matching: HOSPITAL_PATHS.matching,
+  my: HOSPITAL_PATHS.my,
+}
+
+/** 병원 담당자 경로별 헤더 제목 */
+export const HOSPITAL_TITLE_BY_PATH = {
+  [HOSPITAL_PATHS.home]: '',
+  [HOSPITAL_PATHS.schedule]: '일정',
+  [HOSPITAL_PATHS.matching]: '매칭',
+  [HOSPITAL_PATHS.my]: '마이페이지',
+}
+
+/** 현재 병원 담당자 경로에서 활성화할 네브바 key를 구한다 */
+export function getHospitalNavKeyByPath(pathname) {
+  const entry = Object.entries(HOSPITAL_NAV_PATH_BY_KEY).find(([, path]) =>
+    path === HOSPITAL_PATHS.home
+      ? pathname === HOSPITAL_PATHS.home
+      : pathname.startsWith(path),
+  )
+  return entry ? entry[0] : 'home'
+}
+
 /** 서비스 제공자 화면 경로 (역할이 달라 화면 구성이 겹치지 않으므로 /provider 아래로 둔다) */
 export const PROVIDER_PATHS = {
   home: '/provider',
