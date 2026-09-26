@@ -1,7 +1,6 @@
 import { getServicePreference } from '../../api/endpoints/carePlan'
 import { getProvideServices } from '../../api/endpoints/provider'
 import { getSchedule, getSchedules } from '../../api/endpoints/schedule'
-import { toLocalDateString } from '../../utils/date'
 import { SCHEDULE_STATUS } from '../../constants/status'
 import { useAsync } from '../../hooks/useAsync'
 
@@ -76,23 +75,13 @@ async function loadSchedulesByDate(signal, date) {
   })
 }
 
-const loadTodaySchedules = (signal) => loadSchedulesByDate(signal, toLocalDateString())
-
 /**
- * 오늘 받을 서비스 일정 (시작 시각 순)
+ * 선택한 날짜의 서비스 일정 (시작 시각 순). 날짜가 바뀌면 다시 조회한다.
+ * @param {string} date 'YYYY-MM-DD'
  * @returns {{ status: string, data: Array<{ serviceScheduleId: string, status: string,
  *   startedAt: string, finishedAt: string, serviceName: string|null,
  *   serviceContent: string|null }> | null,
  *   error: Error|null, reload: () => void }}
- */
-export function useTodaySchedules() {
-  return useAsync(loadTodaySchedules)
-}
-
-/**
- * 선택한 날짜의 서비스 일정 (시작 시각 순). 날짜가 바뀌면 다시 조회한다.
- * @param {string} date 'YYYY-MM-DD'
- * @returns 반환 형태는 useTodaySchedules와 같다
  */
 export function useSchedulesByDate(date) {
   return useAsync(loadSchedulesByDate, date)
