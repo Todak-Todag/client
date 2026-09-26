@@ -9,6 +9,7 @@ import NotFoundPage from './pages/NotFoundPage'
 import SchedulePage from './pages/patient/SchedulePage'
 import SignupPage from './pages/user/SignupPage'
 import { PATHS } from './constants/paths'
+import SocialWorkerHomePage from "./pages/social-worker/SocialWorkerHomePage";
 
 function App() {
   return (
@@ -25,13 +26,16 @@ function App() {
           <Route path={PATHS.schedule} element={<SchedulePage />} />
           <Route path={PATHS.matching} element={<MatchingPage />} />
           <Route path={PATHS.my} element={<MyPage />} />
+
+          <Route path="/social-worker" element={<SocialWorkerHomePage />} />
+
           <Route path="/404" element={<NotFoundPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
