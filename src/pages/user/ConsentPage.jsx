@@ -78,6 +78,17 @@ function ConsentPage() {
     }
   }
 
+  const handleSubmit = () => {
+    const agreements = docs.map((doc) => ({
+      termsId: doc.consentDocumentVersionId,
+      agreed: isChecked(doc.consentDocumentVersionId)
+    }));
+
+    navigate(PATHS.signupForm, {
+      state: { type: signupType.key, agreements }
+    });
+  }
+
   const viewingDoc = docs.find((doc) => doc.consentDocumentVersionId === viewingId);
   const viewingContent = contents[viewingId];
 
@@ -179,7 +190,7 @@ function ConsentPage() {
       <div className={styles.submitArea}>
         <Button
           disabled={!canSubmit}
-          onClick={() => {}}
+          onClick={handleSubmit}
         >
           동의하고 시작하기
         </Button>

@@ -8,6 +8,7 @@ import MyPage from './pages/patient/MyPage'
 import NotFoundPage from './pages/NotFoundPage'
 import SchedulePage from './pages/patient/SchedulePage'
 import SignupPage from './pages/user/SignupPage'
+import SignupFormPage from './pages/user/SignupFormPage'
 import { PATHS } from './constants/paths'
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path={PATHS.login} element={<LoginPage />} />
         <Route path={PATHS.signup} element={<SignupPage />} />
         <Route path={PATHS.signupConsent} element={<ConsentPage />} />
+        <Route path={PATHS.signupForm} element={<SignupFormPage />} />
 
         {/* 헤더 + 네브바가 붙는 화면 */}
         <Route element={<AppLayout />}>
