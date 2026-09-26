@@ -24,3 +24,64 @@ export function getSchedules({ date, status, page, size, signal } = {}) {
 export function getSchedule(serviceScheduleId, { signal } = {}) {
   return request(`/service-schedules/${serviceScheduleId}`, { signal })
 }
+
+/**
+ * 서비스 수행 여부 확정 (서비스 제공자 전용)
+ * @param {'COMPLETED'|'NO_SHOW'} status
+ */
+export function completeSchedule(serviceScheduleId, status) {
+  return request(`/service-schedules/${serviceScheduleId}/result`, {
+    method: 'PATCH',
+    body: { status },
+  })
+}
+
+/**
+ * 서비스 수행 결과 등록 (서비스 제공자 전용)
+ * @param {{ startedAt: string, finishedAt: string, note?: string }} body
+ *   시각은 'YYYY-MM-DDTHH:mm:ss'
+ */
+export function registerResult(serviceScheduleId, body) {
+  return request(`/service-results/${serviceScheduleId}`, { method: 'POST', body })
+}
+
+/**
+ * 수행 결과 목록 조회
+ * @returns {Promise<{ content: Array<{ serviceResultId: string, startedAt: string,
+ *   finishedAt: string }>, pageInfo: object }>}
+ *   목록에는 일정 ID가 없어 어떤 일정의 결과인지는 상세로 확인해야 한다.
+ */
+export function getResults({ page, size, signal } = {}) {
+  return request('/service-results', { query: { page, size }, signal })
+}
+
+/**
+ * 수행 결과 상세 조회
+ * @returns {Promise<{ serviceResultId: string, serviceScheduleId: string,
+ *   startedAt: string, finishedAt: string, note: string|null }>}
+ */
+export function getResult(serviceResultId, { signal } = {}) {
+  return request(`/service-results/${serviceResultId}`, { signal })
+}
+
+/**
+ * 내 매칭 시도 내역 조회 (퇴원 예정자 전용, schedule-service MatchingAttemptApiController)
+ *
+ * - status를 비우면 서버가 FAILED로 조회한다. FAILED는 아직 일정이 하나도 만들어지지 않은
+ *   '재매칭이 필요한 실패'만 내려온다. (재시도로 해소된 과거 실패는 빠짐)
+ * - Care Plan이 CONFIRMED일 때만 결과가 있다. IN_PROGRESS는 빈 목록,
+ *   Care Plan이 없거나 UNDER_REVIEW·COMPLETED면 403 AUTH_FORBIDDEN.
+ *   (schedule-service가 조회하는 care-plan 내부 API가 CONFIRMED/IN_PROGRESS만 찾고, 못 찾은 404를 403으로 바꾼다)
+ * - size는 10/30/50만 허용하고 그 외는 10. 정렬은 createdAt 고정(기본 DESC).
+ *
+ * @param {{ status?: 'MATCHED'|'FAILED'|'EXPIRED', page?: number, size?: 10|30|50, signal?: AbortSignal }} params
+ * @returns {Promise<{ content: Array<{ matchingAttemptId: string, servicePreferenceId: string,
+ *   provideServiceId: string, date: string, preferredTimeSlot: 'MORNING'|'AFTERNOON'|null,
+ *   status: 'MATCHED'|'FAILED'|'EXPIRED', failureReason: string|null,
+ *   failedAt: string|null, matchedAt: string|null }>,
+ *   pageInfo: { page: number, size: number, totalElements: number, totalPages: number } }>}
+ *   failureReason은 현재 'NO_AVAILABLE_PROVIDER' 코드 문자열 그대로 온다. failedAt/matchedAt은 UTC Instant
+ */
+export function getMatchingAttempts({ status, page, size, signal } = {}) {
+  return request('/matching-attempts', { query: { status, page, size }, signal })
+}

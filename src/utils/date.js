@@ -53,3 +53,51 @@ export function getWeekDates(dateString) {
     (_, index) => new Date(date.getFullYear(), date.getMonth(), sunday + index),
   )
 }
+
+/**
+ * 'YYYY-MM-DD' → '8월 1일 (토)'. weekday가 false면 '8월 1일'
+ * @param {string} dateString
+ * @param {{ weekday?: boolean }} options
+ */
+export function formatMonthDay(dateString, { weekday = true } = {}) {
+  const date = parseLocalDateTime(dateString)
+  const label = `${date.getMonth() + 1}월 ${date.getDate()}일`
+  return weekday ? `${label} (${WEEKDAY_LABELS[date.getDay()]})` : label
+}
+
+/** '8월 1일 (토) – 8월 30일 (일)'. 둘 중 하나라도 없으면 null */
+export function formatDateRange(startDate, finishDate, options) {
+  if (!startDate || !finishDate) return null
+  return `${formatMonthDay(startDate, options)} – ${formatMonthDay(finishDate, options)}`
+}
+
+/** 'YYYY-MM-DD'에 days일을 더한 'YYYY-MM-DD' */
+export function addDays(dateString, days) {
+  const date = parseLocalDateTime(dateString)
+  date.setDate(date.getDate() + days)
+  return toLocalDateString(date)
+}
+
+/** 시작일과 종료일을 모두 포함한 일수 ('2026-08-01' ~ '2026-08-30' → 30) */
+export function countDays(startDate, finishDate) {
+  const start = parseLocalDateTime(startDate)
+  const finish = parseLocalDateTime(finishDate)
+  // 서머타임이 있는 시간대에서도 하루 단위로 떨어지도록 반올림한다
+  return Math.round((finish - start) / 86_400_000) + 1
+}
+
+/**
+ * 달력 한 달치 칸. 앞쪽은 1일의 요일만큼 null로 채운다 (일요일 시작)
+ * @param {number} year
+ * @param {number} month 1~12
+ * @returns {Array<string|null>} 'YYYY-MM-DD' 또는 빈 칸
+ */
+export function getMonthCells(year, month) {
+  const first = new Date(year, month - 1, 1)
+  const lastDay = new Date(year, month, 0).getDate()
+  const blanks = Array.from({ length: first.getDay() }, () => null)
+  const days = Array.from({ length: lastDay }, (_, index) =>
+    toLocalDateString(new Date(year, month - 1, index + 1)),
+  )
+  return [...blanks, ...days]
+}

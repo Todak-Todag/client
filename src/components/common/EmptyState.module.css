@@ -10,11 +10,25 @@
   text-align: center;
 }
 
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--space-xs);
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg);
+}
+
 .icon {
-  width: 32px;
-  height: 32px;
-  margin-bottom: var(--space-2xs);
+  width: 28px;
+  height: 28px;
   color: var(--color-text-muted);
+}
+
+.error .iconWrap {
+  background-color: var(--color-danger-soft);
 }
 
 .error .icon {

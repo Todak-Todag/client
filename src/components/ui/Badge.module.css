@@ -30,3 +30,13 @@
   background-color: var(--color-danger-soft);
   color: var(--color-danger);
 }
+
+.warning {
+  background-color: var(--color-warning-soft);
+  color: var(--color-warning);
+}
+
+.success {
+  background-color: var(--color-success-soft);
+  color: var(--color-success);
+}

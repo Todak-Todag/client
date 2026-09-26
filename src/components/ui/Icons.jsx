@@ -76,6 +76,38 @@ export function ChevronRightIcon(props) {
   )
 }
 
+export function ChevronLeftIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M15 6l-6 6 6 6" />
+    </svg>
+  )
+}
+
+export function ChevronDownIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  )
+}
+
+export function ChevronUpIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M6 15l6-6 6 6" />
+    </svg>
+  )
+}
+
+export function CheckIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M5 12.5l5 5 9-11" />
+    </svg>
+  )
+}
+
 export function ClockIcon(props) {
   return (
     <svg {...iconProps} {...props}>
@@ -89,6 +121,14 @@ export function PlusIcon(props) {
   return (
     <svg {...iconProps} {...props}>
       <path d="M12 5v14M5 12h14" />
+    </svg>
+  )
+}
+
+export function CloseIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M6 6l12 12M18 6L6 18" />
     </svg>
   )
 }
@@ -107,6 +147,33 @@ export function InfoIcon(props) {
     <svg {...iconProps} {...props}>
       <circle cx="12" cy="12" r="9" />
       <path d="M12 11v5.5M12 7.5v.01" />
+    </svg>
+  )
+}
+
+export function BellIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16Z" />
+      <path d="M10 20.5a2.2 2.2 0 0 0 4 0" />
+    </svg>
+  )
+}
+
+export function ListIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M9 6h11M9 12h11M9 18h11" />
+      <path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01" />
+    </svg>
+  )
+}
+
+export function DocumentIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />
+      <path d="M14 3v5h5M9 13h6M9 17h6" />
     </svg>
   )
 }

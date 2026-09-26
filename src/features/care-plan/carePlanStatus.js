@@ -1,21 +1,25 @@
 import { CARE_PLAN_STATUS } from '../../constants/status'
 
 /**
- * 인사 카드 아래 안내 문구.
- * 서버에 전용 필드가 없어 Care Plan 상태로 문구를 정한다. (문구는 기획 확정 시 교체)
+ * 인사 카드 이름 아래 상태 배지. Care Plan이 없으면 배지를 표시하지 않는다.
+ * CONFIRMED(매칭 진행)와 IN_PROGRESS는 사용자 입장에서 같은 단계라 문구를 합친다.
  */
-const CARE_PLAN_MESSAGE = {
-  [CARE_PLAN_STATUS.UNDER_REVIEW]: '케어 플랜을 검토하고 있어요',
-  [CARE_PLAN_STATUS.CONFIRMED]: '맞춤 케어 서비스 제공자 연계 진행 중',
-  [CARE_PLAN_STATUS.IN_PROGRESS]: '케어 서비스를 받고 있어요',
-  [CARE_PLAN_STATUS.COMPLETED]: '케어 서비스가 모두 끝났어요',
+const CARE_PLAN_BADGE = {
+  [CARE_PLAN_STATUS.UNDER_REVIEW]: { label: '케어플랜 검토 중', variant: 'warning' },
+  [CARE_PLAN_STATUS.CONFIRMED]: { label: '케어 진행 중', variant: 'primary' },
+  [CARE_PLAN_STATUS.IN_PROGRESS]: { label: '케어 진행 중', variant: 'primary' },
+  [CARE_PLAN_STATUS.COMPLETED]: { label: '케어 종료', variant: 'neutral' },
 }
 
-export function getCarePlanMessage(carePlanStatus) {
-  return CARE_PLAN_MESSAGE[carePlanStatus] ?? '아직 케어 플랜이 없어요'
+/** @returns {{ label: string, variant: string } | null} */
+export function getCarePlanBadge(carePlanStatus) {
+  return CARE_PLAN_BADGE[carePlanStatus] ?? null
 }
 
-/** 여러 Care Plan 중 홈에 기준으로 쓸 것: 진행 중인 계획을 우선한다 */
+/**
+ * 여러 Care Plan 중 홈에 기준으로 쓸 것: 진행 중인 계획을 우선한다.
+ * 같은 상태가 여럿이면 가장 최근에 만든 것. (목록 API가 정렬을 보장하지 않는다)
+ */
 const CARE_PLAN_PRIORITY = [
   CARE_PLAN_STATUS.IN_PROGRESS,
   CARE_PLAN_STATUS.CONFIRMED,
@@ -24,8 +28,11 @@ const CARE_PLAN_PRIORITY = [
 ]
 
 export function pickCurrentCarePlan(carePlans) {
+  // createdAt은 Instant(ISO-8601). 소수점 자릿수가 달라 문자열이 아닌 시각으로 비교한다
+  const time = (plan) => Date.parse(plan.createdAt) || 0
+  const newestFirst = [...carePlans].sort((a, b) => time(b) - time(a))
   for (const status of CARE_PLAN_PRIORITY) {
-    const found = carePlans.find((plan) => plan.status === status)
+    const found = newestFirst.find((plan) => plan.status === status)
     if (found) return found
   }
   return null

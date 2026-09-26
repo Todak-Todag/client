@@ -3,7 +3,7 @@ import styles from './Badge.module.css'
 /**
  * 상태 표시용 배지
  *
- * @param {'primary'|'info'|'neutral'|'danger'} variant 배지 색
+ * @param {'primary'|'info'|'success'|'warning'|'neutral'|'danger'} variant 배지 색
  */
 function Badge({ children, variant = 'neutral', className = '', ...rest }) {
   return (
