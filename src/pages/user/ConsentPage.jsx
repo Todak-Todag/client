@@ -1,6 +1,7 @@
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { useState } from 'react'
 import { getErrorMessage } from '../../api/client'
+import Button from '../../components/ui/Button'
 import Header, { HeaderSpacer } from '../../components/layout/Header'
 import BottomBar, { BottomBarSpacer } from '../../components/layout/BottomBar'
 import {
@@ -146,10 +147,19 @@ function ConsentPage() {
       <div className={styles.notice}>
         <InfoIcon className={styles.noticeIcon} />
         <p className={styles.noticeText}>
-          약관약관미나미상~
+          선택 약관은 동의하지 않아도 가입할 수 있어요.
         </p>
       </div>
 
+      <BottomBarSpacer />
+      <BottomBar>
+        <Button
+          disabled={!canSubmit}
+          onClick={() => {}}
+        >
+          동의하고 시작하기
+        </Button>
+      </BottomBar>
     </div>
   )
 }
