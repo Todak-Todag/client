@@ -8,16 +8,17 @@ import ScheduleCard, { ScheduleCardSkeleton } from '../../features/schedule/Sche
 import CarePlanReviewCard from '../../features/care-plan/CarePlanReviewCard'
 import CareCompletedCard from '../../features/care-plan/CareCompletedCard'
 import MatchingFailedBanner from '../../features/schedule/MatchingFailedBanner'
-import { ROLE_LABEL } from '../../constants/roles'
+import { ROLE_LABEL, getHomePathByRole } from '../../constants/roles'
 import { useAuth } from '../../features/auth/useAuth'
 import {
+  useCarePlanReviewSummary,
   useCarePlanServiceCount,
   useCurrentCarePlan,
 } from '../../features/care-plan/useCarePlan'
 import { useMatchingFailureCount } from '../../features/schedule/useMatchingFailures'
 import { useNow } from '../../hooks/useNow'
 import { useSchedulesByDate } from '../../features/schedule/useSchedules'
-import { PATHS } from '../../constants/paths'
+import { PATHS, toPath } from '../../constants/paths'
 import { formatDateRange, formatMonthDay, formatTimeRange, toLocalDateString } from '../../utils/date'
 import { CARE_PLAN_STATUS } from '../../constants/status'
 import { getCarePlanBadge, getUpcomingFinishDate } from '../../features/care-plan/carePlanStatus'
@@ -69,6 +70,10 @@ function HomePage() {
   }
 
   if (me.status === 'success' && me.data.role !== ROLE_LABEL.PATIENT) {
+    // 일시 오류 뒤 다시 시도로 들어온 다른 역할은 자기 홈으로 보낸다 (HomeEntry가 먼저 갈라주지 못한 경우)
+    const homePath = getHomePathByRole(me.data.role)
+    if (homePath !== PATHS.home) return <Navigate to={homePath} replace />
+
     return (
       <EmptyState
         icon={AlertIcon}
@@ -133,18 +138,18 @@ function HomePage() {
       return (
         <ReviewSection
           carePlan={plan}
-          // TODO: 케어플랜 확인(03) 화면이 생기면 해당 경로로 교체 (현재 임시로 매칭 화면)
-          onConfirm={() => navigate(PATHS.matching)}
-          // TODO: 서비스 추가 신청 화면이 생기면 해당 경로로 교체 (현재 임시로 매칭 화면)
-          onAddService={() => navigate(PATHS.matching)}
+          onConfirm={() => navigate(toPath(PATHS.carePlan, { carePlanId: plan.carePlanId }))}
+          onAddService={() =>
+            navigate(toPath(PATHS.carePlanServiceNew, { carePlanId: plan.carePlanId }))
+          }
         />
       )
     }
 
     if (plan.status === CARE_PLAN_STATUS.COMPLETED) {
       return (
-        <CareCompletedCard
-          period={formatDateRange(plan.startDate, plan.finishDate, { weekday: false })}
+        <CompletedSection
+          carePlan={plan}
           // TODO: 서비스 수행 결과 화면이 생기면 해당 경로로 교체 (현재 임시로 일정 화면)
           onViewResults={() => navigate(PATHS.schedule)}
         />
@@ -194,16 +199,51 @@ function LoadError({ error, onRetry }) {
   )
 }
 
-/** 검토 중: 케어플랜 도착 카드 (서비스 개수는 보조 정보라 실패하면 줄만 숨긴다) */
+/**
+ * 검토 중: 케어플랜 도착 카드.
+ * 서비스 수·희망 일정 없는 서비스 수는 보조 정보라 불러오지 못하면 줄만 숨긴다
+ */
 function ReviewSection({ carePlan, onConfirm, onAddService }) {
-  const serviceCount = useCarePlanServiceCount(carePlan.carePlanId)
+  const summary = useCarePlanReviewSummary(carePlan.carePlanId)
+  const data = summary.status === 'success' ? summary.data : null
 
   return (
     <CarePlanReviewCard
       period={formatDateRange(carePlan.startDate, carePlan.finishDate)}
-      serviceCount={serviceCount.status === 'success' ? serviceCount.data : null}
+      serviceCount={data ? data.serviceCount : null}
+      unscheduledCount={data ? data.unscheduledCount : null}
       onConfirm={onConfirm}
       onAddService={onAddService}
+    />
+  )
+}
+
+/**
+ * 종료: 케어를 마쳤는지, 검토 중에 서비스를 모두 빼서 끝났는지 구분한다.
+ * Care Plan에는 종료 사유가 없지만, 마지막 서비스를 빼면 서버가 서비스를 논리삭제하고
+ * 종료하므로 남은 서비스가 0개면 서비스 없이 끝난 케어플랜이다.
+ * 개수를 못 불러오면 기존처럼 일반 종료 카드를 보여준다.
+ */
+function CompletedSection({ carePlan, onViewResults }) {
+  const serviceCount = useCarePlanServiceCount(carePlan.carePlanId)
+
+  // 잘못된 안내가 잠깐 보이지 않도록 개수를 받을 때까지 자리표시로 둔다
+  if (serviceCount.status === 'loading') {
+    return (
+      <div className={styles.list}>
+        <p className={styles.srOnly} role="status">
+          케어플랜 정보를 불러오는 중이에요
+        </p>
+        <ScheduleCardSkeleton />
+      </div>
+    )
+  }
+
+  return (
+    <CareCompletedCard
+      period={formatDateRange(carePlan.startDate, carePlan.finishDate, { weekday: false })}
+      withoutService={serviceCount.status === 'success' && serviceCount.data === 0}
+      onViewResults={onViewResults}
     />
   )
 }
