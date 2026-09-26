@@ -26,3 +26,7 @@
   padding: var(--space-sm) var(--page-gutter);
   background-color: var(--color-surface);
 }
+
+.searchButton {
+  margin-top: calc(var(--space-2xs) * -1);
+}

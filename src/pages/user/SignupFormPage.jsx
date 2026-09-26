@@ -8,13 +8,16 @@ import { getSignupType } from '../../features/auth/signupTypes'
 import { PATHS } from '../../constants/paths'
 import styles from './SignupFormPage.module.css'
 import { validateSignupForm } from '../../features/auth/signupValidation'
+import RegionSelectSheet, { formatRegion } from '../../features/auth/RegionSelectSheet'
 
 const EMPTY_FORM = {
   username: '',
   password: '',
   passwordConfirm: '',
   phone: '',
-  name: ''
+  name: '',
+  regionId: '',
+  regionLabel: '',
 }
 
 function SignupFormPage() {
@@ -22,6 +25,7 @@ function SignupFormPage() {
   const { state } = useLocation()
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
+  const [regionOpen, setRegionOpen] = useState(false);
 
   const signupType = getSignupType(state?.type)
   const agreements = state?.agreements
@@ -38,6 +42,16 @@ function SignupFormPage() {
 
     setForm((prev) => ({...prev, [name]: nextValue}));
     setErrors((prev) => ({...prev, [name]: ''}));
+  }
+
+  const handleSelectRegion = (region) => {
+    setForm((prev) => ({
+      ...prev,
+      regionId: region.regionId,
+      regionLabel: formatRegion(region),
+    }));
+    setErrors((prev) => ({...prev, regionId: ''}));
+    setRegionOpen(false);
   }
 
   const handleSubmit = (event) => {
@@ -118,10 +132,37 @@ function SignupFormPage() {
           error={errors.name}
         />
 
+        <Input
+          label="지역"
+          name="regionLabel"
+          value={form.regionLabel}
+          placeholder="지역을 선택해주세요"
+          readOnly
+          onClick={() => setRegionOpen(true)}
+          error={errors.regionId}
+        />
+
+        <Button
+          type="button"
+          variant="outline"
+          size="md"
+          className={styles.searchButton}
+          onClick={() => setRegionOpen(true)}
+        >
+          지역 선택
+        </Button>
+
         <div className={styles.submitArea}>
           <Button type="submit">회원가입 완료</Button>
         </div>
       </form>
+
+      <RegionSelectSheet
+        open={regionOpen}
+        onClose={() => setRegionOpen(false)}
+        selectedId={form.regionId}
+        onSelect={handleSelectRegion}
+      />
 
       <BottomBarSpacer />
       <BottomBar />

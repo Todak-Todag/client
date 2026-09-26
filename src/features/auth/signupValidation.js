@@ -45,5 +45,21 @@ export function validateSignupForm(form) {
     errors.name = '한글 또는 영문만 입력할 수 있어요.'
   }
 
+  if (!form.regionId) {
+    errors.regionId = '지역을 선택해 주세요.'
+  }
+
   return errors
+}
+
+export function toSignupRequest(form, signupType, agreements) {
+  return {
+    type: signupType.role,
+    username: form.username,
+    password: form.password,
+    name: form.name,
+    phone: form.phone,
+    regionId: form.regionId,
+    agreements,
+  }
 }
