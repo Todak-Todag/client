@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { getErrorMessage } from '../api/client'
 import { getMe, login } from '../api/endpoints/auth'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'

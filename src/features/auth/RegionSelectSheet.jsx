@@ -3,10 +3,6 @@ import BottomSheet from '../../components/ui/BottomSheet'
 import { useRegions } from './useRegions'
 import styles from './RegionSelectSheet.module.css'
 
-export function formatRegion(region) {
-  return `${region.province} ${region.district}`
-}
-
 function groupByProvince(regions) {
   const groups = {}
 
