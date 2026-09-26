@@ -1,6 +1,7 @@
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { useState } from 'react'
 import { getErrorMessage } from '../../api/client'
+import BottomSheet from '../../components/ui/BottomSheet'
 import Button from '../../components/ui/Button'
 import Header, { HeaderSpacer } from '../../components/layout/Header'
 import BottomBar, { BottomBarSpacer } from '../../components/layout/BottomBar'
@@ -35,6 +36,8 @@ function ConsentPage() {
   const [searchParams] = useSearchParams();
   const documents = useConsentDocuments();
   const [checkedIds, setCheckedIds] = useState([]);
+  const [viewingId, setViewingId] = useState(null);
+  const [contents, setContents] = useState({});
   const signupType = getSignupType(searchParams.get('type'));
 
   if (!signupType) return <Navigate to={PATHS.signup} replace />
@@ -56,6 +59,26 @@ function ConsentPage() {
       isAllChecked ? [] : docs.map((doc) => doc.consentDocumentVersionId)
     )
   }
+
+  const openViewer = async (id) => {
+    setViewingId(id);
+    if(contents[id]) return;
+
+    setContents((prev) => ({...prev, [id]: {status: 'loading'}}));
+
+    try {
+      const data = await getConsentDocument(id);
+      setContents((prev) => ({
+        ...prev,
+        [id]: {status: 'success', text: data.content}
+      }));
+    } catch (error) {
+      setContents((prev) => ({...prev, [id]: {status: 'error', error}}));
+    }
+  }
+
+  const viewingDoc = docs.find((doc) => doc.consentDocumentVersionId === viewingId);
+  const viewingContent = contents[viewingId];
 
   const renderCheckMark = (checked) => (
     <span
@@ -132,7 +155,8 @@ function ConsentPage() {
                   <button
                     type="button"
                     className={styles.viewButton}
-                    onClick={() => {}}
+                    onClick={() => openViewer(id)}
+                    aria-label={`${doc.title} 전문 보기`}
                   >
                     보기
                     <ChevronRightIcon className={styles.viewIcon} />
@@ -160,6 +184,22 @@ function ConsentPage() {
           동의하고 시작하기
         </Button>
       </BottomBar>
+
+      <BottomSheet
+        open={viewingId !== null}
+        onClose={() => setViewingId(null)}
+        title={viewingDoc?.title ?? '약관'}
+      >
+        {viewingContent?.status === 'loading' && <p>불러오는 중이에요...</p>}
+
+        {viewingContent?.status === 'error' && (
+          <p role="alert">{getErrorMessage(viewingContent.error)}</p>
+        )}
+
+        {viewingContent?.status === 'success' && (
+          <p className={styles.consentText}>{viewingContent.text}</p>
+        )}
+      </BottomSheet>
     </div>
   )
 }
