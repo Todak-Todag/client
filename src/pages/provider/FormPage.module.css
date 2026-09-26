@@ -1,0 +1,24 @@
+.state {
+  margin: 0;
+  padding: 24px 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.error {
+  margin: 12px 0 0;
+  font-size: 14px;
+  color: var(--color-danger, #b42318);
+}
+
+.remove {
+  margin-top: 16px;
+  padding: 12px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--color-danger, #b42318);
+  cursor: pointer;
+}

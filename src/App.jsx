@@ -2,12 +2,14 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
 import ProviderLayout from './layouts/ProviderLayout'
 import ConsentPage from './pages/user/ConsentPage'
-import HomePage from './pages/patient/HomePage'
+import HomeEntry from './pages/HomeEntry'
 import LoginPage from './pages/LoginPage'
 import MatchingPage from './pages/patient/MatchingPage'
 import MyPage from './pages/patient/MyPage'
 import NotFoundPage from './pages/NotFoundPage'
 import ProviderHomePage from './pages/provider/HomePage'
+import ProviderSchedulePage from './pages/provider/SchedulePage'
+import ProvideWorkFormPage from './pages/provider/ProvideWorkFormPage'
 import SchedulePage from './pages/patient/SchedulePage'
 import SignupPage from './pages/user/SignupPage'
 import SocialWorkerHomePage from './pages/social-worker/SocialWorkerHomePage'
@@ -24,7 +26,7 @@ function App() {
 
         {/* 헤더 + 네브바가 붙는 화면 */}
         <Route element={<AppLayout />}>
-          <Route path={PATHS.home} element={<HomePage />} />
+          <Route path={PATHS.home} element={<HomeEntry />} />
           <Route path={PATHS.schedule} element={<SchedulePage />} />
           <Route path={PATHS.matching} element={<MatchingPage />} />
           <Route path={PATHS.my} element={<MyPage />} />
@@ -34,9 +36,14 @@ function App() {
           <Route path="/404" element={<NotFoundPage />} />
         </Route>
 
+        {/* 서비스 제공자 — 뒤로가기 헤더만 있는 화면 */}
+        <Route path={PROVIDER_PATHS.scheduleNew} element={<ProvideWorkFormPage />} />
+        <Route path={PROVIDER_PATHS.scheduleEdit} element={<ProvideWorkFormPage />} />
+
         {/* 서비스 제공자 — 헤더 + 네브바가 붙는 화면 */}
         <Route element={<ProviderLayout />}>
           <Route path={PROVIDER_PATHS.home} element={<ProviderHomePage />} />
+          <Route path={PROVIDER_PATHS.schedule} element={<ProviderSchedulePage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/404" replace />} />
