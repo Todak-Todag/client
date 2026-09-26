@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { searchUsers } from '../../api/endpoints/adminUser'
 
 /** 서버가 받는 size는 10/30/50뿐이다 */
-export const PAGE_SIZE = 30
+export const PAGE_SIZE = 10
 
 const EMPTY = {
   key: null,
