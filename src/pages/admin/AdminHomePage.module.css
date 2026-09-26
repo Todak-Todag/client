@@ -79,3 +79,29 @@
   color: var(--color-text-sub);
   text-align: center;
 }
+
+.more {
+  margin: var(--space-md) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.more:empty {
+  margin: 0;
+}
+
+.moreError {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+}
+
+.moreErrorText {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+  text-align: center;
+}

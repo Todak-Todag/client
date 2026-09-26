@@ -5,6 +5,7 @@ import EmptyState from '../../components/common/EmptyState'
 import { AlertIcon, UserIcon } from '../../components/ui/Icons'
 import UserCard from '../../features/admin/UserCard'
 import { useUserSearch } from '../../features/admin/useUserSearch'
+import { useInfiniteScroll } from '../../hooks/useInfiniteScroll'
 import {
   USER_ROLE_FILTER,
   USER_ROLE_OPTIONS,
@@ -23,6 +24,11 @@ function AdminHomePage() {
   const [role, setRole] = useState(USER_ROLE_FILTER.ALL)
 
   const users = useUserSearch({ role, status })
+
+  const sentinelRef = useInfiniteScroll({
+    enabled: users.hasNext && !users.loadingMore && !users.moreError,
+    onLoadMore: users.loadMore,
+  })
 
   const renderList = () => {
     if (users.status === 'loading') {
@@ -49,7 +55,7 @@ function AdminHomePage() {
       )
     }
 
-    if (users.data.length === 0) {
+    if (users.items.length === 0) {
       return (
         <EmptyState
           icon={UserIcon}
@@ -61,14 +67,39 @@ function AdminHomePage() {
 
     return (
       <>
-        <p className={styles.count}>{users.data.length}명</p>
+        <p className={styles.count}>총 {users.total}명</p>
+
         <ul className={styles.list}>
-          {users.data.map((user) => (
+          {users.items.map((user) => (
             <li key={user.userId}>
               <UserCard user={user} />
             </li>
           ))}
         </ul>
+
+        {/* 화면에 들어오면 다음 페이지를 불러오는 감지 지점 */}
+        {users.hasNext && <div ref={sentinelRef} aria-hidden="true" />}
+
+        <p className={styles.more} role="status" aria-live="polite">
+          {users.loadingMore && '더 불러오는 중이에요…'}
+          {!users.hasNext && '모두 불러왔어요'}
+        </p>
+
+        {users.moreError && (
+          <div className={styles.moreError}>
+            <p className={styles.moreErrorText} role="alert">
+              {getErrorMessage(users.moreError)}
+            </p>
+            <Button
+              variant="outline"
+              size="md"
+              block={false}
+              onClick={users.loadMore}
+            >
+              다시 시도
+            </Button>
+          </div>
+        )}
       </>
     )
   }
