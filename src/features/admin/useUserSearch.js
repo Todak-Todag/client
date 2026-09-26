@@ -47,6 +47,15 @@ export function useUserSearch({ role, status }) {
     stateRef.current = state
   }, [state])
 
+  /**
+   * 요청 중인 페이지를 동기적으로 기록한다.
+   *
+   * stateRef는 렌더 이후에 갱신되므로, 감지 콜백이 같은 틱에 두 번 불리면
+   * 둘 다 같은 페이지를 요청해 목록에 같은 항목이 두 번 들어간다.
+   * (React key 중복 경고의 원인)
+   */
+  const pendingRef = useRef(null)
+
   useEffect(() => {
     const controller = new AbortController()
 
@@ -67,7 +76,10 @@ export function useUserSearch({ role, status }) {
       },
     )
 
-    return () => controller.abort()
+    return () => {
+      controller.abort()
+      pendingRef.current = null
+    }
   }, [key, role, status])
 
   // 아직 이번 조건의 결과가 아니면 로딩으로 취급한다
@@ -79,23 +91,33 @@ export function useUserSearch({ role, status }) {
   const loadMore = () => {
     const snapshot = stateRef.current
 
+    if (pendingRef.current !== null) return
     if (snapshot.key !== key) return
     if (snapshot.status !== 'success') return
     if (snapshot.moreStatus === 'loading') return
     if (snapshot.page + 1 >= snapshot.totalPages) return
 
     const nextPage = snapshot.page + 1
+    pendingRef.current = `${key}|${nextPage}`
     setState((prev) => ({ ...prev, moreStatus: 'loading', moreError: null }))
 
-    searchUsers(toQuery(role, status, nextPage)).then(
+    searchUsers(toQuery(role, status, nextPage)).finally(() => {
+      pendingRef.current = null
+    }).then(
       (page) =>
         setState((prev) => {
           // 필터가 바뀐 뒤 늦게 도착한 응답은 버린다
           if (prev.key !== key) return prev
 
+          // OFFSET 페이지네이션이라 정렬이 흔들리면 같은 항목이 넘어올 수 있다
+          const seen = new Set(prev.items.map((item) => item.userId))
+          const added = (page?.content ?? []).filter(
+            (item) => !seen.has(item.userId),
+          )
+
           return {
             ...prev,
-            items: [...prev.items, ...(page?.content ?? [])],
+            items: [...prev.items, ...added],
             page: nextPage,
             totalPages: page?.pageInfo?.totalPages ?? prev.totalPages,
             total: page?.pageInfo?.totalElements ?? prev.total,
