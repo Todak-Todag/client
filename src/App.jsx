@@ -22,7 +22,9 @@ import SchedulePage from './pages/patient/SchedulePage'
 import SignupPage from './pages/user/SignupPage'
 import SignupFormPage from './pages/user/SignupFormPage'
 import SocialWorkerHomePage from './pages/social-worker/SocialWorkerHomePage'
-import { PATHS, PROVIDER_PATHS } from './constants/paths'
+import { PATHS, PROVIDER_PATHS, SOCIAL_WORKER_PATHS } from './constants/paths'
+import SocialWorkerLayout from './layouts/SocialWorkerLayout'
+import SocialWorkerMyPage from './pages/social-worker/SocialWorkerMyPage'
 
 function App() {
   return (
@@ -40,8 +42,6 @@ function App() {
           <Route path={PATHS.schedule} element={<SchedulePage />} />
           <Route path={PATHS.matching} element={<MatchingPage />} />
           <Route path={PATHS.my} element={<MyPage />} />
-
-          <Route path="/social-worker" element={<SocialWorkerHomePage />} />
 
           <Route path="/404" element={<NotFoundPage />} />
         </Route>
@@ -64,6 +64,24 @@ function App() {
           <Route path={PROVIDER_PATHS.schedule} element={<ProviderSchedulePage />} />
           <Route path={PROVIDER_PATHS.matching} element={<ProviderMatchingPage />} />
           <Route path={PROVIDER_PATHS.my} element={<ProviderMyPage />} />
+        </Route>
+
+         {/* 사회복지사 — 비밀번호 변경 (기존 공용 뒤로가기 헤더 사용) */}
+        <Route
+          path={SOCIAL_WORKER_PATHS.password}
+          element={<ProviderPasswordPage />}
+        />
+
+        {/* 사회복지사 — 헤더 + 네브바가 붙는 화면 */}
+        <Route element={<SocialWorkerLayout />}>
+          <Route
+            path={SOCIAL_WORKER_PATHS.home}
+            element={<SocialWorkerHomePage />}
+          />
+          <Route
+            path={SOCIAL_WORKER_PATHS.my}
+            element={<SocialWorkerMyPage />}
+          />
         </Route>
 
         <Route path="*" element={<Navigate to="/404" replace />} />
