@@ -22,8 +22,9 @@ import SchedulePage from './pages/patient/SchedulePage'
 import SignupPage from './pages/user/SignupPage'
 import SignupFormPage from './pages/user/SignupFormPage'
 import SocialWorkerHomePage from './pages/social-worker/SocialWorkerHomePage'
-import { PATHS, PROVIDER_PATHS } from './constants/paths'
+import { PATHS, PROVIDER_PATHS, SOCIAL_WORKER_PATHS } from './constants/paths'
 import SocialWorkerMatchingPage from "./pages/social-worker/MatchingPage";
+import SocialWorkerLayout from './layouts/SocialWorkerLayout'
 
 function App() {
   return (
@@ -41,12 +42,6 @@ function App() {
           <Route path={PATHS.schedule} element={<SchedulePage />} />
           <Route path={PATHS.matching} element={<MatchingPage />} />
           <Route path={PATHS.my} element={<MyPage />} />
-
-          <Route path="/social-worker" element={<SocialWorkerHomePage />} />
-          <Route
-            path="/social-worker/matching"
-            element={<SocialWorkerMatchingPage />}
-          />
 
           <Route path="/404" element={<NotFoundPage />} />
         </Route>
@@ -69,6 +64,23 @@ function App() {
           <Route path={PROVIDER_PATHS.schedule} element={<ProviderSchedulePage />} />
           <Route path={PROVIDER_PATHS.matching} element={<ProviderMatchingPage />} />
           <Route path={PROVIDER_PATHS.my} element={<ProviderMyPage />} />
+        </Route>
+        
+        <Route element={<SocialWorkerLayout />}>
+          <Route
+            path={SOCIAL_WORKER_PATHS.home}
+            element={<SocialWorkerHomePage />}
+          />
+
+          <Route
+            path={SOCIAL_WORKER_PATHS.matching}
+            element={<SocialWorkerMatchingPage />}
+          />
+
+          <Route
+            path={SOCIAL_WORKER_PATHS.matchingDetail}
+            element={<SocialWorkerMatchingPage />}
+          />
         </Route>
 
         <Route path="*" element={<Navigate to="/404" replace />} />

@@ -82,3 +82,40 @@ export function toPath(path, params) {
     path,
   )
 }
+
+
+/**
+ * 사회복지사 화면 경로
+ *
+ * 현재 구현된 사회복지사 화면만 정의한다.
+ * 서버에 매칭 목록 조회 API가 없으므로 목록용 별도 API 경로는 만들지 않는다.
+ */
+export const SOCIAL_WORKER_PATHS = {
+  home: '/social-worker',
+  matching: '/social-worker/matching',
+  matchingDetail: '/social-worker/matching/:matchingResultId',
+}
+
+/** 사회복지사 네브바에서 실제로 이동 가능한 경로만 관리한다 */
+export const SOCIAL_WORKER_NAV_PATH_BY_KEY = {
+  home: SOCIAL_WORKER_PATHS.home,
+  matching: SOCIAL_WORKER_PATHS.matching,
+}
+
+/** 현재 사회복지사 경로에서 활성화할 네브바 key를 구한다 */
+export function getSocialWorkerNavKeyByPath(pathname) {
+  if (pathname.startsWith(SOCIAL_WORKER_PATHS.matching)) {
+    return 'matching'
+  }
+
+  return 'home'
+}
+
+/** 사회복지사 경로에 맞는 헤더 제목을 반환한다 */
+export function getSocialWorkerTitleByPath(pathname) {
+  if (pathname.startsWith(SOCIAL_WORKER_PATHS.matching)) {
+    return '매칭'
+  }
+
+  return ''
+}

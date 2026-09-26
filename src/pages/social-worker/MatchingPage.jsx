@@ -1,15 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { useMatching } from '../../features/social-worker/useMatching'
 import {
   MATCHING_STATUS,
   MATCHING_STATUS_LABEL,
 } from '../../features/social-worker/matchingStatus'
 import styles from './MatchingPage.module.css'
-
-const FILTER = {
-  ACTIVE: 'ACTIVE',
-  ENDED: 'ENDED',
-}
 
 function formatDate(value) {
   if (!value) {
@@ -23,25 +18,68 @@ function formatDate(value) {
   })
 }
 
-function MatchingPage() {
-  const { status, matchings, error } = useMatching()
-  const [filter, setFilter] = useState(FILTER.ACTIVE)
+function getMatchingMessage(status) {
+  switch (status) {
+    case MATCHING_STATUS.REQUESTED:
+      return {
+        title: '사회복지사를 찾고 있어요',
+        description: '매칭이 완료되면 결과를 확인할 수 있어요.',
+      }
 
-  const filteredMatchings = useMemo(
-    () =>
-      matchings.filter((matching) =>
-        filter === FILTER.ACTIVE
-          ? matching.status === MATCHING_STATUS.ACTIVE
-          : matching.status === MATCHING_STATUS.ENDED,
-      ),
-    [matchings, filter],
-  )
+    case MATCHING_STATUS.ACTIVE:
+      return {
+        title: '매칭이 완료되었어요',
+        description: '담당 사회복지사와 연결되었습니다.',
+      }
+
+    case MATCHING_STATUS.FAILED:
+      return {
+        title: '매칭에 실패했어요',
+        description: '현재 매칭 가능한 사회복지사를 찾지 못했어요.',
+      }
+
+    case MATCHING_STATUS.ENDED:
+      return {
+        title: '매칭이 종료되었어요',
+        description: '사회복지사 매칭이 종료되었습니다.',
+      }
+
+    default:
+      return {
+        title: '매칭 결과',
+        description: '',
+      }
+  }
+}
+
+function MatchingPage() {
+  const { matchingResultId } = useParams()
+
+  const {
+    status,
+    data: matching,
+    error,
+  } = useMatching(matchingResultId)
+
+  if (!matchingResultId) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.empty}>
+          <h1 className={styles.title}>매칭 결과</h1>
+          <p className={styles.emptyDescription}>
+            확인할 매칭 결과가 없어요.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   if (status === 'loading') {
     return (
       <div className={styles.page}>
-        <h1 className={styles.title}>매칭 현황</h1>
-        <p className={styles.message}>매칭 정보를 불러오는 중이에요.</p>
+        <p className={styles.message}>
+          매칭 결과를 불러오는 중이에요.
+        </p>
       </div>
     )
   }
@@ -49,103 +87,66 @@ function MatchingPage() {
   if (status === 'error') {
     return (
       <div className={styles.page}>
-        <h1 className={styles.title}>매칭 현황</h1>
-        <p className={styles.message}>매칭 정보를 불러오지 못했어요.</p>
-        <p className={styles.errorMessage}>{error?.message}</p>
+        <p className={styles.message}>
+          매칭 결과를 불러오지 못했어요.
+        </p>
+
+        {error?.message && (
+          <p className={styles.errorMessage}>
+            {error.message}
+          </p>
+        )}
       </div>
     )
   }
 
+  if (!matching) {
+    return null
+  }
+
+  const message = getMatchingMessage(matching.status)
+
   return (
     <div className={styles.page}>
       <div className={styles.heading}>
-        <h1 className={styles.title}>매칭 현황</h1>
-
+        <h1 className={styles.title}>매칭 결과</h1>
         <p className={styles.description}>
-          배정된 퇴원 예정자를 확인할 수 있어요.
+          {message.description}
         </p>
       </div>
 
-      <div className={styles.tabs}>
-        <button
-          type="button"
-          className={`${styles.tab} ${
-            filter === FILTER.ACTIVE ? styles.tabActive : ''
-          }`}
-          onClick={() => setFilter(FILTER.ACTIVE)}
-        >
-          담당 중
-        </button>
+      <article className={styles.card}>
+        <div className={styles.resultHeader}>
+          <div>
+            <h2 className={styles.resultTitle}>
+              {message.title}
+            </h2>
 
-        <button
-          type="button"
-          className={`${styles.tab} ${
-            filter === FILTER.ENDED ? styles.tabActive : ''
-          }`}
-          onClick={() => setFilter(FILTER.ENDED)}
-        >
-          종료
-        </button>
-      </div>
+            <p className={styles.resultDescription}>
+              {message.description}
+            </p>
+          </div>
 
-      {filteredMatchings.length === 0 ? (
-        <div className={styles.empty}>
-          <div className={styles.emptyIcon}>✓</div>
-
-          <h2 className={styles.emptyTitle}>
-            {filter === FILTER.ACTIVE
-              ? '현재 담당 중인 대상자가 없어요'
-              : '종료된 매칭이 없어요'}
-          </h2>
-
-          <p className={styles.emptyDescription}>
-            새로운 매칭이 배정되면 이곳에서 확인할 수 있어요.
-          </p>
+          <span className={styles.badge}>
+            {MATCHING_STATUS_LABEL[matching.status] ??
+              matching.status}
+          </span>
         </div>
-      ) : (
-        <div className={styles.list}>
-          {filteredMatchings.map((matching) => (
-            <article
-              key={matching.matchingResultId}
-              className={styles.card}
-            >
-              <div className={styles.cardHeader}>
-                <div>
-                  <p className={styles.patientLabel}>퇴원 예정자</p>
 
-                  <h2 className={styles.patientName}>
-                    {matching.patientName}
-                  </h2>
-                </div>
+        <div className={styles.divider} />
 
-                <span
-                  className={`${styles.badge} ${
-                    matching.status === MATCHING_STATUS.ACTIVE
-                      ? styles.badgeActive
-                      : styles.badgeEnded
-                  }`}
-                >
-                  {MATCHING_STATUS_LABEL[matching.status]}
-                </span>
-              </div>
+        <dl className={styles.infoList}>
+          <div className={styles.infoRow}>
+            <dt>매칭 요청일</dt>
+            <dd>{formatDate(matching.requestedAt)}</dd>
+          </div>
 
-              <div className={styles.divider} />
-
-              <dl className={styles.infoList}>
-                <div className={styles.infoRow}>
-                  <dt>매칭 요청일</dt>
-                  <dd>{formatDate(matching.requestedAt)}</dd>
-                </div>
-
-                <div className={styles.infoRow}>
-                  <dt>배정일</dt>
-                  <dd>{formatDate(matching.assignedAt)}</dd>
-                </div>
-              </dl>
-            </article>
-          ))}
-        </div>
-      )}
+          <div className={styles.infoRow}>
+            <dt>매칭 완료일</dt>
+            <dd>{formatDate(matching.assignedAt)}</dd>
+          </div>
+        </dl>
+      </article>
     </div>
   )
 }
