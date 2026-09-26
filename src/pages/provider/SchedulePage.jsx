@@ -68,10 +68,6 @@ function SchedulePage() {
           + 일정 추가하기
         </Button>
       )}
-
-      <p className={styles.notice}>
-        목록 조회 API가 없어 예시 데이터로 표시돼요. 등록·수정·삭제는 실제로 서버에 반영돼요.
-      </p>
     </section>
   )
 }
