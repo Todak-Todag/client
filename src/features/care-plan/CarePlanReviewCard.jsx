@@ -7,10 +7,17 @@ import styles from './CarePlanCard.module.css'
  *
  * @param {string|null} period 케어 기간 (예: 8월 1일 (토) – 8월 30일 (일)). 없으면 줄을 숨김
  * @param {number|null} serviceCount 선택된 서비스 개수. 불러오지 못했으면 줄을 숨김
+ * @param {number|null} unscheduledCount 희망 일정이 없는 서비스 개수. 0이거나 모르면 줄을 숨김
  * @param {() => void} onConfirm 케어플랜 확인 버튼 핸들러
  * @param {() => void} onAddService 서비스 추가 신청 핸들러 (서버가 UNDER_REVIEW에서만 추가를 허용)
  */
-function CarePlanReviewCard({ period, serviceCount, onConfirm, onAddService }) {
+function CarePlanReviewCard({
+  period,
+  serviceCount,
+  unscheduledCount = null,
+  onConfirm,
+  onAddService,
+}) {
   const hasFacts = period || serviceCount !== null
 
   return (
@@ -33,6 +40,13 @@ function CarePlanReviewCard({ period, serviceCount, onConfirm, onAddService }) {
               <li className={styles.fact}>
                 <ListIcon className={styles.factIcon} />
                 <span>선택된 서비스 {serviceCount}개</span>
+              </li>
+            )}
+            {/* 확정하면 이 서비스들은 매칭되지 않으므로 미리 알린다 (색 + 아이콘 + 문구) */}
+            {unscheduledCount > 0 && (
+              <li className={`${styles.fact} ${styles.factWarning}`}>
+                <AlertIcon className={styles.factIcon} />
+                <span>희망 일정이 없는 서비스 {unscheduledCount}개</span>
               </li>
             )}
           </ul>

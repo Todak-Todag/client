@@ -1,0 +1,117 @@
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.month {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  font-variant-numeric: tabular-nums;
+}
+
+.nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-text-sub);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--dur-short) var(--ease-out);
+}
+
+.nav:active:not(:disabled) {
+  background-color: var(--color-bg);
+}
+
+.nav:disabled {
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+}
+
+.navIcon {
+  width: 22px;
+  height: 22px;
+}
+
+/*
+ * 칸 사이 간격 없이 7등분. 320px 화면의 시트 안쪽 폭(288px)으로는 칸이 41px이라
+ * 날짜 줄만 좌우 여백으로 조금 넓혀 칸마다 44px 이상을 확보한다 (7 × 44 = 308px)
+ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  row-gap: var(--space-2xs);
+  margin-inline: calc(var(--space-sm) * -1);
+}
+
+.weekday {
+  padding-bottom: var(--space-2xs);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-sub);
+  text-align: center;
+}
+
+.day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  width: 100%;
+  max-width: var(--tap-min);
+  height: var(--tap-min);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: none;
+  font-family: inherit;
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--dur-short) var(--ease-out);
+}
+
+.day:active:not(:disabled):not(.selected) {
+  background-color: var(--color-primary-soft-pressed);
+}
+
+/* 기간 밖 날짜: 흐린 글자 + 금지 커서 (이유는 달력 아래 안내 문구로 설명) */
+.day:disabled {
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+}
+
+/* 흰 글자 대비 4.6:1을 위해 브랜드 원색 대신 진한 주황 (WeekStrip과 같은 규칙) */
+.selected {
+  background-color: var(--color-primary-dark);
+  color: var(--color-surface);
+  font-weight: var(--weight-bold);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .day:hover:not(:disabled):not(.selected) {
+    background-color: var(--color-primary-soft);
+  }
+
+  .nav:hover:not(:disabled) {
+    background-color: var(--color-bg);
+  }
+}
