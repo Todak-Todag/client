@@ -70,3 +70,10 @@
   padding: 0;
   list-style: none;
 }
+
+.state {
+  margin: var(--space-xl) 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-sub);
+  text-align: center;
+}

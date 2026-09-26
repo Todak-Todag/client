@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
 import EmptyState from '../../components/common/EmptyState'
-import { AlertIcon } from '../../components/ui/Icons'
+import { AlertIcon, UserIcon } from '../../components/ui/Icons'
 import DischargeCard from '../../features/hospital/DischargeCard'
 import ProfileCard, {
   ProfileCardSkeleton,
@@ -14,9 +14,14 @@ import {
 import { PATHS } from '../../constants/paths'
 import styles from './HospitalHomePage.module.css'
 
-/* TODO: 목록을 GET /discharges 로 교체, 퇴원 예정자 등록 화면 연결 */
+/*
+ * TODO: 퇴원 예정자 등록 화면, todak-todag 작성 화면 연결
+ * TODO: 서버에 퇴원건이 쌓이면 DUMMY_DISCHARGES를 useRecentDischarges()로 교체
+ *       (features/hospital/useDischarges.js에 GET /discharges 연동이 준비돼 있다)
+ */
 function HospitalHomePage() {
   const me = useAuth()
+  const discharges = DUMMY_DISCHARGES
 
   // 비로그인이면 로그인 화면으로 (다른 오류는 아래에서 다시 시도할 수 있게 둔다)
   if (me.status === 'error' && me.error?.status === 401) {
@@ -40,6 +45,34 @@ function HospitalHomePage() {
     return <ProfileCard name={me.data.name} />
   }
 
+  const renderDischarges = () => {
+    if (discharges.length === 0) {
+      return (
+        <EmptyState
+          icon={UserIcon}
+          title="아직 등록한 퇴원 예정자가 없어요"
+          description="퇴원 예정자를 등록하면 여기에 표시돼요."
+        />
+      )
+    }
+
+    return (
+      <ul className={styles.list}>
+        {discharges.map((discharge) => (
+          <li key={discharge.dischargeId}>
+            <DischargeCard
+              discharge={discharge}
+              // 서버가 환자 이름·나이·성별·작성여부를 주지 않아 임시 값으로 채운다
+              patient={getDummyPatient(discharge.patientId)}
+              // TODO: todak-todag 작성 화면이 생기면 연결
+              onWrite={() => {}}
+            />
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
   return (
     <div className={styles.page}>
       <h1 className={styles.srOnly}>병원 담당자 홈</h1>
@@ -61,18 +94,7 @@ function HospitalHomePage() {
           </button>
         </div>
 
-        <ul className={styles.list}>
-          {DUMMY_DISCHARGES.map((discharge) => (
-            <li key={discharge.dischargeId}>
-              <DischargeCard
-                discharge={discharge}
-                patient={getDummyPatient(discharge.patientId)}
-                // TODO: todak-todag 작성 화면이 생기면 연결
-                onWrite={() => {}}
-              />
-            </li>
-          ))}
-        </ul>
+        {renderDischarges()}
       </section>
     </div>
   )
