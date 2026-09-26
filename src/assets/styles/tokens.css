@@ -14,6 +14,8 @@
   --color-primary-darker: oklch(52% 0.17 45);
   --color-primary-light: #fb923c;
   --color-primary-soft: oklch(97% 0.022 70);
+  /* soft 버튼 눌림 상태. primary-text 대비 4.5:1 */
+  --color-primary-soft-pressed: oklch(94% 0.035 70);
   /* 밝은 배경 위 주황 글자 (배지·강조 문구·활성 탭). paper 대비 5.0:1 */
   --color-primary-text: oklch(54% 0.17 45);
 
@@ -35,6 +37,9 @@
   --color-info-soft: oklch(95.5% 0.025 250);
   --color-danger: oklch(55% 0.19 27);
   --color-danger-soft: oklch(96% 0.02 27);
+  /* '검토 중' 배지·확정 전 안내. 주황(진행 중)과 구분되도록 노랑 배경 + 갈색 글자. warning-soft 위 6.2:1 */
+  --color-warning: oklch(48% 0.11 65);
+  --color-warning-soft: oklch(97.2% 0.035 95);
   --color-focus: oklch(55% 0.17 255); /* 포커스 링. 주황과 구분되는 파랑 */
 
   /* ── Radius ──────────────────────────────────── */

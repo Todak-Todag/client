@@ -24,7 +24,11 @@ function EmptyState({
       role={tone === 'error' ? 'alert' : undefined}
       {...rest}
     >
-      {Icon && <Icon className={styles.icon} />}
+      {Icon && (
+        <span className={styles.iconWrap} aria-hidden="true">
+          <Icon className={styles.icon} />
+        </span>
+      )}
       <p className={styles.title}>{title}</p>
       {description && <p className={styles.description}>{description}</p>}
       {action && <div className={styles.action}>{action}</div>}

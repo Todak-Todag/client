@@ -53,3 +53,20 @@ export function getWeekDates(dateString) {
     (_, index) => new Date(date.getFullYear(), date.getMonth(), sunday + index),
   )
 }
+
+/**
+ * 'YYYY-MM-DD' → '8월 1일 (토)'. weekday가 false면 '8월 1일'
+ * @param {string} dateString
+ * @param {{ weekday?: boolean }} options
+ */
+export function formatMonthDay(dateString, { weekday = true } = {}) {
+  const date = parseLocalDateTime(dateString)
+  const label = `${date.getMonth() + 1}월 ${date.getDate()}일`
+  return weekday ? `${label} (${WEEKDAY_LABELS[date.getDay()]})` : label
+}
+
+/** '8월 1일 (토) – 8월 30일 (일)'. 둘 중 하나라도 없으면 null */
+export function formatDateRange(startDate, finishDate, options) {
+  if (!startDate || !finishDate) return null
+  return `${formatMonthDay(startDate, options)} – ${formatMonthDay(finishDate, options)}`
+}

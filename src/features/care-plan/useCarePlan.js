@@ -1,4 +1,4 @@
-import { getCarePlans } from '../../api/endpoints/carePlan'
+import { getCarePlanServices, getCarePlans } from '../../api/endpoints/carePlan'
 import { pickCurrentCarePlan } from './carePlanStatus'
 import { useAsync } from '../../hooks/useAsync'
 
@@ -13,4 +13,17 @@ async function loadCurrentCarePlan(signal) {
  */
 export function useCurrentCarePlan() {
   return useAsync(loadCurrentCarePlan)
+}
+
+async function loadServiceCount(signal, carePlanId) {
+  const page = await getCarePlanServices(carePlanId, { size: 10, signal })
+  return page?.pageInfo?.totalElements ?? page?.content?.length ?? 0
+}
+
+/**
+ * Care Plan에 신청된 서비스 개수
+ * @param {string} carePlanId
+ */
+export function useCarePlanServiceCount(carePlanId) {
+  return useAsync(loadServiceCount, carePlanId)
 }

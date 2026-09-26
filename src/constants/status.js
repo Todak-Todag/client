@@ -18,3 +18,13 @@ export const CARE_PLAN_STATUS = {
   IN_PROGRESS: 'IN_PROGRESS',
   COMPLETED: 'COMPLETED',
 }
+
+/**
+ * 매칭 시도 결과 (schedule-service MatchingAttemptStatus)
+ * EXPIRED는 재매칭하지 않은 채 Care Plan 기간이 끝나 종결된 실패라 다시 요청할 수 없다.
+ */
+export const MATCHING_ATTEMPT_STATUS = {
+  MATCHED: 'MATCHED',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED',
+}

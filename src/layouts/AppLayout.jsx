@@ -1,6 +1,7 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Header, { HeaderSpacer } from '../components/layout/Header'
 import Navbar, { NavbarSpacer } from '../components/layout/Navbar'
+import { BellIcon } from '../components/ui/Icons'
 import {
   NAV_PATH_BY_KEY,
   PATHS,
@@ -20,6 +21,14 @@ function AppLayout() {
       <Header
         title={TITLE_BY_PATH[pathname] ?? '토닥토닥'}
         onLogoClick={() => navigate(PATHS.home)}
+        // 알림 기능은 아직 없어 시안의 모양만 둔다. 누를 수 없으므로 버튼이 아닌 장식 요소
+        right={
+          pathname === PATHS.home ? (
+            <span className={styles.bell} aria-hidden="true">
+              <BellIcon className={styles.bellIcon} />
+            </span>
+          ) : null
+        }
       />
       <HeaderSpacer />
 
