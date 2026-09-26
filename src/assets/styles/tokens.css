@@ -35,6 +35,8 @@
   --color-info-soft: oklch(95.5% 0.025 250);
   --color-danger: oklch(55% 0.19 27);
   --color-danger-soft: oklch(96% 0.02 27);
+  --color-success: oklch(52% 0.14 152); /* '완료' 등. success-soft 위 5.2:1 */
+  --color-success-soft: oklch(96% 0.03 152);
   --color-focus: oklch(55% 0.17 255); /* 포커스 링. 주황과 구분되는 파랑 */
 
   /* ── Radius ──────────────────────────────────── */
