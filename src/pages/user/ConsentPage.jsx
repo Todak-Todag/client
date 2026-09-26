@@ -2,11 +2,16 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { useState } from 'react'
 import { getErrorMessage } from '../../api/client'
 import Header, { HeaderSpacer } from '../../components/layout/Header'
+import BottomBar, { BottomBarSpacer } from '../../components/layout/BottomBar'
+import {
+  CheckIcon,
+  ChevronRightIcon,
+  InfoIcon
+} from '../../components/ui/Icons'
 import { getSignupType } from '../../features/auth/signupTypes'
 import { useConsentDocuments } from '../../features/auth/useConsentDocuments'
 import { PATHS } from '../../constants/paths'
-import { ChevronDownIcon, ChevronUpIcon } from '../../components/ui/Icons'
-import { getConsentDocument } from '../../api/endpoints/consent'
+import styles from './ConsentPage.module.css'
 
 /**
  * <Navigate> vs navigate()
@@ -28,87 +33,122 @@ function ConsentPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const documents = useConsentDocuments();
+  const [checkedIds, setCheckedIds] = useState([]);
   const signupType = getSignupType(searchParams.get('type'));
-  const [openId, setOpenId] = useState(null);
-  const [contents, setContents] = useState({});
 
-  if(!signupType) return <Navigate to={PATHS.signup} replace />
+  if (!signupType) return <Navigate to={PATHS.signup} replace />
 
-  const toggle = async (id) => {
-    const nextOpenId = openId === id ? null : id;
-    setOpenId(nextOpenId);
+  const docs = documents.data ?? [];
+  const isChecked = (id) => checkedIds.includes(id);
+  const isAllChecked = docs.length > 0 && checkedIds.length === docs.length;
 
-    if(nextOpenId === null || contents[id]) return;
+  const canSubmit = docs
+    .filter((doc) => doc.isRequired)
+    .every((doc) => isChecked(doc.consentDocumentVersionId));
 
-    setContents((prev) => ({...prev, [id]: { status: 'loading' }}));
-
-    try {
-      const data = await getConsentDocument(id);
-      setContents((prev) => ({
-        ...prev,
-        [id]: { status: 'success', text: data.content },
-      }));
-    } catch (error) {
-      setContents((prev) => ({ ...prev, [id]: { status: 'error', error } }));
-    }
+  const toggleOne = (id) => {
+    setCheckedIds((prev) => prev.includes(id) ? prev.filter((it) => it !== id) : [...prev, id])
   }
 
+  const toggleAll = () => {
+    setCheckedIds(
+      isAllChecked ? [] : docs.map((doc) => doc.consentDocumentVersionId)
+    )
+  }
+
+  const renderCheckMark = (checked) => (
+    <span
+      className={[styles.checkMark, checked ? styles.checked : '']
+        .filter(Boolean)
+        .join(' ')}
+    >
+      <CheckIcon className={styles.checkIcon} />
+    </span>
+  )
+
   return (
-    <div>
+    <div className={styles.page}>
       <Header
-        title="개인정보 처리 동의"
+        title="약관 동의"
         logo={null}
         showBack
         onBack={() => navigate(-1)}
       />
       <HeaderSpacer />
 
-        <p>선택한 가입 유형: {signupType.title}</p>
+      <h1 className={styles.title}>
+        서비스 이용을 위해
+        <br />
+        약관에 동의해 주세요.
+      </h1>
+      <p className={styles.description}>
+        필수 약관에 모두 동의하면 서비스를 시작할 수 있어요.
+      </p>
 
-        {documents.status === 'loading' && <p>동의서를 불러오는 중이에요...</p>}
+      {documents.status === 'loading' && (
+        <p className={styles.state}>약관을 불러오는 중이에요...</p>
+      )}
 
-        {documents.status === 'error' && (
-          <p role="alert">{getErrorMessage(documents.error)}</p>
-        )}
+      {documents.status === 'error' && (
+        <p className={styles.state} role="alert">
+          {getErrorMessage(documents.error)}
+        </p>
+      )}
 
-        {documents.status === 'success' && (
-          <ul>
-                        {documents.data.map((doc) => {
-              const id = doc.consentDocumentVersionId
-              const isOpen = openId === id
-              const content = contents[id]
+      {documents.status === 'success' && (
+        <div className={styles.card}>
+          <div className={styles.row}>
+              <button
+                type="button"
+                className={`${styles.checkButton} ${styles.checkAll}`}
+                onClick={toggleAll}
+                aria-pressed={isAllChecked}
+              >
+                {renderCheckMark(isAllChecked)}
+                전체동의
+              </button>
+          </div>
+
+          <hr className={styles.divider} />
+          
+          <ul className={styles.list}>
+            {docs.map((doc) => {
+              const id = doc.consentDocumentVersionId;
+              const checked = isChecked(id);
 
               return (
-                <li key={id}>
+                <li key={id} className={styles.row}>
                   <button
                     type="button"
-                    onClick={() => toggle(id)}
-                    aria-expanded={isOpen}
+                    className={styles.checkButton}
+                    onClick={() => toggleOne(id)}
+                    aria-pressed={checked}
                   >
-                    [{doc.isRequired ? '필수' : '선택'}] {doc.title}
-                    {isOpen ? (
-                      <ChevronUpIcon width={20} height={20} />
-                    ) : (
-                      <ChevronDownIcon width={20} height={20} />
-                    )}
+                    {renderCheckMark(checked)}[
+                    {doc.isRequired ? '필수' : '선택'}] {doc.title}
                   </button>
 
-                  {isOpen && (
-                    <div>
-                      {content?.status === 'loading' && <p>불러오는 중이에요…</p>}
-
-                      {content?.status === 'error' && (
-                        <p role="alert">{getErrorMessage(content.error)}</p>
-                      )}
-
-                      {content?.status === 'success' && <p>{content.text}</p>}
-                    </div>
-                  )}
+                  <button
+                    type="button"
+                    className={styles.viewButton}
+                    onClick={() => {}}
+                  >
+                    보기
+                    <ChevronRightIcon className={styles.viewIcon} />
+                  </button>
                 </li>
               )
             })}
           </ul>
-        )}
+        </div>
+      )}
+
+      <div className={styles.notice}>
+        <InfoIcon className={styles.noticeIcon} />
+        <p className={styles.noticeText}>
+          약관약관미나미상~
+        </p>
+      </div>
 
     </div>
   )

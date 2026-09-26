@@ -92,6 +92,14 @@ export function ChevronUpIcon(props) {
   )
 }
 
+export function CheckIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M5 12.5l5 5 9-11" />
+    </svg>
+  )
+}
+
 export function ClockIcon(props) {
   return (
     <svg {...iconProps} {...props}>
