@@ -25,6 +25,8 @@
   --color-text-muted: oklch(55% 0.012 60); /* paper 대비 4.5:1 — 이보다 연한 글자는 쓰지 않음 */
   --color-surface: oklch(99.5% 0.003 70);
   --color-bg: oklch(97.5% 0.006 70);
+  /* 페이지 바탕(bg) 위 안내 상자처럼 한 단계 가라앉은 면. text-sub 대비 5.5:1 */
+  --color-bg-sunken: oklch(95% 0.008 70);
   --color-border: oklch(91% 0.008 70);
   --color-border-strong: oklch(82% 0.01 70);
   --color-disabled: oklch(92% 0.006 70); /* 비활성 배경 */
@@ -37,10 +39,14 @@
   --color-info-soft: oklch(95.5% 0.025 250);
   --color-danger: oklch(55% 0.19 27);
   --color-danger-soft: oklch(96% 0.02 27);
+  /* danger 버튼 눌림 상태. danger 글자 대비 4.6:1 */
+  --color-danger-soft-pressed: oklch(93% 0.035 27);
   /* '검토 중' 배지·확정 전 안내. 주황(진행 중)과 구분되도록 노랑 배경 + 갈색 글자. warning-soft 위 6.2:1 */
   --color-warning: oklch(48% 0.11 65);
   --color-warning-soft: oklch(97.2% 0.035 95);
   --color-focus: oklch(55% 0.17 255); /* 포커스 링. 주황과 구분되는 파랑 */
+  /* 모달 뒤 어두운 막 (BottomSheet·ConfirmDialog 공통) */
+  --color-scrim: oklch(22% 0.012 50 / 0.45);
 
   /* ── Radius ──────────────────────────────────── */
   --radius-sm: 8px;

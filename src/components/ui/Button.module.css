@@ -127,7 +127,21 @@
   background-color: var(--color-surface);
 }
 
+/* variant: danger — '이 서비스 빼기'처럼 되돌리기 어려운 삭제. 채움 대신 옅은 빨강으로 한 단계 낮춘다 */
+.danger {
+  background-color: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.danger:active:not(:disabled) {
+  background-color: var(--color-danger-soft-pressed);
+}
+
 @media (hover: hover) and (pointer: fine) {
+  .danger:hover:not(:disabled) {
+    background-color: var(--color-danger-soft-pressed);
+  }
+
   .primary:hover:not(:disabled) {
     background-color: var(--color-primary-darker);
   }
@@ -161,7 +175,8 @@
 .primary:disabled,
 .outline:disabled,
 .secondary:disabled,
-.soft:disabled {
+.soft:disabled,
+.danger:disabled {
   background-color: var(--color-disabled);
   border-color: var(--color-disabled);
   color: var(--color-disabled-text);
@@ -182,6 +197,11 @@
   background-color: var(--color-surface);
   border-color: var(--color-primary);
   color: var(--color-primary-text);
+}
+
+.danger[aria-busy='true'] {
+  background-color: var(--color-danger-soft);
+  color: var(--color-danger);
 }
 
 .spinner {
