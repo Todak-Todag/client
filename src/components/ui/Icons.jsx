@@ -73,6 +73,15 @@ export function AlertIcon(props) {
   )
 }
 
+export function InfoIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v5.5M12 7.5v.01" />
+    </svg>
+  )
+}
+
 export function EyeIcon(props) {
   return (
     <svg {...iconProps} {...props}>

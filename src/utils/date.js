@@ -28,3 +28,28 @@ export function formatTime(value) {
 export function formatTimeRange(startedAt, finishedAt) {
   return `${formatTime(startedAt)} ~ ${formatTime(finishedAt)}`
 }
+
+/** 요일 표시 (Date.getDay() 순서) */
+export const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토']
+
+/** '2026-09-27' → '9월 27일 일요일' */
+export function formatDateLabel(dateString) {
+  const date = parseLocalDateTime(dateString)
+  return `${date.getMonth() + 1}월 ${date.getDate()}일 ${WEEKDAY_LABELS[date.getDay()]}요일`
+}
+
+/** 'YYYY-MM-DD' 형식이면서 실제로 있는 날짜인지 (예: 2026-02-30은 false) */
+export function isDateString(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
+  return toLocalDateString(parseLocalDateTime(value)) === value
+}
+
+/** 'YYYY-MM-DD'가 속한 주의 일요일~토요일 Date 7개 */
+export function getWeekDates(dateString) {
+  const date = parseLocalDateTime(dateString)
+  const sunday = date.getDate() - date.getDay()
+  return Array.from(
+    { length: 7 },
+    (_, index) => new Date(date.getFullYear(), date.getMonth(), sunday + index),
+  )
+}
