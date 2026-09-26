@@ -7,8 +7,13 @@ import BottomBar, { BottomBarSpacer } from '../../components/layout/BottomBar'
 import { getSignupType } from '../../features/auth/signupTypes'
 import { PATHS } from '../../constants/paths'
 import styles from './SignupFormPage.module.css'
-import { validateSignupForm } from '../../features/auth/signupValidation'
 import RegionSelectSheet, { formatRegion } from '../../features/auth/RegionSelectSheet'
+import { getErrorMessage } from '../../api/client'
+import { signup } from '../../api/endpoints/user'
+import {
+  toSignupRequest,
+  validateSignupForm,
+} from '../../features/auth/signupValidation'
 
 const EMPTY_FORM = {
   username: '',
@@ -26,6 +31,7 @@ function SignupFormPage() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
   const [regionOpen, setRegionOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const signupType = getSignupType(state?.type)
   const agreements = state?.agreements
@@ -54,7 +60,7 @@ function SignupFormPage() {
     setRegionOpen(false);
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const nextErrors = validateSignupForm(form);
@@ -63,7 +69,15 @@ function SignupFormPage() {
       return;
     }
 
-    console.log({ type: signupType.role, ...form, agreements });
+    setSubmitting(true);
+    try {
+      await signup(toSignupRequest(form, signupType, agreements));
+      navigate(PATHS.login, { replace: true });
+    } catch (error) {
+      setErrors({ form: getErrorMessage(error) });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -152,8 +166,12 @@ function SignupFormPage() {
           지역 선택
         </Button>
 
+        <p className={styles.formError} role="alert">
+          {errors.form}
+        </p>
+
         <div className={styles.submitArea}>
-          <Button type="submit">회원가입 완료</Button>
+          <Button type="submit" loading={submitting}>회원가입 완료</Button>
         </div>
       </form>
 

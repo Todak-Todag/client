@@ -30,3 +30,13 @@
 .searchButton {
   margin-top: calc(var(--space-2xs) * -1);
 }
+
+.formError {
+  min-height: calc(var(--text-sm) * var(--leading-normal));
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-normal);
+  text-align: center;
+  color: var(--color-danger);
+}
