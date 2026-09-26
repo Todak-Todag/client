@@ -1,0 +1,42 @@
+.page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--app-max-width);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: var(--space-md) var(--page-gutter) var(--space-2xl);
+  background-color: var(--color-bg);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.submitArea {
+  position: fixed;
+  bottom: calc(var(--bottombar-indicator) + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-sticky);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--app-max-width);
+  padding: var(--space-sm) var(--page-gutter);
+  background-color: var(--color-surface);
+}
+
+.searchButton {
+  margin-top: calc(var(--space-2xs) * -1);
+}
+
+.formError {
+  min-height: calc(var(--text-sm) * var(--leading-normal));
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-normal);
+  text-align: center;
+  color: var(--color-danger);
+}

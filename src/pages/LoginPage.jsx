@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { getErrorMessage } from '../api/client'
 import { getMe, login } from '../api/endpoints/auth'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
@@ -9,6 +8,7 @@ import { PATHS } from '../constants/paths'
 import { getHomePathByRole } from '../constants/roles'
 import logo from '../assets/images/logo2.webp'
 import styles from './LoginPage.module.css'
+import { getAuthErrorMessage } from '../features/auth/authErrorMessage'
 
 const EMPTY_FORM = { username: '', password: '' }
 
@@ -52,7 +52,7 @@ function LoginPage() {
     } catch (error) {
       // 자격 증명 오류(409)는 서버가 '아이디 또는 비밀번호가 일치하지 않습니다.'를 내려준다.
       // 어느 쪽이 틀렸는지 구분해서 보여주지 않는다. (계정 존재 여부 노출 방지)
-      setErrors({ form: getErrorMessage(error) })
+      setErrors({ form: getAuthErrorMessage(error) })
     } finally {
       setSubmitting(false)
     }
