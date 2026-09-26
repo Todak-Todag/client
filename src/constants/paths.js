@@ -6,6 +6,8 @@ export const PATHS = {
   signupForm: '/signup/form',
   home: '/',
   schedule: '/schedule',
+  // 일정 상세 (뒤로가기 헤더만 있는 하위 화면)
+  scheduleDetail: '/schedule/:serviceScheduleId',
   matching: '/matching',
   my: '/my',
   // 케어플랜 검토·확정 (UNDER_REVIEW 전용, 네브바 없는 하위 화면)
@@ -25,7 +27,7 @@ export const NAV_PATH_BY_KEY = {
 /** 경로별 헤더 제목 */
 export const TITLE_BY_PATH = {
   [PATHS.home]: '', // 홈은 로고만 표시 (디자인 시안)
-  [PATHS.schedule]: '일정 상세',
+  [PATHS.schedule]: '일정',
   [PATHS.matching]: '매칭',
   [PATHS.my]: '마이페이지',
 }

@@ -21,9 +21,9 @@ function AppLayout() {
       <Header
         title={TITLE_BY_PATH[pathname] ?? '토닥토닥'}
         onLogoClick={() => navigate(PATHS.home)}
-        // 알림 기능은 아직 없어 시안의 모양만 둔다. 누를 수 없으므로 버튼이 아닌 장식 요소
+        // 알림 기능은 아직 없어 시안의 모양만 둔다 (홈·일정 시안). 누를 수 없으므로 버튼이 아닌 장식 요소
         right={
-          pathname === PATHS.home ? (
+          pathname === PATHS.home || pathname === PATHS.schedule ? (
             <span className={styles.bell} aria-hidden="true">
               <BellIcon className={styles.bellIcon} />
             </span>

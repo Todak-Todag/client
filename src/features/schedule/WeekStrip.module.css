@@ -1,10 +1,78 @@
-/* 320px 화면에서도 칸마다 44px 이상이 되도록 칸 사이 간격 없이 나눈다 */
+/*
+ * 안내 띠 아래로 이어지는 화면 끝까지 닿는 면.
+ * 시안은 주간 바를 따로 떠 있는 카드로 두었지만, 아래 일정 카드와 카드가 세 겹으로 쌓여
+ * 리듬이 평평해져서 기존처럼 상단 조작 영역 하나로 묶는다.
+ */
 .strip {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  padding: var(--space-sm) var(--space-2xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding: var(--space-xs) var(--space-2xs) var(--space-sm);
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
+.range {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* MonthCalendar의 달 이동 버튼과 같은 모양 */
+.nav {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-text-sub);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--dur-short) var(--ease-out);
+}
+
+.nav:active:not(:disabled) {
+  background-color: var(--color-bg);
+}
+
+/* 케어 기간 밖으로는 이동할 수 없다 */
+.nav:disabled {
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+}
+
+.nav:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+
+.navIcon {
+  width: 22px;
+  height: 22px;
+}
+
+/* 320px 화면에서도 칸마다 44px 이상이 되도록 칸 사이 간격 없이 나눈다 */
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
 .day {
@@ -14,8 +82,8 @@
   justify-content: center;
   gap: var(--space-2xs);
   min-width: var(--tap-min);
-  min-height: 64px;
-  padding: var(--space-xs) 0;
+  min-height: 72px;
+  padding: var(--space-xs) 0 var(--space-2xs);
   border: none;
   border-radius: var(--radius-md);
   background-color: transparent;
@@ -23,6 +91,11 @@
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: background-color var(--dur-short) var(--ease-out);
+}
+
+.day:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
 }
 
 .weekday {
@@ -38,6 +111,17 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* 일정 있는 날 표시. 브랜드 원색은 그래픽 요소에만 쓴다 */
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+}
+
+.dotOn {
+  background-color: var(--color-primary);
+}
+
 /* 오늘은 선택되지 않았을 때만 주황 글자로 구분 */
 .today:not(.selected) .date {
   color: var(--color-primary-text);
@@ -47,7 +131,7 @@
   background-color: var(--color-bg);
 }
 
-/* 흰 글자 대비 4.6:1을 위해 브랜드 원색 대신 진한 주황 사용 */
+/* 흰 글자 대비 4.6:1을 위해 브랜드 원색 대신 진한 주황 사용 (시안의 원색 채움은 2.8:1) */
 .selected {
   background-color: var(--color-primary-dark);
   color: var(--color-surface);
@@ -57,8 +141,13 @@
   color: var(--color-surface);
 }
 
+.selected .dotOn {
+  background-color: var(--color-surface);
+}
+
 @media (hover: hover) and (pointer: fine) {
-  .day:not(.selected):hover {
+  .day:not(.selected):hover,
+  .nav:hover:not(:disabled) {
     background-color: var(--color-bg);
   }
 }

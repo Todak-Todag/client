@@ -11,6 +11,31 @@
   margin-inline: calc(-1 * var(--page-gutter));
 }
 
+/* 날짜 제목 왼쪽, 건수 오른쪽 (홈 '오늘 받을 케어 서비스'와 같은 제목 줄) */
+.dateHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.dateTitle {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+.count {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-sub);
+  font-variant-numeric: tabular-nums;
+}
+
 .list {
   display: flex;
   flex-direction: column;

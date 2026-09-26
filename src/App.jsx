@@ -18,6 +18,7 @@ import ProviderResultDetailPage from './pages/provider/ResultDetailPage'
 import ProviderResultPage from './pages/provider/ResultPage'
 import ProviderSchedulePage from './pages/provider/SchedulePage'
 import ProvideWorkFormPage from './pages/provider/ProvideWorkFormPage'
+import ScheduleDetailPage from './pages/patient/ScheduleDetailPage'
 import SchedulePage from './pages/patient/SchedulePage'
 import SignupPage from './pages/user/SignupPage'
 import SignupFormPage from './pages/user/SignupFormPage'
@@ -50,6 +51,9 @@ function App() {
         <Route path={PATHS.carePlan} element={<CarePlanReviewPage />} />
         <Route path={PATHS.carePlanServiceNew} element={<CarePlanServiceAddPage />} />
         <Route path={PATHS.carePlanService} element={<CarePlanServicePage />} />
+
+        {/* 퇴원 예정자 — 일정 상세 (뒤로가기 헤더만 있는 화면) */}
+        <Route path={PATHS.scheduleDetail} element={<ScheduleDetailPage />} />
 
         {/* 서비스 제공자 — 뒤로가기 헤더만 있는 화면 */}
         <Route path={PROVIDER_PATHS.scheduleNew} element={<ProvideWorkFormPage />} />
