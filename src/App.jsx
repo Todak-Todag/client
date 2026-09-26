@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import AdminHomePage from './pages/admin/AdminHomePage'
 import AppLayout from './layouts/AppLayout'
 import CarePlanReviewPage from './pages/patient/CarePlanReviewPage'
 import CarePlanServiceAddPage from './pages/patient/CarePlanServiceAddPage'
@@ -23,7 +24,12 @@ import SchedulePage from './pages/patient/SchedulePage'
 import SignupPage from './pages/user/SignupPage'
 import SignupFormPage from './pages/user/SignupFormPage'
 import SocialWorkerHomePage from './pages/social-worker/SocialWorkerHomePage'
-import { PATHS, PROVIDER_PATHS, SOCIAL_WORKER_PATHS } from './constants/paths'
+import {
+  ADMIN_PATHS,
+  PATHS,
+  PROVIDER_PATHS,
+  SOCIAL_WORKER_PATHS,
+} from './constants/paths'
 import SocialWorkerLayout from './layouts/SocialWorkerLayout'
 import SocialWorkerMyPage from './pages/social-worker/SocialWorkerMyPage'
 
@@ -87,6 +93,9 @@ function App() {
             element={<SocialWorkerMyPage />}
           />
         </Route>
+
+        {/* 운영자·관리자 */}
+        <Route path={ADMIN_PATHS.home} element={<AdminHomePage />} />
 
         <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>

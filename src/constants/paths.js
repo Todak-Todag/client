@@ -40,6 +40,16 @@ export function getNavKeyByPath(pathname) {
   return entry ? entry[0] : 'home'
 }
 
+/**
+ * 운영자·관리자 화면 경로.
+ *
+ * 승인 API가 hasAnyRole('MASTER', 'ADMIN')이라 두 역할이 같은 화면을 쓴다.
+ * MASTER 전용 기능(운영자 등록 등)은 이 영역 안에서 역할로 가린다.
+ */
+export const ADMIN_PATHS = {
+  home: '/admin',
+}
+
 /** 서비스 제공자 화면 경로 (역할이 달라 화면 구성이 겹치지 않으므로 /provider 아래로 둔다) */
 export const PROVIDER_PATHS = {
   home: '/provider',
