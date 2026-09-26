@@ -76,6 +76,30 @@ export function ChevronRightIcon(props) {
   )
 }
 
+export function ChevronDownIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  )
+}
+
+export function ChevronUpIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M6 15l6-6 6 6" />
+    </svg>
+  )
+}
+
+export function CheckIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M5 12.5l5 5 9-11" />
+    </svg>
+  )
+}
+
 export function ClockIcon(props) {
   return (
     <svg {...iconProps} {...props}>
@@ -89,6 +113,14 @@ export function PlusIcon(props) {
   return (
     <svg {...iconProps} {...props}>
       <path d="M12 5v14M5 12h14" />
+    </svg>
+  )
+}
+
+export function CloseIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M6 6l12 12M18 6L6 18" />
     </svg>
   )
 }

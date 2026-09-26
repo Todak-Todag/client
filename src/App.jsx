@@ -12,6 +12,7 @@ import ProviderSchedulePage from './pages/provider/SchedulePage'
 import ProvideWorkFormPage from './pages/provider/ProvideWorkFormPage'
 import SchedulePage from './pages/patient/SchedulePage'
 import SignupPage from './pages/user/SignupPage'
+import SignupFormPage from './pages/user/SignupFormPage'
 import SocialWorkerHomePage from './pages/social-worker/SocialWorkerHomePage'
 import { PATHS, PROVIDER_PATHS } from './constants/paths'
 
@@ -23,6 +24,7 @@ function App() {
         <Route path={PATHS.login} element={<LoginPage />} />
         <Route path={PATHS.signup} element={<SignupPage />} />
         <Route path={PATHS.signupConsent} element={<ConsentPage />} />
+        <Route path={PATHS.signupForm} element={<SignupFormPage />} />
 
         {/* 헤더 + 네브바가 붙는 화면 */}
         <Route element={<AppLayout />}>

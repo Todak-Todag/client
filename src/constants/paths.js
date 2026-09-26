@@ -3,6 +3,7 @@ export const PATHS = {
   login: '/login',
   signup: '/signup',
   signupConsent: '/signup/consent',
+  signupForm: '/signup/form',
   home: '/',
   schedule: '/schedule',
   matching: '/matching',
