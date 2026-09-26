@@ -7,7 +7,7 @@ import BottomBar, { BottomBarSpacer } from '../../components/layout/BottomBar'
 import { getSignupType } from '../../features/auth/signupTypes'
 import { PATHS } from '../../constants/paths'
 import styles from './SignupFormPage.module.css'
-import { validateSingupForm } from '../../features/auth/signupValidation'
+import { validateSignupForm } from '../../features/auth/signupValidation'
 
 const EMPTY_FORM = {
   username: '',
@@ -33,7 +33,10 @@ function SignupFormPage() {
 
   const handleChange = (event) => {
     const {name, value} = event.target;
-    setForm((prev) => ({...prev, [name]: value}));
+
+    const nextValue = name === 'phone' ? value.replace(/\D/g, '').slice(0, 11) : value;
+
+    setForm((prev) => ({...prev, [name]: nextValue}));
     setErrors((prev) => ({...prev, [name]: ''}));
   }
 
