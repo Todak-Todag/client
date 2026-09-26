@@ -57,7 +57,7 @@ function SchedulePage() {
         <ProvideWorkCard key={group.key} group={group} onEdit={edit} />
       ))}
 
-      <Button variant="outline" onClick={() => navigate(PROVIDER_PATHS.scheduleNew)}>
+      <Button variant="dashed" onClick={() => navigate(PROVIDER_PATHS.scheduleNew)}>
         + 일정 추가하기
       </Button>
     </section>

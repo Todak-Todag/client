@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Button from '../../components/ui/Button'
+import Input from '../../components/ui/Input'
 import styles from './ProvideWorkForm.module.css'
 
 // 화면은 일요일부터 보여주고, 서버 day 값은 1(월)~7(일)이다
@@ -75,23 +76,30 @@ function ProvideWorkForm({ mode = 'create', offerings, initial, submitting, onSu
       <section className={styles.section}>
         <h2 className={styles.label}>시간 설정</h2>
         <div className={styles.times}>
-          <input
+          <Input
             type="time"
-            className={styles.time}
             aria-label="시작 시각"
             value={startedAt}
+            reserveMessage={false}
             onChange={(event) => setStartedAt(event.target.value)}
           />
-          <span className={styles.tilde}>~</span>
-          <input
+          <span className={styles.tilde} aria-hidden="true">
+            ~
+          </span>
+          <Input
             type="time"
-            className={styles.time}
             aria-label="종료 시각"
             value={finishedAt}
+            error={invalidTime ? ' ' : ''}
+            reserveMessage={false}
             onChange={(event) => setFinishedAt(event.target.value)}
           />
         </div>
-        {invalidTime && <p className={styles.error}>종료 시각이 시작 시각보다 늦어야 해요.</p>}
+        {invalidTime && (
+          <p className={styles.error} role="alert">
+            종료 시각이 시작 시각보다 늦어야 해요.
+          </p>
+        )}
       </section>
 
       <section className={styles.section}>
@@ -117,9 +125,10 @@ function ProvideWorkForm({ mode = 'create', offerings, initial, submitting, onSu
                     onClick={() => setServiceOfferingId(offering.serviceOfferingId)}
                   >
                     <span>{offering.provideServiceName}</span>
-                    <span className={styles.check} aria-hidden="true">
-                      {checked ? '✓' : ''}
-                    </span>
+                    <span
+                      className={[styles.box, checked ? styles.boxOn : ''].filter(Boolean).join(' ')}
+                      aria-hidden="true"
+                    />
                   </button>
                 </li>
               )

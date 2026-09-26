@@ -57,6 +57,16 @@
   color: var(--color-text-muted);
 }
 
+/* 확정 전에 챙겨야 할 것: '검토 중' 배지·확정 전 안내와 같은 경고색 */
+.factWarning {
+  color: var(--color-warning);
+  font-weight: var(--weight-medium);
+}
+
+.factWarning .factIcon {
+  color: currentColor;
+}
+
 .action {
   margin-top: var(--space-2xs);
 }

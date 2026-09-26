@@ -28,3 +28,14 @@ export const MATCHING_ATTEMPT_STATUS = {
   FAILED: 'FAILED',
   EXPIRED: 'EXPIRED',
 }
+
+/** 희망 시간대 (care-plan-service PreferredTimeSlot) */
+export const PREFERRED_TIME_SLOT = {
+  MORNING: 'MORNING',
+  AFTERNOON: 'AFTERNOON',
+}
+
+export const PREFERRED_TIME_SLOT_LABEL = {
+  [PREFERRED_TIME_SLOT.MORNING]: '오전',
+  [PREFERRED_TIME_SLOT.AFTERNOON]: '오후',
+}

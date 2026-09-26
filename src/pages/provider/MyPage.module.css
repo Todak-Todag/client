@@ -1,0 +1,81 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.heading {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  width: 56px;
+  font-size: var(--text-sm);
+  color: var(--color-text-sub);
+}
+
+.value {
+  flex: 1;
+  font-size: var(--text-base);
+  color: var(--color-text);
+}
+
+/* 계정 관리 목록 항목 — 카드 안에서 왼쪽 정렬 */
+.link {
+  justify-content: flex-start;
+  color: var(--color-text);
+}
+
+.editBox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+}
+
+.editActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xs);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-2xs);
+}
+
+.danger {
+  color: var(--color-danger);
+}
+
+.state {
+  margin: 0;
+  padding: var(--space-lg) 0;
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}

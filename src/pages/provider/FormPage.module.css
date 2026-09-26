@@ -1,24 +1,19 @@
 .state {
   margin: 0;
-  padding: 24px 0;
+  padding: var(--space-lg) 0;
   text-align: center;
-  font-size: 14px;
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
 }
 
 .error {
-  margin: 12px 0 0;
-  font-size: 14px;
-  color: var(--color-danger, #b42318);
+  margin: var(--space-sm) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-danger);
 }
 
+/* 공용 Button(ghost) 위에 위험 동작 색만 덧입힌다 */
 .remove {
-  margin-top: 16px;
-  padding: 12px;
-  border: none;
-  background: none;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--color-danger, #b42318);
-  cursor: pointer;
+  margin-top: var(--space-md);
+  color: var(--color-danger);
 }

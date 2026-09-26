@@ -7,6 +7,7 @@ import {
 } from '../../api/endpoints/schedule'
 import { SCHEDULE_STATUS } from '../../constants/status'
 import { useAsync } from '../../hooks/useAsync'
+import { getProviderScheduleView } from './providerScheduleStatus'
 import { toLocalDateString } from '../../utils/date'
 
 // 내 제공 서비스는 자주 바뀌지 않아 성공한 결과만 보관한다
@@ -62,13 +63,40 @@ async function findServiceOfferingId(serviceScheduleId, signal) {
   }
 }
 
-/** 특정 날짜에 내가 방문할 일정 (시작 시각 순) */
+// 화면에 보여줄 순서: 결과 작성 필요 → 수행 완료 필요 → 예정 → 진행 중 → 결과 작성 완료 → 미수행
+const BADGE_ORDER = [
+  '결과 작성 필요',
+  '수행 완료 필요',
+  '예정',
+  '진행 중',
+  '결과 작성 완료',
+  '미수행',
+]
+
+function badgeOrder(schedule, now) {
+  const { label } = getProviderScheduleView(schedule, Boolean(schedule.result), now)
+  const index = BADGE_ORDER.indexOf(label)
+
+  return index === -1 ? BADGE_ORDER.length : index
+}
+
+/** 특정 날짜에 내가 방문할 일정 (할 일이 남은 순서) */
 async function loadSchedulesByDate(signal, date) {
   const page = await getSchedules({ date, size: 50, signal })
 
-  const schedules = (page?.content ?? [])
-    .filter((schedule) => schedule.status !== SCHEDULE_STATUS.CHANGED)
-    .sort((a, b) => a.startedAt.localeCompare(b.startedAt))
+  // 제공자가 할 일이 없는 일정은 목록에서 뺀다
+  // CHANGED: 재매칭으로 자리를 넘긴 과거 이력
+  // CANCELED: 취소된 방문
+  // RESCHEDULING: 재매칭 결과를 기다리는 중이라 확정 전까지는 방문하지 않는다
+  const hiddenStatuses = [
+    SCHEDULE_STATUS.CHANGED,
+    SCHEDULE_STATUS.CANCELED,
+    SCHEDULE_STATUS.RESCHEDULING,
+  ]
+
+  const schedules = (page?.content ?? []).filter(
+    (schedule) => !hiddenStatuses.includes(schedule.status),
+  )
 
   if (schedules.length === 0) return []
 
@@ -80,12 +108,22 @@ async function loadSchedulesByDate(signal, date) {
     ),
   ])
 
-  return schedules.map((schedule, index) => ({
-    ...schedule,
-    serviceOfferingId: offeringIds[index],
-    serviceName: names.get(offeringIds[index]) ?? null,
-    result: results.get(schedule.serviceScheduleId) ?? null,
-  }))
+  const now = new Date()
+
+  return schedules
+    .map((schedule, index) => ({
+      ...schedule,
+      serviceOfferingId: offeringIds[index],
+      serviceName: names.get(offeringIds[index]) ?? null,
+      result: results.get(schedule.serviceScheduleId) ?? null,
+    }))
+    // 할 일이 남은 카드가 위로 오도록 배지 기준으로 묶고, 같은 묶음 안에서는 시작 시각 순
+    .sort((a, b) => {
+      const rankA = badgeOrder(a, now)
+      const rankB = badgeOrder(b, now)
+
+      return rankA - rankB || a.startedAt.localeCompare(b.startedAt)
+    })
 }
 
 const loadTodaySchedules = (signal) => loadSchedulesByDate(signal, toLocalDateString())

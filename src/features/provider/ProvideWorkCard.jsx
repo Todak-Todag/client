@@ -1,4 +1,5 @@
 import Button from '../../components/ui/Button'
+import { CalendarIcon, ClockIcon } from '../../components/ui/Icons'
 import { WEEKDAY_LABELS } from '../../utils/date'
 import styles from './ProvideWorkCard.module.css'
 
@@ -16,23 +17,30 @@ function ProvideWorkCard({ group, onEdit }) {
   return (
     <article className={styles.card}>
       <div className={styles.head}>
-        <span className={styles.service}>{group.serviceName ?? '서비스'}</span>
+        <h3 className={styles.title}>{group.serviceName ?? '서비스'}</h3>
         <Button size="sm" variant="ghost" block={false} onClick={() => onEdit(group)}>
           수정
         </Button>
       </div>
 
-      <p className={styles.line}>
-        서비스 시간 : {group.startedAt} ~ {group.finishedAt}
+      <p className={styles.row}>
+        <ClockIcon className={styles.icon} />
+        <span>서비스 시간:</span>
+        <span className={styles.value}>
+          {group.startedAt} ~ {group.finishedAt}
+        </span>
       </p>
 
-      <p className={styles.line}>
-        제공 요일 :{' '}
-        {days.map((day) => (
-          <span key={day} className={styles.day}>
-            {toLabel(day)}
-          </span>
-        ))}
+      <p className={styles.row}>
+        <CalendarIcon className={styles.icon} />
+        <span>제공 요일:</span>
+        <span>
+          {days.map((day) => (
+            <span key={day} className={styles.day}>
+              {toLabel(day)}
+            </span>
+          ))}
+        </span>
       </p>
     </article>
   )

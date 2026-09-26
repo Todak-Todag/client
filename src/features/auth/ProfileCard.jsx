@@ -8,8 +8,9 @@ import styles from './ProfileCard.module.css'
  * @param {string} name 사용자 이름
  * @param {{ label: string, variant: string } | null} badge 이름 아래 상태 배지 (없으면 숨김)
  * @param {string} meta 배지 옆 보조 문구 (예: 8월 30일 (일) 종료 예정)
+ * @param {string} message 이름 아래 강조 안내 문구 (예: 서비스 제공자 홈의 소속 안내). 없으면 숨김
  */
-function ProfileCard({ name, badge, meta }) {
+function ProfileCard({ name, badge, meta, message }) {
   // 한글 조합형·이모지도 한 글자로 자르도록 코드 포인트 기준
   const initial = Array.from(name.trim())[0] ?? ''
 
@@ -27,6 +28,7 @@ function ProfileCard({ name, badge, meta }) {
             {meta && <span className={styles.meta}>{meta}</span>}
           </p>
         )}
+        {message && <p className={styles.message}>{message}</p>}
       </div>
     </section>
   )
