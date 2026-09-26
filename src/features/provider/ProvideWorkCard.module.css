@@ -1,0 +1,33 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.service {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.line {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-sub);
+}
+
+.day {
+  margin-right: 6px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
