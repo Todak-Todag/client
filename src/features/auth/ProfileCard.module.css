@@ -18,12 +18,10 @@
   height: 52px;
   border-radius: var(--radius-full);
   background-color: var(--color-primary-soft);
-}
-
-.avatarIcon {
-  width: 26px;
-  height: 26px;
-  color: var(--color-primary);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  color: var(--color-primary-text);
 }
 
 /* 360px 이상에서는 시안 크기. 그보다 좁으면 이름 영역을 넓히려고 아바타를 줄인다 */
@@ -35,11 +33,7 @@
   .avatar {
     width: 64px;
     height: 64px;
-  }
-
-  .avatarIcon {
-    width: 32px;
-    height: 32px;
+    font-size: var(--text-xl);
   }
 }
 
@@ -73,6 +67,21 @@
   font-size: var(--text-sm);
   font-weight: var(--weight-bold);
   color: var(--color-primary-text);
+}
+
+/* 배지와 종료 예정일은 한 줄, 좁으면 종료 예정일만 다음 줄로 */
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs) var(--space-xs);
+  margin: var(--space-2xs) 0 0;
+}
+
+.meta {
+  font-size: var(--text-sm);
+  color: var(--color-text-sub);
+  font-variant-numeric: tabular-nums;
 }
 
 /* skeleton */

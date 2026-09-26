@@ -1,7 +1,20 @@
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
+import { getErrorMessage } from '../../api/client'
+import BottomSheet from '../../components/ui/BottomSheet'
+import Button from '../../components/ui/Button'
 import Header, { HeaderSpacer } from '../../components/layout/Header'
+import BottomBar, { BottomBarSpacer } from '../../components/layout/BottomBar'
+import {
+  CheckIcon,
+  ChevronRightIcon,
+  InfoIcon
+} from '../../components/ui/Icons'
 import { getSignupType } from '../../features/auth/signupTypes'
+import { useConsentDocuments } from '../../features/auth/useConsentDocuments'
+import { getConsentDocument } from '../../api/endpoints/consent'
 import { PATHS } from '../../constants/paths'
+import styles from './ConsentPage.module.css'
 
 /**
  * <Navigate> vs navigate()
@@ -22,21 +35,185 @@ import { PATHS } from '../../constants/paths'
 function ConsentPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const documents = useConsentDocuments();
+  const [checkedIds, setCheckedIds] = useState([]);
+  const [viewingId, setViewingId] = useState(null);
+  const [contents, setContents] = useState({});
   const signupType = getSignupType(searchParams.get('type'));
 
-  if(!signupType) return <Navigate to={PATHS.signup} replace />
+  if (!signupType) return <Navigate to={PATHS.signup} replace />
+
+  const docs = documents.data ?? [];
+  const isChecked = (id) => checkedIds.includes(id);
+  const isAllChecked = docs.length > 0 && checkedIds.length === docs.length;
+
+  const canSubmit = docs
+    .filter((doc) => doc.isRequired)
+    .every((doc) => isChecked(doc.consentDocumentVersionId));
+
+  const toggleOne = (id) => {
+    setCheckedIds((prev) => prev.includes(id) ? prev.filter((it) => it !== id) : [...prev, id])
+  }
+
+  const toggleAll = () => {
+    setCheckedIds(
+      isAllChecked ? [] : docs.map((doc) => doc.consentDocumentVersionId)
+    )
+  }
+
+  const openViewer = async (id) => {
+    setViewingId(id);
+    if(contents[id]) return;
+
+    setContents((prev) => ({...prev, [id]: {status: 'loading'}}));
+
+    try {
+      const data = await getConsentDocument(id);
+      setContents((prev) => ({
+        ...prev,
+        [id]: {status: 'success', text: data.content}
+      }));
+    } catch (error) {
+      setContents((prev) => ({...prev, [id]: {status: 'error', error}}));
+    }
+  }
+
+  const handleSubmit = () => {
+    const agreements = docs.map((doc) => ({
+      termsId: doc.consentDocumentVersionId,
+      agreed: isChecked(doc.consentDocumentVersionId)
+    }));
+
+    navigate(PATHS.signupForm, {
+      state: { type: signupType.key, agreements }
+    });
+  }
+
+  const viewingDoc = docs.find((doc) => doc.consentDocumentVersionId === viewingId);
+  const viewingContent = contents[viewingId];
+
+  const renderCheckMark = (checked) => (
+    <span
+      className={[styles.checkMark, checked ? styles.checked : '']
+        .filter(Boolean)
+        .join(' ')}
+    >
+      <CheckIcon className={styles.checkIcon} />
+    </span>
+  )
 
   return (
-    <div>
+    <div className={styles.page}>
       <Header
-        title="개인정보 처리 동의"
+        title="약관 동의"
         logo={null}
         showBack
         onBack={() => navigate(-1)}
       />
       <HeaderSpacer />
 
-      <p>선택한 가입 유형: {signupType.title}</p>
+      <h1 className={styles.title}>
+        서비스 이용을 위해
+        <br />
+        약관에 동의해 주세요.
+      </h1>
+      <p className={styles.description}>
+        필수 약관에 모두 동의하면 서비스를 시작할 수 있어요.
+      </p>
+
+      {documents.status === 'loading' && (
+        <p className={styles.state}>약관을 불러오는 중이에요...</p>
+      )}
+
+      {documents.status === 'error' && (
+        <p className={styles.state} role="alert">
+          {getErrorMessage(documents.error)}
+        </p>
+      )}
+
+      {documents.status === 'success' && (
+        <div className={styles.card}>
+          <div className={styles.row}>
+              <button
+                type="button"
+                className={`${styles.checkButton} ${styles.checkAll}`}
+                onClick={toggleAll}
+                aria-pressed={isAllChecked}
+              >
+                {renderCheckMark(isAllChecked)}
+                전체동의
+              </button>
+          </div>
+
+          <hr className={styles.divider} />
+          
+          <ul className={styles.list}>
+            {docs.map((doc) => {
+              const id = doc.consentDocumentVersionId;
+              const checked = isChecked(id);
+
+              return (
+                <li key={id} className={styles.row}>
+                  <button
+                    type="button"
+                    className={styles.checkButton}
+                    onClick={() => toggleOne(id)}
+                    aria-pressed={checked}
+                  >
+                    {renderCheckMark(checked)}[
+                    {doc.isRequired ? '필수' : '선택'}] {doc.title}
+                  </button>
+
+                  <button
+                    type="button"
+                    className={styles.viewButton}
+                    onClick={() => openViewer(id)}
+                    aria-label={`${doc.title} 전문 보기`}
+                  >
+                    보기
+                    <ChevronRightIcon className={styles.viewIcon} />
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      )}
+
+      <div className={styles.notice}>
+        <InfoIcon className={styles.noticeIcon} />
+        <p className={styles.noticeText}>
+          선택 약관은 동의하지 않아도 가입할 수 있어요.
+        </p>
+      </div>
+
+      <div className={styles.submitArea}>
+        <Button
+          disabled={!canSubmit}
+          onClick={handleSubmit}
+        >
+          동의하고 시작하기
+        </Button>
+      </div>
+      <BottomBarSpacer />
+      <BottomBar>
+      </BottomBar>
+
+      <BottomSheet
+        open={viewingId !== null}
+        onClose={() => setViewingId(null)}
+        title={viewingDoc?.title ?? '약관'}
+      >
+        {viewingContent?.status === 'loading' && <p>불러오는 중이에요...</p>}
+
+        {viewingContent?.status === 'error' && (
+          <p role="alert">{getErrorMessage(viewingContent.error)}</p>
+        )}
+
+        {viewingContent?.status === 'success' && (
+          <p className={styles.consentText}>{viewingContent.text}</p>
+        )}
+      </BottomSheet>
     </div>
   )
 }

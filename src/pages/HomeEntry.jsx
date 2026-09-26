@@ -17,7 +17,12 @@ function HomeEntry() {
   if (me.status === 'loading') return null
 
   // 비로그인(401)이면 로그인 화면으로
-  if (me.status === 'error') return <Navigate to={PATHS.login} replace />
+  if (me.status === 'error' && me.error?.status === 401) return <Navigate to={PATHS.login} replace />
+
+  // 그 밖의 오류는 퇴원 예정자 홈이 처리한다.
+  // 약관 동의 전 퇴원 예정자(404 USER_NOT_FOUND)는 동의 안내를, 일시 오류는 다시 시도를 보여준다.
+  // 여기서 로그인으로 보내면 동의 전 사용자는 로그인 ↔ 홈을 반복하고, 일시 오류에도 로그아웃된 것처럼 보인다.
+  if (me.status === 'error') return <PatientHomePage />
 
   const homePath = getHomePathByRole(me.data.role)
 

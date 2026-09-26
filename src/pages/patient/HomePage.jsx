@@ -2,37 +2,46 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
 import Button from '../../components/ui/Button'
 import EmptyState from '../../components/common/EmptyState'
-import { AlertIcon, CalendarIcon, PlusIcon } from '../../components/ui/Icons'
+import { AlertIcon, CalendarIcon, DocumentIcon } from '../../components/ui/Icons'
 import ProfileCard, { ProfileCardSkeleton } from '../../features/auth/ProfileCard'
 import ScheduleCard, { ScheduleCardSkeleton } from '../../features/schedule/ScheduleCard'
-import { ROLE_LABEL } from '../../constants/roles'
+import CarePlanReviewCard from '../../features/care-plan/CarePlanReviewCard'
+import CareCompletedCard from '../../features/care-plan/CareCompletedCard'
+import MatchingFailedBanner from '../../features/schedule/MatchingFailedBanner'
+import { ROLE_LABEL, getHomePathByRole } from '../../constants/roles'
 import { useAuth } from '../../features/auth/useAuth'
-import { useCurrentCarePlan } from '../../features/care-plan/useCarePlan'
+import {
+  useCarePlanReviewSummary,
+  useCarePlanServiceCount,
+  useCurrentCarePlan,
+} from '../../features/care-plan/useCarePlan'
+import { useMatchingFailureCount } from '../../features/schedule/useMatchingFailures'
 import { useNow } from '../../hooks/useNow'
-import { useTodaySchedules } from '../../features/schedule/useSchedules'
-import { PATHS } from '../../constants/paths'
-import { formatTimeRange } from '../../utils/date'
+import { useSchedulesByDate } from '../../features/schedule/useSchedules'
+import { PATHS, toPath } from '../../constants/paths'
+import { formatDateRange, formatMonthDay, formatTimeRange, toLocalDateString } from '../../utils/date'
 import { CARE_PLAN_STATUS } from '../../constants/status'
-import { getCarePlanMessage } from '../../features/care-plan/carePlanStatus'
+import { getCarePlanBadge, getUpcomingFinishDate } from '../../features/care-plan/carePlanStatus'
 import { getScheduleBadge } from '../../features/schedule/scheduleStatus'
 import styles from './HomePage.module.css'
 
-const ADD_SERVICE_HINT_ID = 'add-service-hint'
+const isStatus = (result, status) => result.status === 'error' && result.error?.status === status
 
-/** 퇴원 예정자 메인 화면 */
+const isActiveCare = (carePlan) =>
+  carePlan?.status === CARE_PLAN_STATUS.CONFIRMED ||
+  carePlan?.status === CARE_PLAN_STATUS.IN_PROGRESS
+
+/** 퇴원 예정자 메인 화면. Care Plan 상태(검토 중 · 진행 중 · 종료 · 없음)에 따라 본문이 바뀐다 */
 function HomePage() {
   const navigate = useNavigate()
   const me = useAuth()
   const carePlan = useCurrentCarePlan()
-  const schedules = useTodaySchedules()
   const now = useNow()
+  const today = toLocalDateString(now)
 
   // 인증 상태는 /users/me 결과로 먼저 판단한다.
   // 약관 동의 전 퇴원 예정자(임시 토큰)는 /users/me가 404 USER_NOT_FOUND, 다른 서비스는 본문 없는 401을 준다.
   // 다른 API의 401을 먼저 보고 로그인으로 보내면 동의 전 사용자가 로그인 ↔ 홈을 반복하게 된다.
-  const isStatus = (result, status) =>
-    result.status === 'error' && result.error?.status === status
-
   if (isStatus(me, 401)) return <Navigate to={PATHS.login} replace />
 
   if (isStatus(me, 404) && me.error.code === 'USER_NOT_FOUND') {
@@ -56,11 +65,15 @@ function HomePage() {
   }
 
   // 내 정보는 정상인데 다른 API가 401이면 (재발급까지 실패한) 세션 만료로 본다
-  if (me.status === 'success' && (isStatus(carePlan, 401) || isStatus(schedules, 401))) {
+  if (me.status === 'success' && isStatus(carePlan, 401)) {
     return <Navigate to={PATHS.login} replace />
   }
 
   if (me.status === 'success' && me.data.role !== ROLE_LABEL.PATIENT) {
+    // 일시 오류 뒤 다시 시도로 들어온 다른 역할은 자기 홈으로 보낸다 (HomeEntry가 먼저 갈라주지 못한 경우)
+    const homePath = getHomePathByRole(me.data.role)
+    if (homePath !== PATHS.home) return <Navigate to={homePath} replace />
+
     return (
       <EmptyState
         icon={AlertIcon}
@@ -70,31 +83,188 @@ function HomePage() {
     )
   }
 
-  const renderProfile = () => {
-    if (me.status === 'loading') return <ProfileCardSkeleton />
+  if (me.status === 'error') {
+    // 같은 장애로 Care Plan도 실패했거나 그 사이 받은 결과가 오래됐을 수 있어 함께 다시 조회한다
+    const retryAll = () => {
+      me.reload()
+      carePlan.reload()
+    }
 
-    if (me.status === 'error') {
+    return (
+      <div className={styles.page}>
+        <h1 className={styles.srOnly}>홈</h1>
+        <LoadError error={me.error} onRetry={retryAll} />
+      </div>
+    )
+  }
+
+  // 배지·본문이 Care Plan에 따라 정해지므로 둘 다 받을 때까지 화면 전체를 자리표시로 둔다
+  if (me.status === 'loading' || carePlan.status === 'loading') {
+    return (
+      <div className={styles.page} aria-busy="true">
+        <h1 className={styles.srOnly}>홈</h1>
+        <ProfileCardSkeleton />
+        <div className={styles.list}>
+          <ScheduleCardSkeleton />
+          <ScheduleCardSkeleton />
+        </div>
+        <p className={styles.loadingText} role="status">
+          정보를 불러오는 중이에요…
+        </p>
+      </div>
+    )
+  }
+
+  // Care Plan을 못 불러와도 이름은 보여준다
+  const plan = carePlan.status === 'success' ? carePlan.data : null
+  const finishDate = isActiveCare(plan) ? getUpcomingFinishDate(plan, today) : null
+
+  const renderBody = () => {
+    if (carePlan.status === 'error') {
+      return <LoadError error={carePlan.error} onRetry={carePlan.reload} />
+    }
+
+    if (!plan) {
       return (
         <EmptyState
-          tone="error"
-          icon={AlertIcon}
-          title="내 정보를 불러오지 못했어요"
-          description={getErrorMessage(me.error)}
-          action={
-            <Button variant="outline" size="md" block={false} onClick={me.reload}>
-              다시 시도
-            </Button>
+          icon={DocumentIcon}
+          title="아직 준비된 케어플랜이 없어요"
+          description="병원 담당자가 케어플랜을 등록하면 이곳에서 확인할 수 있어요."
+        />
+      )
+    }
+
+    if (plan.status === CARE_PLAN_STATUS.UNDER_REVIEW) {
+      return (
+        <ReviewSection
+          carePlan={plan}
+          onConfirm={() => navigate(toPath(PATHS.carePlan, { carePlanId: plan.carePlanId }))}
+          onAddService={() =>
+            navigate(toPath(PATHS.carePlanServiceNew, { carePlanId: plan.carePlanId }))
           }
         />
       )
     }
 
-    // 안내 문구는 Care Plan을 불러온 뒤에만 보여준다 (실패해도 이름은 표시)
-    const message =
-      carePlan.status === 'success' ? getCarePlanMessage(carePlan.data?.status) : null
+    if (plan.status === CARE_PLAN_STATUS.COMPLETED) {
+      return (
+        <CompletedSection
+          carePlan={plan}
+          // TODO: 서비스 수행 결과 화면이 생기면 해당 경로로 교체 (현재 임시로 일정 화면)
+          onViewResults={() => navigate(PATHS.schedule)}
+        />
+      )
+    }
 
-    return <ProfileCard name={me.data.name} message={message} />
+    return (
+      <>
+        {/* 서버가 CONFIRMED에서만 매칭 실패 내역을 주므로 그때만 조회한다 */}
+        {plan.status === CARE_PLAN_STATUS.CONFIRMED && (
+          <MatchingFailureNotice onClick={() => navigate(PATHS.matching)} />
+        )}
+        <TodayServices now={now} today={today} />
+      </>
+    )
   }
+
+  return (
+    <div className={styles.page}>
+      <h1 className={styles.srOnly}>홈</h1>
+
+      <ProfileCard
+        name={me.data.name}
+        badge={getCarePlanBadge(plan?.status)}
+        meta={finishDate ? `${formatMonthDay(finishDate)} 종료 예정` : null}
+      />
+
+      {renderBody()}
+    </div>
+  )
+}
+
+/** 네트워크·서버 오류 공통 안내 */
+function LoadError({ error, onRetry }) {
+  return (
+    <EmptyState
+      tone="error"
+      icon={AlertIcon}
+      title="정보를 불러오지 못했어요"
+      description={getErrorMessage(error)}
+      action={
+        <Button variant="outline" size="md" block={false} onClick={onRetry}>
+          다시 시도
+        </Button>
+      }
+    />
+  )
+}
+
+/**
+ * 검토 중: 케어플랜 도착 카드.
+ * 서비스 수·희망 일정 없는 서비스 수는 보조 정보라 불러오지 못하면 줄만 숨긴다
+ */
+function ReviewSection({ carePlan, onConfirm, onAddService }) {
+  const summary = useCarePlanReviewSummary(carePlan.carePlanId)
+  const data = summary.status === 'success' ? summary.data : null
+
+  return (
+    <CarePlanReviewCard
+      period={formatDateRange(carePlan.startDate, carePlan.finishDate)}
+      serviceCount={data ? data.serviceCount : null}
+      unscheduledCount={data ? data.unscheduledCount : null}
+      onConfirm={onConfirm}
+      onAddService={onAddService}
+    />
+  )
+}
+
+/**
+ * 종료: 케어를 마쳤는지, 검토 중에 서비스를 모두 빼서 끝났는지 구분한다.
+ * Care Plan에는 종료 사유가 없지만, 마지막 서비스를 빼면 서버가 서비스를 논리삭제하고
+ * 종료하므로 남은 서비스가 0개면 서비스 없이 끝난 케어플랜이다.
+ * 개수를 못 불러오면 기존처럼 일반 종료 카드를 보여준다.
+ */
+function CompletedSection({ carePlan, onViewResults }) {
+  const serviceCount = useCarePlanServiceCount(carePlan.carePlanId)
+
+  // 잘못된 안내가 잠깐 보이지 않도록 개수를 받을 때까지 자리표시로 둔다
+  if (serviceCount.status === 'loading') {
+    return (
+      <div className={styles.list}>
+        <p className={styles.srOnly} role="status">
+          케어플랜 정보를 불러오는 중이에요
+        </p>
+        <ScheduleCardSkeleton />
+      </div>
+    )
+  }
+
+  return (
+    <CareCompletedCard
+      period={formatDateRange(carePlan.startDate, carePlan.finishDate, { weekday: false })}
+      withoutService={serviceCount.status === 'success' && serviceCount.data === 0}
+      onViewResults={onViewResults}
+    />
+  )
+}
+
+/** 매칭 실패 배너. 실패 내역이 있을 때만 보이고, 불러오지 못하면 조용히 숨긴다 */
+function MatchingFailureNotice({ onClick }) {
+  const failures = useMatchingFailureCount()
+
+  if (failures.status !== 'success' || failures.data === 0) return null
+
+  return <MatchingFailedBanner count={failures.data} onClick={onClick} />
+}
+
+/** 진행 중: 오늘 받을 케어 서비스 */
+function TodayServices({ now, today }) {
+  const navigate = useNavigate()
+  // 날짜를 인자로 넘겨 자정이 지나면 새 날짜로 다시 조회한다 (섹션 날짜 표시와 목록이 어긋나지 않도록)
+  const schedules = useSchedulesByDate(today)
+
+  // 재발급까지 실패한 세션 만료
+  if (isStatus(schedules, 401)) return <Navigate to={PATHS.login} replace />
 
   const renderSchedules = () => {
     if (schedules.status === 'loading') {
@@ -130,17 +300,7 @@ function HomePage() {
         <EmptyState
           icon={CalendarIcon}
           title="오늘 예정된 서비스가 없어요"
-          description="다른 날의 일정은 일정 탭에서 볼 수 있어요."
-          action={
-            <Button
-              variant="outline"
-              size="md"
-              block={false}
-              onClick={() => navigate(PATHS.schedule)}
-            >
-              일정 보기
-            </Button>
-          }
+          description="다른 날의 일정은 전체 일정에서 볼 수 있어요."
         />
       )
     }
@@ -153,6 +313,7 @@ function HomePage() {
               title={schedule.serviceName ?? '케어 서비스'}
               time={formatTimeRange(schedule.startedAt, schedule.finishedAt)}
               badge={getScheduleBadge(schedule, now)}
+              onDetail={() => navigate(PATHS.schedule)}
             />
           </li>
         ))}
@@ -160,61 +321,25 @@ function HomePage() {
     )
   }
 
-  // 서버 규칙: 서비스 추가는 Care Plan이 UNDER_REVIEW일 때만 가능
-  const canAddService =
-    carePlan.status === 'success' && carePlan.data?.status === CARE_PLAN_STATUS.UNDER_REVIEW
-
-  const getAddServiceHint = () => {
-    if (carePlan.status === 'loading' || canAddService) return null
-    if (carePlan.status === 'error') return '케어 플랜 정보를 불러오지 못했어요.'
-    if (!carePlan.data) return '케어 플랜이 만들어지면 서비스를 신청할 수 있어요.'
-    return '케어 플랜 검토 중에만 서비스를 추가할 수 있어요.'
-  }
-  const addServiceHint = getAddServiceHint()
-
   return (
-    <div className={styles.page}>
-      <h1 className={styles.srOnly}>홈</h1>
-
-      {renderProfile()}
-
-      <section
-        className={styles.section}
-        aria-labelledby="today-services-title"
-        aria-busy={schedules.status === 'loading'}
-      >
+    <section
+      className={styles.section}
+      aria-labelledby="today-services-title"
+      aria-busy={schedules.status === 'loading'}
+    >
+      <div className={styles.sectionHead}>
         <h2 id="today-services-title" className={styles.sectionTitle}>
           오늘 받을 케어 서비스
         </h2>
-        {renderSchedules()}
-      </section>
-
-      <div className={styles.addService}>
-        <Button
-          variant="dashed"
-          disabled={!canAddService}
-          aria-describedby={addServiceHint ? ADD_SERVICE_HINT_ID : undefined}
-          // TODO: 서비스 추가 신청 화면이 생기면 해당 경로로 교체 (현재 임시로 매칭 화면)
-          onClick={() => navigate(PATHS.matching)}
-        >
-          <PlusIcon className={styles.plusIcon} />
-          서비스 추가 신청하기
-        </Button>
-
-        {addServiceHint && (
-          <div className={styles.hintRow}>
-            <p id={ADD_SERVICE_HINT_ID} className={styles.hint}>
-              {addServiceHint}
-            </p>
-            {carePlan.status === 'error' && (
-              <Button variant="ghost" size="sm" block={false} onClick={carePlan.reload}>
-                다시 시도
-              </Button>
-            )}
-          </div>
-        )}
+        <p className={styles.sectionDate}>{formatMonthDay(today)}</p>
       </div>
-    </div>
+
+      {renderSchedules()}
+
+      <Button variant="secondary" size="md" onClick={() => navigate(PATHS.schedule)}>
+        전체 일정 보기
+      </Button>
+    </section>
   )
 }
 

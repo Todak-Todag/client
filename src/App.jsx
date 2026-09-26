@@ -1,5 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
+import CarePlanReviewPage from './pages/patient/CarePlanReviewPage'
+import CarePlanServiceAddPage from './pages/patient/CarePlanServiceAddPage'
+import CarePlanServicePage from './pages/patient/CarePlanServicePage'
 import ProviderLayout from './layouts/ProviderLayout'
 import ConsentPage from './pages/user/ConsentPage'
 import HomeEntry from './pages/HomeEntry'
@@ -17,6 +20,7 @@ import ProviderSchedulePage from './pages/provider/SchedulePage'
 import ProvideWorkFormPage from './pages/provider/ProvideWorkFormPage'
 import SchedulePage from './pages/patient/SchedulePage'
 import SignupPage from './pages/user/SignupPage'
+import SignupFormPage from './pages/user/SignupFormPage'
 import SocialWorkerHomePage from './pages/social-worker/SocialWorkerHomePage'
 import { PATHS, PROVIDER_PATHS } from './constants/paths'
 
@@ -28,6 +32,7 @@ function App() {
         <Route path={PATHS.login} element={<LoginPage />} />
         <Route path={PATHS.signup} element={<SignupPage />} />
         <Route path={PATHS.signupConsent} element={<ConsentPage />} />
+        <Route path={PATHS.signupForm} element={<SignupFormPage />} />
 
         {/* 헤더 + 네브바가 붙는 화면 */}
         <Route element={<AppLayout />}>
@@ -40,6 +45,11 @@ function App() {
 
           <Route path="/404" element={<NotFoundPage />} />
         </Route>
+
+        {/* 퇴원 예정자 — 케어플랜 검토·확정 (뒤로가기 헤더만 있는 화면) */}
+        <Route path={PATHS.carePlan} element={<CarePlanReviewPage />} />
+        <Route path={PATHS.carePlanServiceNew} element={<CarePlanServiceAddPage />} />
+        <Route path={PATHS.carePlanService} element={<CarePlanServicePage />} />
 
         {/* 서비스 제공자 — 뒤로가기 헤더만 있는 화면 */}
         <Route path={PROVIDER_PATHS.scheduleNew} element={<ProvideWorkFormPage />} />
