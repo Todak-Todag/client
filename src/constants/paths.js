@@ -48,6 +48,29 @@ export function getNavKeyByPath(pathname) {
  */
 export const ADMIN_PATHS = {
   home: '/admin',
+  manage: '/admin/manage',
+  my: '/admin/my',
+}
+
+/** 운영자·관리자 네브바 key <-> 경로 매핑 */
+export const ADMIN_NAV_PATH_BY_KEY = {
+  home: ADMIN_PATHS.home,
+  manage: ADMIN_PATHS.manage,
+  my: ADMIN_PATHS.my,
+}
+
+/** 운영자·관리자 경로별 헤더 제목 */
+export const ADMIN_TITLE_BY_PATH = {
+  [ADMIN_PATHS.home]: '관리자 홈',
+  [ADMIN_PATHS.manage]: '관리',
+  [ADMIN_PATHS.my]: '마이페이지',
+}
+
+/** 현재 관리자 경로에서 활성화할 네브바 key를 구한다 */
+export function getAdminNavKeyByPath(pathname) {
+  if (pathname.startsWith(ADMIN_PATHS.manage)) return 'manage'
+  if (pathname.startsWith(ADMIN_PATHS.my)) return 'my'
+  return 'home'
 }
 
 /** 서비스 제공자 화면 경로 (역할이 달라 화면 구성이 겹치지 않으므로 /provider 아래로 둔다) */

@@ -2,7 +2,6 @@ import { useId, useState } from 'react'
 import { getErrorMessage } from '../../api/client'
 import Button from '../../components/ui/Button'
 import EmptyState from '../../components/common/EmptyState'
-import Header, { HeaderSpacer } from '../../components/layout/Header'
 import { AlertIcon, UserIcon } from '../../components/ui/Icons'
 import UserCard from '../../features/admin/UserCard'
 import { useUserSearch } from '../../features/admin/useUserSearch'
@@ -76,55 +75,50 @@ function AdminHomePage() {
 
   return (
     <div className={styles.page}>
-      <Header title="관리자 홈" />
-      <HeaderSpacer />
+      <h2 className={styles.sectionTitle}>사용자 승인/대기 목록</h2>
 
-      <main className={styles.content}>
-        <h1 className={styles.srOnly}>관리자 홈</h1>
-
-        <div className={styles.filters}>
-          <div className={styles.filter}>
-            <label className={styles.label} htmlFor={statusId}>
-              상태
-            </label>
-            <select
-              id={statusId}
-              className={styles.select}
-              value={status}
-              onChange={(event) => setStatus(Number(event.target.value))}
-            >
-              {USER_STATUS_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className={styles.filter}>
-            <label className={styles.label} htmlFor={roleId}>
-              역할
-            </label>
-            <select
-              id={roleId}
-              className={styles.select}
-              value={role}
-              onChange={(event) => {
-                const { value } = event.target
-                setRole(value === '' ? USER_ROLE_FILTER.ALL : Number(value))
-              }}
-            >
-              {USER_ROLE_OPTIONS.map((option) => (
-                <option key={option.label} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+      <div className={styles.filters}>
+        <div className={styles.filter}>
+          <label className={styles.label} htmlFor={statusId}>
+            상태
+          </label>
+          <select
+            id={statusId}
+            className={styles.select}
+            value={status}
+            onChange={(event) => setStatus(Number(event.target.value))}
+          >
+            {USER_STATUS_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {renderList()}
-      </main>
+        <div className={styles.filter}>
+          <label className={styles.label} htmlFor={roleId}>
+            역할
+          </label>
+          <select
+            id={roleId}
+            className={styles.select}
+            value={role}
+            onChange={(event) => {
+              const { value } = event.target
+              setRole(value === '' ? USER_ROLE_FILTER.ALL : Number(value))
+            }}
+          >
+            {USER_ROLE_OPTIONS.map((option) => (
+              <option key={option.label} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {renderList()}
     </div>
   )
 }

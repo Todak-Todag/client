@@ -1,21 +1,22 @@
 .page {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: var(--app-max-width);
-  min-height: 100dvh;
-  margin: 0 auto;
-  background-color: var(--color-bg);
-  font-family: var(--font-sans);
-  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-xs);
+  padding-bottom: var(--space-lg);
 }
 
-.content {
-  padding: var(--space-md) var(--page-gutter) var(--space-2xl);
+.sectionTitle {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
 }
 
 .filters {
   display: flex;
   gap: var(--space-xs);
+  /* 아래 목록과의 간격을 좌우 여백과 같게 맞춘다 */
+  margin-bottom: var(--page-gutter);
 }
 
 .filter {
@@ -58,7 +59,7 @@
 }
 
 .count {
-  margin: var(--space-md) 0 var(--space-xs);
+  margin: 0 0 var(--space-xs);
   font-size: var(--text-sm);
   color: var(--color-text-sub);
 }
@@ -73,20 +74,8 @@
 }
 
 .state {
-  margin: var(--space-2xl) 0;
+  margin: var(--space-xl) 0;
   font-size: var(--text-sm);
   color: var(--color-text-sub);
   text-align: center;
-}
-
-.srOnly {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
 }
