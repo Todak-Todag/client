@@ -7,6 +7,7 @@ import BottomBar, { BottomBarSpacer } from '../../components/layout/BottomBar'
 import { getSignupType } from '../../features/auth/signupTypes'
 import { PATHS } from '../../constants/paths'
 import styles from './SignupFormPage.module.css'
+import { validateSingupForm } from '../../features/auth/signupValidation'
 
 const EMPTY_FORM = {
   username: '',
@@ -20,6 +21,7 @@ function SignupFormPage() {
   const navigate = useNavigate()
   const { state } = useLocation()
   const [form, setForm] = useState(EMPTY_FORM);
+  const [errors, setErrors] = useState({});
 
   const signupType = getSignupType(state?.type)
   const agreements = state?.agreements
@@ -32,10 +34,17 @@ function SignupFormPage() {
   const handleChange = (event) => {
     const {name, value} = event.target;
     setForm((prev) => ({...prev, [name]: value}));
+    setErrors((prev) => ({...prev, [name]: ''}));
   }
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    const nextErrors = validateSignupForm(form);
+    if(Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      return;
+    }
 
     console.log({ type: signupType.role, ...form, agreements });
   }
@@ -59,6 +68,7 @@ function SignupFormPage() {
           placeholder="6자 이상 영문/소문자로 시작"
           autoComplete="username"
           autoCapitalize="none"
+          error={errors.username}
         />
 
         <Input
@@ -69,6 +79,7 @@ function SignupFormPage() {
           onChange={handleChange}
           placeholder="8자 이상 (영문, 숫자, 특수문자 포함)"
           autoComplete="new-password"
+          error={errors.password}
         />
 
         <Input
@@ -79,6 +90,7 @@ function SignupFormPage() {
           onChange={handleChange}
           placeholder="비밀번호를 한번 더 입력해주세요"
           autoComplete="new-password"
+          error={errors.passwordConfirm}
         />
 
         <Input
@@ -90,6 +102,7 @@ function SignupFormPage() {
           onChange={handleChange}
           placeholder="휴대폰 번호를 입력해주세요 (- 제외)"
           autoComplete="tel"
+          error={errors.phone}
         />
 
         <Input
@@ -99,6 +112,7 @@ function SignupFormPage() {
           onChange={handleChange}
           placeholder="본인의 실명을 입력해주세요"
           autoComplete="name"
+          error={errors.name}
         />
 
         <div className={styles.submitArea}>
