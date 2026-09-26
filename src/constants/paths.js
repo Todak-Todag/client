@@ -82,3 +82,35 @@ export function toPath(path, params) {
     path,
   )
 }
+
+/**
+ * 사회복지사 화면 경로
+ *
+ * 현재 실제 구현된 홈/마이 화면만 역할 전용 경로로 관리한다.
+ */
+export const SOCIAL_WORKER_PATHS = {
+  home: '/social-worker',
+  my: '/social-worker/my',
+  password: '/social-worker/my/password',
+}
+
+/** 사회복지사 네브바 key <-> 실제 구현된 경로 매핑 */
+export const SOCIAL_WORKER_NAV_PATH_BY_KEY = {
+  home: SOCIAL_WORKER_PATHS.home,
+  my: SOCIAL_WORKER_PATHS.my,
+}
+
+/** 사회복지사 경로별 헤더 제목 */
+export const SOCIAL_WORKER_TITLE_BY_PATH = {
+  [SOCIAL_WORKER_PATHS.home]: '',
+  [SOCIAL_WORKER_PATHS.my]: '마이페이지',
+}
+
+/** 현재 사회복지사 경로에서 활성화할 네브바 key를 구한다 */
+export function getSocialWorkerNavKeyByPath(pathname) {
+  if (pathname.startsWith(SOCIAL_WORKER_PATHS.my)) {
+    return 'my'
+  }
+
+  return 'home'
+}
