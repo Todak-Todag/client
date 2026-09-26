@@ -16,7 +16,10 @@ export function getCarePlanBadge(carePlanStatus) {
   return CARE_PLAN_BADGE[carePlanStatus] ?? null
 }
 
-/** 여러 Care Plan 중 홈에 기준으로 쓸 것: 진행 중인 계획을 우선한다 */
+/**
+ * 여러 Care Plan 중 홈에 기준으로 쓸 것: 진행 중인 계획을 우선한다.
+ * 같은 상태가 여럿이면 가장 최근에 만든 것. (목록 API가 정렬을 보장하지 않는다)
+ */
 const CARE_PLAN_PRIORITY = [
   CARE_PLAN_STATUS.IN_PROGRESS,
   CARE_PLAN_STATUS.CONFIRMED,
@@ -25,8 +28,11 @@ const CARE_PLAN_PRIORITY = [
 ]
 
 export function pickCurrentCarePlan(carePlans) {
+  // createdAt은 Instant(ISO-8601). 소수점 자릿수가 달라 문자열이 아닌 시각으로 비교한다
+  const time = (plan) => Date.parse(plan.createdAt) || 0
+  const newestFirst = [...carePlans].sort((a, b) => time(b) - time(a))
   for (const status of CARE_PLAN_PRIORITY) {
-    const found = carePlans.find((plan) => plan.status === status)
+    const found = newestFirst.find((plan) => plan.status === status)
     if (found) return found
   }
   return null
