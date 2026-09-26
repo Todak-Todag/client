@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AdminHomePage from './pages/admin/AdminHomePage'
+import AdminLayout from './layouts/AdminLayout'
 import AppLayout from './layouts/AppLayout'
 import CarePlanReviewPage from './pages/patient/CarePlanReviewPage'
 import CarePlanServiceAddPage from './pages/patient/CarePlanServiceAddPage'
@@ -94,8 +95,10 @@ function App() {
           />
         </Route>
 
-        {/* 운영자·관리자 */}
-        <Route path={ADMIN_PATHS.home} element={<AdminHomePage />} />
+        {/* 운영자·관리자 (역할 확인 후 진입) */}
+        <Route element={<AdminLayout />}>
+          <Route path={ADMIN_PATHS.home} element={<AdminHomePage />} />
+        </Route>
 
         <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>

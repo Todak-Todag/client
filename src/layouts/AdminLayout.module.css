@@ -1,0 +1,14 @@
+/* 접근 확인 중·실패 시에만 쓰는 껍데기. 통과하면 각 화면이 자기 레이아웃을 갖는다 */
+.state {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: var(--app-max-width);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: var(--page-gutter);
+  background-color: var(--color-bg);
+  font-family: var(--font-sans);
+}
