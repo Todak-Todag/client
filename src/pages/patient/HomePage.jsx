@@ -313,7 +313,11 @@ function TodayServices({ now, today }) {
               title={schedule.serviceName ?? '케어 서비스'}
               time={formatTimeRange(schedule.startedAt, schedule.finishedAt)}
               badge={getScheduleBadge(schedule, now)}
-              onDetail={() => navigate(PATHS.schedule)}
+              onDetail={() =>
+                navigate(
+                  toPath(PATHS.scheduleDetail, { serviceScheduleId: schedule.serviceScheduleId }),
+                )
+              }
             />
           </li>
         ))}
