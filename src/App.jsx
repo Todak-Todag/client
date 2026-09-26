@@ -1,16 +1,16 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import AppLayout from './layouts/AppLayout'
-import ConsentPage from './pages/user/ConsentPage'
-import HomePage from './pages/patient/HomePage'
-import LoginPage from './pages/LoginPage'
-import MatchingPage from './pages/patient/MatchingPage'
-import MyPage from './pages/patient/MyPage'
-import NotFoundPage from './pages/NotFoundPage'
-import SchedulePage from './pages/patient/SchedulePage'
-import SignupPage from './pages/user/SignupPage'
-import { PATHS } from './constants/paths'
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import AppLayout from "./layouts/AppLayout";
+import ConsentPage from "./pages/user/ConsentPage";
+import HomePage from "./pages/patient/HomePage";
+import LoginPage from "./pages/LoginPage";
+import MatchingPage from "./pages/patient/MatchingPage";
+import MyPage from "./pages/patient/MyPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import SchedulePage from "./pages/patient/SchedulePage";
+import SignupPage from "./pages/user/SignupPage";
+import { PATHS } from "./constants/paths";
 import SocialWorkerHomePage from "./pages/social-worker/SocialWorkerHomePage";
-
+import SocialWorkerMatchingPage from "./pages/social-worker/MatchingPage";
 function App() {
   return (
     <BrowserRouter>
@@ -28,6 +28,10 @@ function App() {
           <Route path={PATHS.my} element={<MyPage />} />
 
           <Route path="/social-worker" element={<SocialWorkerHomePage />} />
+          <Route
+            path="/social-worker/matching"
+            element={<SocialWorkerMatchingPage />}
+          />
 
           <Route path="/404" element={<NotFoundPage />} />
         </Route>
