@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getErrorMessage } from '../api/client'
-import { login } from '../api/endpoints/auth'
+import { getMe, login } from '../api/endpoints/auth'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
 import BottomBar from '../components/layout/BottomBar'
 import { PATHS } from '../constants/paths'
+import { getHomePathByRole } from '../constants/roles'
 import logo from '../assets/images/logo2.webp'
 import styles from './LoginPage.module.css'
 
@@ -43,7 +44,11 @@ function LoginPage() {
     setSubmitting(true)
     try {
       await login({ username: form.username.trim(), password: form.password })
-      navigate(PATHS.home, { replace: true })
+
+      // 역할마다 첫 화면이 달라서 내 정보를 확인한 뒤 이동한다.
+      // 내 정보 조회가 실패해도 로그인 자체는 성공이므로 기본 홈으로 보낸다.
+      const me = await getMe().catch(() => null)
+      navigate(getHomePathByRole(me?.role), { replace: true })
     } catch (error) {
       // 자격 증명 오류(409)는 서버가 '아이디 또는 비밀번호가 일치하지 않습니다.'를 내려준다.
       // 어느 쪽이 틀렸는지 구분해서 보여주지 않는다. (계정 존재 여부 노출 방지)
