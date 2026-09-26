@@ -12,6 +12,7 @@ import {
 } from '../../components/ui/Icons'
 import { getSignupType } from '../../features/auth/signupTypes'
 import { useConsentDocuments } from '../../features/auth/useConsentDocuments'
+import { getConsentDocument } from '../../api/endpoints/consent'
 import { PATHS } from '../../constants/paths'
 import styles from './ConsentPage.module.css'
 
@@ -175,14 +176,16 @@ function ConsentPage() {
         </p>
       </div>
 
-      <BottomBarSpacer />
-      <BottomBar>
+      <div className={styles.submitArea}>
         <Button
           disabled={!canSubmit}
           onClick={() => {}}
         >
           동의하고 시작하기
         </Button>
+      </div>
+      <BottomBarSpacer />
+      <BottomBar>
       </BottomBar>
 
       <BottomSheet

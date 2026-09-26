@@ -19,7 +19,7 @@ function BottomSheet({ open, onClose, title, children }) {
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = previousOverflow;
     }
   }, [open, onClose]);
 

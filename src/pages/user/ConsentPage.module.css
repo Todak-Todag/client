@@ -155,3 +155,16 @@
   color: var(--color-text-sub);
   text-align: center;
 }
+
+.submitArea {
+  position: fixed;
+  bottom: calc(var(--bottombar-indicator) + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-sticky);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--app-max-width);
+  padding: var(--space-sm) var(--page-gutter);
+  background-color: none;
+}
