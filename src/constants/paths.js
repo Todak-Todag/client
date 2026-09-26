@@ -8,6 +8,10 @@ export const PATHS = {
   schedule: '/schedule',
   matching: '/matching',
   my: '/my',
+  // 케어플랜 검토·확정 (UNDER_REVIEW 전용, 네브바 없는 하위 화면)
+  carePlan: '/care-plans/:carePlanId',
+  carePlanServiceNew: '/care-plans/:carePlanId/services/new',
+  carePlanService: '/care-plans/:carePlanId/services/:planServiceId',
 }
 
 /** 네브바 key <-> 경로 매핑 */

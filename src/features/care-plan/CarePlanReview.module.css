@@ -1,0 +1,230 @@
+/* 케어플랜 검토·확정 화면의 카드와 시트. 홈 카드(ScheduleCard·CarePlanCard)와 같은 모서리·테두리·그림자 규칙 */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-md) var(--space-md) var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.cardTitle {
+  display: block;
+  margin: 0;
+  min-width: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin: 0;
+  font-size: var(--text-base);
+  color: var(--color-text-sub);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 희망 일정 없음: 매칭되지 않는다는 경고라 '검토 중'과 같은 경고색 */
+.metaWarning {
+  color: var(--color-warning);
+  font-weight: var(--weight-medium);
+}
+
+.metaIcon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  color: currentColor;
+}
+
+.meta:not(.metaWarning) .metaIcon {
+  color: var(--color-text-muted);
+}
+
+/* 카드 안 보조 영역: 테두리 없이 배경색만 */
+.inset {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg);
+}
+
+.insetLabel {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+}
+
+.insetText {
+  margin: var(--space-3xs) 0 0;
+  font-size: var(--text-base);
+  color: var(--color-text-sub);
+  white-space: pre-line;
+}
+
+/* ── 선택한 서비스 한 줄 (카드 전체가 버튼) ─────────── */
+.serviceItem {
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  min-height: 84px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--dur-short) var(--ease-out),
+    border-color var(--dur-short) var(--ease-out);
+}
+
+.serviceItem:active {
+  background-color: var(--color-bg);
+}
+
+.serviceBody {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+
+.chevron {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  color: var(--color-text-muted);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .serviceItem:hover {
+    border-color: var(--color-border-strong);
+  }
+}
+
+/* ── 희망 일정 시트 ─────────────────────────────── */
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.sheetNote {
+  margin: calc(var(--space-xs) * -1) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-sub);
+}
+
+.slotGroup {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.slotLegend {
+  margin-bottom: var(--space-xs);
+  padding: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-xs);
+}
+
+.slot {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 라디오는 화면에서 숨기되 키보드·스크린리더에는 남긴다 */
+.slotInput {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.slotLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--tap-min);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  transition:
+    background-color var(--dur-short) var(--ease-out),
+    border-color var(--dur-short) var(--ease-out);
+}
+
+/* 선택: 테두리 + 옅은 주황 바탕 + 주황 글자 (색 하나에만 기대지 않도록 테두리 두께도 바꾼다) */
+.slotInput:checked + .slotLabel {
+  border: 2px solid var(--color-primary);
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary-text);
+}
+
+.slotInput:focus-visible + .slotLabel {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .slot:hover .slotInput:not(:checked) + .slotLabel {
+    background-color: var(--color-bg);
+  }
+}
+
+.sheetHint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-sub);
+}
+
+.sheetHintWarning {
+  color: var(--color-warning);
+  font-weight: var(--weight-medium);
+}
+
+.formError {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
