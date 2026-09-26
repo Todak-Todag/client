@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
   createProvideWork,
   deleteProvideWork,
@@ -60,13 +60,8 @@ function write(works) {
 }
 
 export function useProvideWorks() {
-  const [works, setWorks] = useState([])
-  const [status, setStatus] = useState('loading')
-
-  useEffect(() => {
-    setWorks(read())
-    setStatus('success')
-  }, [])
+  // localStorage 읽기는 동기라 effect 없이 첫 렌더에서 바로 채운다
+  const [works, setWorks] = useState(read)
 
   const save = useCallback((next) => {
     setWorks(next)
@@ -127,5 +122,5 @@ export function useProvideWorks() {
     [save],
   )
 
-  return { works, status, addWorks, editWork, removeWork }
+  return { works, addWorks, editWork, removeWork }
 }

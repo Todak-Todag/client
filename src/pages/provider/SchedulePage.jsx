@@ -35,7 +35,7 @@ function groupWorks(works) {
 /** 내 일정 — 등록해 둔 제공 가능 요일/시간 */
 function SchedulePage() {
   const navigate = useNavigate()
-  const { works, status } = useProvideWorks()
+  const { works } = useProvideWorks()
   const groups = useMemo(() => groupWorks(works), [works])
 
   const edit = (group) =>
@@ -45,13 +45,7 @@ function SchedulePage() {
 
   return (
     <section className={styles.page}>
-      {status === 'loading' && (
-        <p className={styles.state} role="status">
-          일정을 불러오는 중이에요
-        </p>
-      )}
-
-      {status === 'success' && groups.length === 0 && (
+      {groups.length === 0 && (
         <EmptyState
           icon={CalendarIcon}
           title="등록한 제공 일정이 없어요"
@@ -63,11 +57,9 @@ function SchedulePage() {
         <ProvideWorkCard key={group.key} group={group} onEdit={edit} />
       ))}
 
-      {status === 'success' && (
-        <Button variant="outline" onClick={() => navigate(PROVIDER_PATHS.scheduleNew)}>
-          + 일정 추가하기
-        </Button>
-      )}
+      <Button variant="outline" onClick={() => navigate(PROVIDER_PATHS.scheduleNew)}>
+        + 일정 추가하기
+      </Button>
     </section>
   )
 }

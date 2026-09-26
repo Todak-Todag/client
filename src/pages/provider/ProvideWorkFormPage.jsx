@@ -13,13 +13,13 @@ function ProvideWorkFormPage() {
   const navigate = useNavigate()
   const { provideWorkId } = useParams()
   const offerings = useMyOfferings()
-  const { works, status, addWorks, editWork, removeWork } = useProvideWorks()
+  const { works, addWorks, editWork, removeWork } = useProvideWorks()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
   const mode = provideWorkId ? 'edit' : 'create'
   const editing = works.find((work) => work.provideWorkId === provideWorkId)
-  const loading = offerings.status === 'loading' || status === 'loading'
+  const loading = offerings.status === 'loading'
 
   const submit = async (form) => {
     setSubmitting(true)
