@@ -41,6 +41,8 @@
   --color-danger-soft: oklch(96% 0.02 27);
   /* danger 버튼 눌림 상태. danger 글자 대비 4.6:1 */
   --color-danger-soft-pressed: oklch(93% 0.035 27);
+  --color-success: oklch(52% 0.14 152); /* '완료' 등. success-soft 위 5.2:1 */
+  --color-success-soft: oklch(96% 0.03 152);
   /* '검토 중' 배지·확정 전 안내. 주황(진행 중)과 구분되도록 노랑 배경 + 갈색 글자. warning-soft 위 6.2:1 */
   --color-warning: oklch(48% 0.11 65);
   --color-warning-soft: oklch(97.2% 0.035 95);

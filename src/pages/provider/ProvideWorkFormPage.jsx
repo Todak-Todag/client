@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
+import Button from '../../components/ui/Button'
 import ProvideWorkForm from '../../features/provider/ProvideWorkForm'
 import { useMyOfferings } from '../../features/provider/useMyOfferings'
 import { useProvideWorks } from '../../features/provider/useProvideWorks'
@@ -80,9 +81,9 @@ function ProvideWorkFormPage() {
       )}
 
       {mode === 'edit' && editing && (
-        <button type="button" className={styles.remove} onClick={remove}>
+        <Button variant="ghost" className={styles.remove} onClick={remove}>
           이 일정 삭제하기
-        </button>
+        </Button>
       )}
     </SubPageLayout>
   )

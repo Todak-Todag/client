@@ -1,33 +1,56 @@
+/* 퇴원 예정자 ScheduleCard와 같은 카드 규격을 쓴다 */
 .card {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 16px;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-md) var(--space-md) var(--space-lg);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
 }
 
 .head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-sm);
+  min-width: 0;
 }
 
-.service {
-  font-size: 16px;
-  font-weight: 700;
+.title {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
   color: var(--color-text);
 }
 
-.line {
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
   margin: 0;
-  font-size: 14px;
+  font-size: var(--text-base);
   color: var(--color-text-sub);
 }
 
+.icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-muted);
+}
+
+.value {
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
 .day {
-  margin-right: 6px;
-  font-weight: 700;
-  color: var(--color-primary);
+  margin-right: var(--space-2xs);
+  font-weight: var(--weight-bold);
+  color: var(--color-primary-text);
 }

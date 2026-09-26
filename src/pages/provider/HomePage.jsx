@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
+import { completeSchedule } from '../../api/endpoints/schedule'
 import EmptyState from '../../components/common/EmptyState'
 import Button from '../../components/ui/Button'
 import { AlertIcon, CalendarIcon } from '../../components/ui/Icons'
@@ -17,10 +19,25 @@ function HomePage() {
   const now = useNow()
   const me = useAuth()
   const schedules = useTodayProviderSchedules()
+  const [completingId, setCompletingId] = useState(null)
 
   // 재발급까지 실패한 세션 만료
   if (schedules.status === 'error' && schedules.error?.status === 401) {
     return <Navigate to={PATHS.login} replace />
+  }
+
+  /** 방문이 끝난 일정을 수행 완료로 확정한다 (결과 작성은 다음 단계) */
+  const complete = async (schedule) => {
+    setCompletingId(schedule.serviceScheduleId)
+
+    try {
+      await completeSchedule(schedule.serviceScheduleId, 'COMPLETED')
+      schedules.reload()
+    } catch (error) {
+      window.alert(getErrorMessage(error))
+    } finally {
+      setCompletingId(null)
+    }
   }
 
   const goResult = (schedule) =>
@@ -48,7 +65,7 @@ function HomePage() {
           title="일정을 불러오지 못했어요"
           description={getErrorMessage(schedules.error)}
           action={
-            <Button size="sm" block={false} onClick={schedules.reload}>
+            <Button variant="outline" size="md" block={false} onClick={schedules.reload}>
               다시 시도
             </Button>
           }
@@ -73,6 +90,8 @@ function HomePage() {
             key={schedule.serviceScheduleId}
             schedule={schedule}
             now={now}
+            completing={completingId === schedule.serviceScheduleId}
+            onComplete={complete}
             onWriteResult={goResult}
             onViewResult={goResultDetail}
           />

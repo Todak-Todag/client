@@ -11,6 +11,11 @@ import MatchingPage from './pages/patient/MatchingPage'
 import MyPage from './pages/patient/MyPage'
 import NotFoundPage from './pages/NotFoundPage'
 import ProviderHomePage from './pages/provider/HomePage'
+import ProviderMatchingPage from './pages/provider/MatchingPage'
+import ProviderMyPage from './pages/provider/MyPage'
+import ProviderPasswordPage from './pages/provider/PasswordPage'
+import ProviderResultDetailPage from './pages/provider/ResultDetailPage'
+import ProviderResultPage from './pages/provider/ResultPage'
 import ProviderSchedulePage from './pages/provider/SchedulePage'
 import ProvideWorkFormPage from './pages/provider/ProvideWorkFormPage'
 import SchedulePage from './pages/patient/SchedulePage'
@@ -49,11 +54,16 @@ function App() {
         {/* 서비스 제공자 — 뒤로가기 헤더만 있는 화면 */}
         <Route path={PROVIDER_PATHS.scheduleNew} element={<ProvideWorkFormPage />} />
         <Route path={PROVIDER_PATHS.scheduleEdit} element={<ProvideWorkFormPage />} />
+        <Route path={PROVIDER_PATHS.result} element={<ProviderResultPage />} />
+        <Route path={PROVIDER_PATHS.resultDetail} element={<ProviderResultDetailPage />} />
+        <Route path={PROVIDER_PATHS.password} element={<ProviderPasswordPage />} />
 
         {/* 서비스 제공자 — 헤더 + 네브바가 붙는 화면 */}
         <Route element={<ProviderLayout />}>
           <Route path={PROVIDER_PATHS.home} element={<ProviderHomePage />} />
           <Route path={PROVIDER_PATHS.schedule} element={<ProviderSchedulePage />} />
+          <Route path={PROVIDER_PATHS.matching} element={<ProviderMatchingPage />} />
+          <Route path={PROVIDER_PATHS.my} element={<ProviderMyPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/404" replace />} />
