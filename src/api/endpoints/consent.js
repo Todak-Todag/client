@@ -8,5 +8,5 @@ export function getConsentDocuments({ signal } = {}) {
 }
 
 export function getConsentDocument(consentDocumentVersionId, { signal } = {}) {
-  return request('/consent-documents/${consentDocumentVersionId}', { signal });
+  return request(`/consent-documents/${consentDocumentVersionId}`, { signal });
 }

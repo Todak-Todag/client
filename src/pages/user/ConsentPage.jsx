@@ -1,7 +1,12 @@
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
+import { getErrorMessage } from '../../api/client'
 import Header, { HeaderSpacer } from '../../components/layout/Header'
 import { getSignupType } from '../../features/auth/signupTypes'
+import { useConsentDocuments } from '../../features/auth/useConsentDocuments'
 import { PATHS } from '../../constants/paths'
+import { ChevronDownIcon, ChevronUpIcon } from '../../components/ui/Icons'
+import { getConsentDocument } from '../../api/endpoints/consent'
 
 /**
  * <Navigate> vs navigate()
@@ -22,9 +27,31 @@ import { PATHS } from '../../constants/paths'
 function ConsentPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const documents = useConsentDocuments();
   const signupType = getSignupType(searchParams.get('type'));
+  const [openId, setOpenId] = useState(null);
+  const [contents, setContents] = useState({});
 
   if(!signupType) return <Navigate to={PATHS.signup} replace />
+
+  const toggle = async (id) => {
+    const nextOpenId = openId === id ? null : id;
+    setOpenId(nextOpenId);
+
+    if(nextOpenId === null || contents[id]) return;
+
+    setContents((prev) => ({...prev, [id]: { status: 'loading' }}));
+
+    try {
+      const data = await getConsentDocument(id);
+      setContents((prev) => ({
+        ...prev,
+        [id]: { status: 'success', text: data.content },
+      }));
+    } catch (error) {
+      setContents((prev) => ({ ...prev, [id]: { status: 'error', error } }));
+    }
+  }
 
   return (
     <div>
@@ -36,7 +63,53 @@ function ConsentPage() {
       />
       <HeaderSpacer />
 
-      <p>선택한 가입 유형: {signupType.title}</p>
+        <p>선택한 가입 유형: {signupType.title}</p>
+
+        {documents.status === 'loading' && <p>동의서를 불러오는 중이에요...</p>}
+
+        {documents.status === 'error' && (
+          <p role="alert">{getErrorMessage(documents.error)}</p>
+        )}
+
+        {documents.status === 'success' && (
+          <ul>
+                        {documents.data.map((doc) => {
+              const id = doc.consentDocumentVersionId
+              const isOpen = openId === id
+              const content = contents[id]
+
+              return (
+                <li key={id}>
+                  <button
+                    type="button"
+                    onClick={() => toggle(id)}
+                    aria-expanded={isOpen}
+                  >
+                    [{doc.isRequired ? '필수' : '선택'}] {doc.title}
+                    {isOpen ? (
+                      <ChevronUpIcon width={20} height={20} />
+                    ) : (
+                      <ChevronDownIcon width={20} height={20} />
+                    )}
+                  </button>
+
+                  {isOpen && (
+                    <div>
+                      {content?.status === 'loading' && <p>불러오는 중이에요…</p>}
+
+                      {content?.status === 'error' && (
+                        <p role="alert">{getErrorMessage(content.error)}</p>
+                      )}
+
+                      {content?.status === 'success' && <p>{content.text}</p>}
+                    </div>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        )}
+
     </div>
   )
 }

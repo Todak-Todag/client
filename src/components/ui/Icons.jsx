@@ -76,6 +76,22 @@ export function ChevronRightIcon(props) {
   )
 }
 
+export function ChevronDownIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  )
+}
+
+export function ChevronUpIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <path d="M6 15l6-6 6 6" />
+    </svg>
+  )
+}
+
 export function ClockIcon(props) {
   return (
     <svg {...iconProps} {...props}>
