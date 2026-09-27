@@ -8,10 +8,7 @@ import styles from './DischargeCompleteSheet.module.css'
 /**
  * 퇴원 완료 처리 시트
  *
- * 서버는 실제 퇴원일이 미래이면 거절한다. (@PastOrPresent)
- * 다만 테스트 편의를 위해 화면에서는 미래 날짜도 고를 수 있게 두었다.
- * 그 경우 서버가 400으로 돌려주고 시트에 오류 문구가 표시된다.
- *
+ * 실제 퇴원일은 필수이고 미래일 수 없다. (서버 @PastOrPresent)
  * 부모에서 key={discharge?.dischargeId}로 렌더해, 대상이 바뀌면 입력이 초기화되게 한다.
  *
  * @param {object|null} discharge 처리할 퇴원건 (null이면 닫힘)
@@ -39,6 +36,11 @@ function DischargeCompleteSheet({
       return
     }
 
+    if (actualDate > today) {
+      setDateError('실제 퇴원일은 오늘보다 뒤일 수 없어요.')
+      return
+    }
+
     onSubmit(actualDate)
   }
 
@@ -58,6 +60,7 @@ function DischargeCompleteSheet({
             setActualDate(event.target.value)
             setDateError('')
           }}
+          max={today}
           error={dateError || error}
           required
         />
