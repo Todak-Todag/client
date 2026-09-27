@@ -88,8 +88,14 @@ function HospitalHomePage() {
           <li key={discharge.dischargeId}>
             <DischargeCard
               discharge={discharge}
-              // TODO: Care Plan 작성 화면이 생기면 연결
-              onWrite={() => {}}
+              onWrite={() =>
+                navigate(HOSPITAL_PATHS.carePlanNew, {
+                  state: {
+                    patientId: discharge.patientId,
+                    dischargeId: discharge.dischargeId,
+                  },
+                })
+              }
               // TODO: 퇴원처리가 생기면 연결
               onComplete={() => {}}
             />
