@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { getMe, login } from '../api/endpoints/auth'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
@@ -14,6 +14,8 @@ const EMPTY_FORM = { username: '', password: '' }
 
 function LoginPage() {
   const navigate = useNavigate()
+  // 약관 동의를 마치고 돌아올 때만 들어 있다 (새로고침하면 사라진다)
+  const notice = useLocation().state?.notice
   const [form, setForm] = useState(EMPTY_FORM)
   const [errors, setErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
@@ -78,6 +80,12 @@ function LoginPage() {
         <h1 className={styles.serviceName}>todak-todag</h1>
         <p className={styles.tagline}>당신을 위한 맞춤형 케어 플랫폼</p>
       </div>
+
+      {notice && (
+        <p className={styles.notice} role="status">
+          {notice}
+        </p>
+      )}
 
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <Input

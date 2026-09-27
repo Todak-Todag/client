@@ -17,7 +17,8 @@ import {
 } from '../../components/ui/Icons'
 import { getSignupType } from '../../features/auth/signupTypes'
 import { useConsentDocuments } from '../../features/auth/useConsentDocuments'
-import { getConsentDocument } from '../../api/endpoints/consent'
+import { createConsent, getConsentDocument } from '../../api/endpoints/consent'
+import { logout } from '../../api/endpoints/auth'
 import { PATHS } from '../../constants/paths'
 import styles from './ConsentPage.module.css'
 
@@ -44,6 +45,8 @@ function ConsentPage() {
   const [checkedIds, setCheckedIds] = useState([]);
   const [viewingId, setViewingId] = useState(null);
   const [contents, setContents] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const { pathname } = useLocation();
   const signupType = getSignupType(searchParams.get('type'));
 
@@ -92,9 +95,41 @@ function ConsentPage() {
     }
   }
 
+  /** 기존 계정: 동의를 제출하고 다시 로그인하게 한다 */
+  const submitAccountConsent = async () => {
+    setSubmitting(true)
+    setSubmitError('')
+
+    try {
+      await createConsent(checkedIds)
+    } catch (error) {
+      // 임시 토큰은 3분이라 약관을 읽는 동안 만료될 수 있다
+      if (error.status === 401) {
+        navigate(PATHS.login, {
+          replace: true,
+          state: { notice: '동의 가능 시간이 지났어요. 다시 로그인해 주세요.' },
+        })
+        return
+      }
+
+      setSubmitError(getErrorMessage(error))
+      setSubmitting(false)
+      return
+    }
+
+    // 동의로 계정이 승인됐지만 지금 토큰에는 예전 역할이 담겨 있다.
+    // 새 역할이 든 토큰을 받으려면 다시 로그인해야 한다
+    await logout().catch(() => {})
+
+    navigate(PATHS.login, {
+      replace: true,
+      state: { notice: '약관 동의가 완료됐어요. 다시 로그인해 주세요.' },
+    })
+  }
+
   const handleSubmit = () => {
     if (isAccountMode) {
-      // TODO: POST /consents 제출 후 로그아웃 → 로그인 화면으로
+      submitAccountConsent()
       return
     }
 
@@ -214,8 +249,15 @@ function ConsentPage() {
       </div>
 
       <div className={styles.submitArea}>
+        {submitError && (
+          <p className={styles.submitError} role="alert">
+            {submitError}
+          </p>
+        )}
+
         <Button
           disabled={!canSubmit}
+          loading={submitting}
           onClick={handleSubmit}
         >
           동의하고 시작하기

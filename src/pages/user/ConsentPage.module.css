@@ -168,3 +168,11 @@
   padding: var(--space-sm) var(--page-gutter);
   background-color: none;
 }
+.submitError {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-normal);
+  text-align: center;
+  color: var(--color-danger);
+}
