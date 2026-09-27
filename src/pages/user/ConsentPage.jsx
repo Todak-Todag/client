@@ -127,7 +127,10 @@ function ConsentPage() {
         title="약관 동의"
         logo={null}
         showBack
-        onBack={() => navigate(-1)}
+        // 계정 모드는 로그인 직후라 돌아갈 이전 화면이 없다. 로그인으로 보낸다
+        onBack={() =>
+          isAccountMode ? navigate(PATHS.login, { replace: true }) : navigate(-1)
+        }
       />
       <HeaderSpacer />
 
@@ -137,7 +140,9 @@ function ConsentPage() {
         약관에 동의해 주세요.
       </h1>
       <p className={styles.description}>
-        필수 약관에 모두 동의하면 서비스를 시작할 수 있어요.
+        {isAccountMode
+          ? '필수 약관에 모두 동의해야 서비스를 이용할 수 있어요.'
+          : '필수 약관에 모두 동의하면 서비스를 시작할 수 있어요.'}
       </p>
 
       {documents.status === 'loading' && (
@@ -202,7 +207,9 @@ function ConsentPage() {
       <div className={styles.notice}>
         <InfoIcon className={styles.noticeIcon} />
         <p className={styles.noticeText}>
-          선택 약관은 동의하지 않아도 가입할 수 있어요.
+          {isAccountMode
+            ? '동의를 마치면 다시 로그인해 주세요. 선택 약관은 동의하지 않아도 이용할 수 있어요.'
+            : '선택 약관은 동의하지 않아도 가입할 수 있어요.'}
         </p>
       </div>
 
