@@ -1,0 +1,145 @@
+/* 마이페이지. 섹션 제목·글자 버튼은 CarePlanPage.module.css를 함께 쓴다 */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding-top: var(--space-xs);
+}
+
+/* 한 카드 안에 줄로 나눈 목록 (항목마다 카드를 만들지 않음). 구분선은 안쪽 여백만큼 들여 긋는다 */
+.group {
+  margin: 0;
+  padding: 0 var(--space-md) 0 var(--space-lg);
+  list-style: none;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.group > * + * {
+  border-top: 1px solid var(--color-border);
+}
+
+/* ── 내 정보: 라벨 왼쪽 · 값 오른쪽 · 수정 버튼 ────────── */
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 60px;
+}
+
+.infoLabel {
+  flex: 0 0 auto;
+  font-size: var(--text-base);
+  color: var(--color-text-sub);
+}
+
+.infoValue {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+/* 글자는 카드 안쪽 여백에 맞추고 누르는 영역만 바깥으로 넓힌다 */
+.editButton {
+  flex: 0 0 auto;
+  margin: 0 calc(var(--space-xs) * -1) 0 calc(var(--space-2xs) * -1);
+}
+
+/* ── 메뉴: 줄 전체가 링크 ───────────────────────────── */
+.menuRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 60px;
+  /* 누름 배경이 카드 끝까지 차도록 카드 안쪽 여백만큼 넓힌다 */
+  margin: 0 calc(var(--space-md) * -1) 0 calc(var(--space-lg) * -1);
+  padding: 0 var(--space-md) 0 var(--space-lg);
+  color: var(--color-text);
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--dur-short) var(--ease-out);
+}
+
+.menuRow:active {
+  background-color: var(--color-bg);
+}
+
+.menuRow:focus-visible {
+  outline-offset: -2px;
+}
+
+.menuIcon {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  color: var(--color-text-sub);
+}
+
+.menuLabel {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+}
+
+.chevron {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-muted);
+}
+
+/* ── 로그아웃 | 탈퇴하기: 자주 쓰지 않는 계정 동작이라 ghost 버튼으로 낮춘다 ── */
+.account {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+
+.accountDivider {
+  width: 1px;
+  height: 12px;
+  background-color: var(--color-border-strong);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menuRow:hover {
+    background-color: var(--color-bg);
+  }
+}
+
+/* ── 로딩 자리표시: 내 정보 줄 모양만 ──────────────── */
+.skeletonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding-block: var(--space-md);
+}
+
+.skeletonGroup > * + * {
+  border-top: none;
+}
+
+.skeletonRow {
+  display: block;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-skeleton);
+  animation: pulse 1.4s var(--ease-in-out) infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}

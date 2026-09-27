@@ -178,6 +178,16 @@ export function DocumentIcon(props) {
   )
 }
 
+export function LockIcon(props) {
+  return (
+    <svg {...iconProps} {...props}>
+      <rect x="4.5" y="10.5" width="15" height="10.5" rx="2.5" />
+      <path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" />
+      <path d="M12 15v2" />
+    </svg>
+  )
+}
+
 export function EyeIcon(props) {
   return (
     <svg {...iconProps} {...props}>
