@@ -15,6 +15,8 @@ function OfferingsPage() {
   const choices = useOfferingChoices()
   const [pendingId, setPendingId] = useState(null)
   const [removing, setRemoving] = useState(null)
+  // 등록·삭제 실패 안내 (목록은 그대로 두고 문구만 보여준다)
+  const [actionError, setActionError] = useState('')
 
   // 등록·삭제 뒤에는 일정 화면이 쓰는 서비스 이름 캐시도 함께 비운다
   const refresh = () => {
@@ -24,12 +26,13 @@ function OfferingsPage() {
 
   const add = async (service) => {
     setPendingId(service.provideServiceId)
+    setActionError('')
 
     try {
       await createOffering(service.provideServiceId)
       refresh()
     } catch (error) {
-      window.alert(getErrorMessage(error))
+      setActionError(getErrorMessage(error))
     } finally {
       setPendingId(null)
     }
@@ -37,12 +40,13 @@ function OfferingsPage() {
 
   const remove = async () => {
     setPendingId(removing.serviceOfferingId)
+    setActionError('')
 
     try {
       await deleteOffering(removing.serviceOfferingId)
       refresh()
     } catch (error) {
-      window.alert(getErrorMessage(error))
+      setActionError(getErrorMessage(error))
     } finally {
       setRemoving(null)
       setPendingId(null)
@@ -80,6 +84,12 @@ function OfferingsPage() {
   return (
     <SubPageLayout title="제공 서비스 관리">
       <section className={styles.page}>
+        {actionError && (
+          <p className={styles.error} role="alert">
+            {actionError}
+          </p>
+        )}
+
         <h2 className={styles.heading}>내 제공 서비스</h2>
 
         {mine.length === 0 ? (

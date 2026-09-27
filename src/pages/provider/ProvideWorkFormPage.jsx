@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
+import ConfirmDialog from '../../components/common/ConfirmDialog'
 import EmptyState from '../../components/common/EmptyState'
 import Button from '../../components/ui/Button'
 import { ListIcon } from '../../components/ui/Icons'
@@ -19,6 +20,7 @@ function ProvideWorkFormPage() {
   const { works, addWorks, editWork, removeWork } = useProvideWorks()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
+  const [removeOpen, setRemoveOpen] = useState(false)
 
   const mode = provideWorkId ? 'edit' : 'create'
   const editing = works.find((work) => work.provideWorkId === provideWorkId)
@@ -46,7 +48,7 @@ function ProvideWorkFormPage() {
   }
 
   const remove = async () => {
-    if (!window.confirm('이 제공 일정을 삭제할까요?')) return
+    setRemoveOpen(false)
 
     try {
       await removeWork(editing)
@@ -114,10 +116,20 @@ function ProvideWorkFormPage() {
       )}
 
       {mode === 'edit' && editing && (
-        <Button variant="danger" className={styles.remove} onClick={remove}>
+        <Button variant="danger" className={styles.remove} onClick={() => setRemoveOpen(true)}>
           이 일정 삭제하기
         </Button>
       )}
+
+      <ConfirmDialog
+        open={removeOpen}
+        danger
+        title="이 제공 일정을 삭제할까요?"
+        description="삭제하면 이 요일·시간에는 더 이상 매칭되지 않아요."
+        confirmLabel="삭제"
+        onConfirm={remove}
+        onClose={() => setRemoveOpen(false)}
+      />
     </SubPageLayout>
   )
 }
