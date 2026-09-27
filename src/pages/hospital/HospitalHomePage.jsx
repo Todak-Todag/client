@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
 import Button from '../../components/ui/Button'
@@ -8,17 +9,22 @@ import ProfileCard, {
   ProfileCardSkeleton,
 } from '../../features/auth/ProfileCard'
 import { useAuth } from '../../features/auth/useAuth'
+import { completeDischarge } from '../../api/endpoints/discharge'
+import DischargeCompleteSheet from '../../features/hospital/DischargeCompleteSheet'
 import { useRecentDischarges } from '../../features/hospital/useDischarges'
 import { HOSPITAL_PATHS, PATHS } from '../../constants/paths'
 import styles from './HospitalHomePage.module.css'
 
-/* TODO: Care Plan 작성 화면, 퇴원처리 연결 */
+/* TODO: 안내 문구 표시 방식 정리 */
 function HospitalHomePage() {
   const navigate = useNavigate()
   // 등록 화면에서 넘어올 때만 들어 있다 (새로고침하면 사라진다)
   const notice = useLocation().state?.notice
   const me = useAuth()
   const discharges = useRecentDischarges()
+  const [completeTarget, setCompleteTarget] = useState(null)
+  const [completing, setCompleting] = useState(false)
+  const [completeError, setCompleteError] = useState('')
 
   // 비로그인이면 로그인 화면으로 (다른 오류는 아래에서 다시 시도할 수 있게 둔다)
   if (me.status === 'error' && me.error?.status === 401) {
@@ -40,6 +46,22 @@ function HospitalHomePage() {
     }
 
     return <ProfileCard name={me.data.name} />
+  }
+
+  /** 퇴원 완료 처리 후 목록을 다시 불러와 카드가 '작성하기'로 바뀌게 한다 */
+  const handleComplete = async (actualDate) => {
+    setCompleting(true)
+    setCompleteError('')
+
+    try {
+      await completeDischarge(completeTarget.dischargeId, { actualDate })
+      setCompleteTarget(null)
+      discharges.reload()
+    } catch (caught) {
+      setCompleteError(getErrorMessage(caught))
+    } finally {
+      setCompleting(false)
+    }
   }
 
   const renderDischarges = () => {
@@ -96,8 +118,7 @@ function HospitalHomePage() {
                   },
                 })
               }
-              // TODO: 퇴원처리가 생기면 연결
-              onComplete={() => {}}
+              onComplete={setCompleteTarget}
             />
           </li>
         ))}
@@ -133,6 +154,15 @@ function HospitalHomePage() {
 
         {renderDischarges()}
       </section>
+
+      <DischargeCompleteSheet
+        key={completeTarget?.dischargeId}
+        discharge={completeTarget}
+        submitting={completing}
+        error={completeError}
+        onClose={() => setCompleteTarget(null)}
+        onSubmit={handleComplete}
+      />
     </div>
   )
 }

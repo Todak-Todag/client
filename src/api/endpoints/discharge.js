@@ -35,3 +35,19 @@ export function searchDischarges({
 export function createDischarge(body) {
   return request('/discharges', { method: 'POST', body })
 }
+
+/**
+ * 퇴원 완료 처리 (병원 담당자 전용)
+ *
+ * actualDate는 필수이며 오늘보다 뒤일 수 없다. (서버 @PastOrPresent)
+ * 완료되어야 Care Plan을 만들 수 있다.
+ *
+ * @param {{ actualDate: string }} body 'YYYY-MM-DD'
+ * @returns {Promise<{ dischargeId: string, status: string, actualDate: string }>}
+ */
+export function completeDischarge(dischargeId, body) {
+  return request(`/discharges/${dischargeId}/completed`, {
+    method: 'PATCH',
+    body,
+  })
+}
