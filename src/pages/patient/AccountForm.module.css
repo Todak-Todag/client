@@ -1,0 +1,8 @@
+/* 비밀번호 변경 · 회원 탈퇴. 페이지 틀·안내 상자·하단 동작 영역은 CarePlanPage.module.css를 함께 쓴다 */
+
+/* 입력창 아래 안내 문구 자리를 미리 잡아 두므로(Input reserveMessage) 간격은 좁게 */
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
