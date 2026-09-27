@@ -195,16 +195,6 @@ function PatientCreatePage() {
         />
 
         <Input
-          label="주소"
-          name="address"
-          value={form.address}
-          onChange={handleChange}
-          placeholder="상세 주소를 입력해주세요"
-          hint="지역을 선택한 경우에만 필요해요"
-          error={errors.address}
-        />
-
-        <Input
           label="지역"
           name="regionLabel"
           value={form.regionLabel}
@@ -222,6 +212,19 @@ function PatientCreatePage() {
         >
           지역 선택
         </Button>
+
+        {/* 지역을 골랐을 때만 주소를 받는다 (서버는 지역이 있으면 주소를 요구한다) */}
+        {form.regionId && (
+          <Input
+            label="주소"
+            name="address"
+            value={form.address}
+            onChange={handleChange}
+            placeholder="상세 주소를 입력해주세요"
+            error={errors.address}
+            required
+          />
+        )}
 
         <Input
           label="병원명"
