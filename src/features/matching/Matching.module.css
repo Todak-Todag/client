@@ -1,0 +1,135 @@
+/* 카드·제목·메타·inset은 케어플랜 카드(CarePlanReview.module.css)를 그대로 쓰고, 여기에는 매칭 화면에만 있는 모양만 둔다 */
+
+/* 안내 상자 (다시 요청 접수 · 시트 안내). 일정 시트의 안내와 같은 모양 */
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-sunken);
+  font-size: var(--text-sm);
+  color: var(--color-text-sub);
+}
+
+.noteIcon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-top: 0.5px;
+}
+
+.description {
+  margin: 0;
+  font-size: var(--text-base);
+  color: var(--color-text-sub);
+}
+
+/* ── 매칭 완료 목록: 한 카드 안에 줄로 (건마다 카드를 만들지 않음) ── */
+.rows {
+  margin: 0;
+  padding: 0 var(--space-md) 0 var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  padding: var(--space-md) 0;
+}
+
+.row + .row {
+  border-top: 1px solid var(--color-border);
+}
+
+.rowTitle {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+.rowMeta {
+  margin: 0;
+  font-size: var(--text-base);
+  color: var(--color-text-sub);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 사회복지사 카드 ───────────────────────────── */
+/* 아이콘은 제목 옆에 붙인다 (아이콘 타일을 제목 위에 따로 올리지 않음) */
+.person {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.avatar {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary-text);
+}
+
+.avatarIcon {
+  width: 22px;
+  height: 22px;
+}
+
+.personBody {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+
+/* 배정일처럼 이름-값 한 줄 */
+.field {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin: 0;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.fieldLabel {
+  font-size: var(--text-base);
+  color: var(--color-text-sub);
+}
+
+.fieldValue {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
