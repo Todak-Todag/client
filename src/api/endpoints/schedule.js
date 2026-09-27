@@ -100,7 +100,10 @@ export function registerResult(serviceScheduleId, body) {
 }
 
 /**
- * 수행 결과 목록 조회
+ * 수행 결과 목록 조회 (PATIENT · SERVICE_PROVIDER, ServiceResultApiController.search)
+ * - 퇴원 예정자는 본인 Care Plan 희망 일정의 결과만 내려온다. 희망 일정이 없으면 빈 페이지
+ * - 결과는 COMPLETED·NO_SHOW 일정에만 등록된다 (일정 하나에 결과 하나)
+ * - 정렬은 createdAt(기본 DESC)만 지원한다
  * @returns {Promise<{ content: Array<{ serviceResultId: string, startedAt: string,
  *   finishedAt: string }>, pageInfo: object }>}
  *   목록에는 일정 ID가 없어 어떤 일정의 결과인지는 상세로 확인해야 한다.
@@ -110,7 +113,8 @@ export function getResults({ page, size, signal } = {}) {
 }
 
 /**
- * 수행 결과 상세 조회
+ * 수행 결과 상세 조회 (PATIENT · SERVICE_PROVIDER)
+ * 없는 결과·남의 결과는 모두 403 AUTH_FORBIDDEN (404를 내려주지 않는다)
  * @returns {Promise<{ serviceResultId: string, serviceScheduleId: string,
  *   startedAt: string, finishedAt: string, note: string|null }>}
  */
