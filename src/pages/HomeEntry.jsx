@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom'
-import PatientHomePage from './patient/HomePage'
+import PatientHomePage, { HomePageSkeleton } from './patient/HomePage'
 import { useAuth } from '../features/auth/useAuth'
 import { PATHS } from '../constants/paths'
 import { getHomePathByRole } from '../constants/roles'
@@ -13,8 +13,9 @@ import { getHomePathByRole } from '../constants/roles'
 function HomeEntry() {
   const me = useAuth()
 
-  // 내 정보를 받기 전에는 아무것도 그리지 않는다 (잘못된 화면이 잠깐 보이지 않도록)
-  if (me.status === 'loading') return null
+  // 내 정보를 받기 전에는 역할과 무관한 자리표시만 보여준다 (잘못된 화면이 잠깐 보이지 않도록.
+  // 아무것도 그리지 않으면 느린 네트워크에서 빈 화면이 오래 남는다)
+  if (me.status === 'loading') return <HomePageSkeleton />
 
   // 비로그인(401)이면 로그인 화면으로
   if (me.status === 'error' && me.error?.status === 401) return <Navigate to={PATHS.login} replace />
