@@ -10,3 +10,11 @@
   flex-direction: column;
   gap: var(--space-xs);
 }
+
+.regionButton {
+  margin-top: calc(var(--space-2xs) * -1);
+}
+
+.submit {
+  margin-top: var(--space-md);
+}
