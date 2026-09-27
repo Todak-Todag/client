@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import { SCHEDULE_STATUS } from '../../constants/status'
-import { formatDateLabel, formatTime } from '../../utils/date'
+import { formatDateLabel, formatTime, formatTimeRange } from '../../utils/date'
 import styles from './ResultForm.module.css'
 
 /**
@@ -18,8 +18,9 @@ function ResultForm({ schedule, submitting, onSubmit }) {
       ? SCHEDULE_STATUS.NO_SHOW
       : SCHEDULE_STATUS.COMPLETED,
   )
-  const [startedAt, setStartedAt] = useState(formatTime(schedule.startedAt))
-  const [finishedAt, setFinishedAt] = useState(formatTime(schedule.finishedAt))
+  // 예정된 방문 시간 그대로 기록한다 (제공자가 임의로 못 바꾼다)
+  const startedAt = formatTime(schedule.startedAt)
+  const finishedAt = formatTime(schedule.finishedAt)
   const [note, setNote] = useState('')
 
   const done = status === SCHEDULE_STATUS.COMPLETED
@@ -40,28 +41,12 @@ function ResultForm({ schedule, submitting, onSubmit }) {
         reserveMessage={false}
       />
 
-      <section className={styles.section}>
-        <span className={styles.label}>시간</span>
-        <div className={styles.times}>
-          <Input
-            type="time"
-            aria-label="수행 시작 시각"
-            value={startedAt}
-            reserveMessage={false}
-            onChange={(event) => setStartedAt(event.target.value)}
-          />
-          <span className={styles.tilde} aria-hidden="true">
-            ~
-          </span>
-          <Input
-            type="time"
-            aria-label="수행 종료 시각"
-            value={finishedAt}
-            reserveMessage={false}
-            onChange={(event) => setFinishedAt(event.target.value)}
-          />
-        </div>
-      </section>
+      <Input
+        label="시간"
+        value={formatTimeRange(schedule.startedAt, schedule.finishedAt)}
+        readOnly
+        reserveMessage={false}
+      />
 
       {/* 수행 여부가 아직 확정되지 않은 일정에서만 고를 수 있다 */}
       {schedule.status === SCHEDULE_STATUS.SCHEDULED && (
