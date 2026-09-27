@@ -51,6 +51,7 @@ function App() {
         <Route path={PATHS.login} element={<LoginPage />} />
         <Route path={PATHS.signup} element={<SignupPage />} />
         <Route path={PATHS.signupConsent} element={<ConsentPage />} />
+        <Route path={PATHS.consent} element={<ConsentPage />} />
         <Route path={PATHS.signupForm} element={<SignupFormPage />} />
 
         {/* 헤더 + 네브바가 붙는 화면 */}

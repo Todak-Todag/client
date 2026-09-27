@@ -1,4 +1,9 @@
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 import { useState } from 'react'
 import { getErrorMessage } from '../../api/client'
 import BottomSheet from '../../components/ui/BottomSheet'
@@ -39,9 +44,18 @@ function ConsentPage() {
   const [checkedIds, setCheckedIds] = useState([]);
   const [viewingId, setViewingId] = useState(null);
   const [contents, setContents] = useState({});
+  const { pathname } = useLocation();
   const signupType = getSignupType(searchParams.get('type'));
 
-  if (!signupType) return <Navigate to={PATHS.signup} replace />
+  /*
+   * 두 가지 경로로 들어온다.
+   * - /signup/consent : 회원가입 중. 동의 내역을 가입 폼으로 넘긴다
+   * - /consent        : 이미 만들어진 계정(병원이 등록한 퇴원 예정자)의 첫 로그인.
+   *                     POST /consents로 바로 제출한다
+   */
+  const isAccountMode = pathname === PATHS.consent;
+
+  if (!isAccountMode && !signupType) return <Navigate to={PATHS.signup} replace />
 
   const docs = documents.data ?? [];
   const isChecked = (id) => checkedIds.includes(id);
@@ -79,6 +93,11 @@ function ConsentPage() {
   }
 
   const handleSubmit = () => {
+    if (isAccountMode) {
+      // TODO: POST /consents 제출 후 로그아웃 → 로그인 화면으로
+      return
+    }
+
     const agreements = docs.map((doc) => ({
       termsId: doc.consentDocumentVersionId,
       agreed: isChecked(doc.consentDocumentVersionId)

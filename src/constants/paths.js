@@ -4,6 +4,8 @@ export const PATHS = {
   signup: '/signup',
   signupConsent: '/signup/consent',
   signupForm: '/signup/form',
+  // 이미 만들어진 계정의 약관 동의 (병원이 등록한 퇴원 예정자의 첫 로그인)
+  consent: '/consent',
   home: '/',
   schedule: '/schedule',
   // 일정 상세 (뒤로가기 헤더만 있는 하위 화면)
