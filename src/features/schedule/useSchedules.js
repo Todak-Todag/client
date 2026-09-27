@@ -7,8 +7,9 @@ import { useAsync } from '../../hooks/useAsync'
 
 /**
  * 희망 일정 → 서비스 종류 ID. 실패하면 이름만 비워 두도록 null
+ * 수행 결과 상세도 같은 방법으로 서비스 이름을 찾는다.
  */
-async function findProvideServiceIdByPreference(servicePreferenceId, signal) {
+export async function findProvideServiceIdByPreference(servicePreferenceId, signal) {
   try {
     const preference = await getServicePreference(servicePreferenceId, { signal })
     return preference.provideServiceId
@@ -36,8 +37,11 @@ async function findProvideServiceId(serviceScheduleId, signal) {
 // 서비스 종류는 앱을 쓰는 동안 바뀌지 않아서, 날짜를 바꿀 때마다 다시 받지 않도록 성공한 결과만 보관한다
 let serviceInfoCache = null
 
-/** 서비스 종류 ID → { name, content }. 실패해도 목록은 보여줄 수 있도록 빈 Map을 돌려준다. */
-async function loadServiceInfos(signal) {
+/**
+ * 서비스 종류 ID → { name, content }. 실패해도 목록은 보여줄 수 있도록 빈 Map을 돌려준다.
+ * 매칭 현황도 provideServiceId로 이름을 찾으므로 같은 캐시를 쓴다.
+ */
+export async function loadServiceInfos(signal) {
   if (serviceInfoCache) return serviceInfoCache
 
   try {

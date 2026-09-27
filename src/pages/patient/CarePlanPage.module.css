@@ -99,6 +99,12 @@
   color: var(--color-warning);
 }
 
+/* 되돌릴 수 없는 결과 안내 (회원 탈퇴) */
+.noteDanger {
+  background-color: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
 .noteIcon {
   flex: 0 0 auto;
   width: 20px;

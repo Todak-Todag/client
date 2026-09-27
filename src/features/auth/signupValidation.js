@@ -1,10 +1,11 @@
 const USERNAME_PATTERN = /^(?=.*[A-Za-z])(?=.*\d)[a-z][A-Za-z0-9]{5,}$/
 
-const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9\s])\S{8,}$/
+/** 8자 이상, 영문·숫자·특수문자 각각 1개 이상, 공백 없음 (최대 20자는 따로 확인) */
+export const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9\s])\S{8,}$/
 
-const NAME_PATTERN = /^[A-Za-z가-힣]+$/
+export const NAME_PATTERN = /^[A-Za-z가-힣]+$/
 
-const PHONE_PATTERN = /^\d{9,11}$/
+export const PHONE_PATTERN = /^\d{9,11}$/
 
 export function validateSignupForm(form) {
   const errors = {}

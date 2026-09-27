@@ -29,6 +29,27 @@ export const MATCHING_ATTEMPT_STATUS = {
   EXPIRED: 'EXPIRED',
 }
 
+/** 매칭 실패 사유 (provider-service ProviderMatchFailedEvent). 현재 이 값 하나뿐이다 */
+export const MATCHING_FAILURE_REASON = {
+  NO_AVAILABLE_PROVIDER: 'NO_AVAILABLE_PROVIDER',
+}
+
+/** 사회복지사 매칭 결과 (social-worker-service MatchingStatus) */
+export const SOCIAL_WORKER_MATCHING_STATUS = {
+  REQUESTED: 'REQUESTED',
+  ACTIVE: 'ACTIVE',
+  FAILED: 'FAILED',
+  ENDED: 'ENDED',
+}
+
+/** 사회복지사 매칭 처리 현황 (social-worker-service MatchingTaskStatus) */
+export const SOCIAL_WORKER_MATCHING_TASK_STATUS = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+}
+
 /** 희망 시간대 (care-plan-service PreferredTimeSlot) */
 export const PREFERRED_TIME_SLOT = {
   MORNING: 'MORNING',

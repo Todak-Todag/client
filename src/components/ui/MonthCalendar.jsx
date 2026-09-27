@@ -30,7 +30,6 @@ function MonthCalendar({
   onMonthChange,
 }) {
   const [visible, setVisible] = useState(() => toMonth(value ?? min))
-
   const canPrev = monthKey(visible) > monthKey(toMonth(min))
   const canNext = monthKey(visible) < monthKey(toMonth(max))
 
