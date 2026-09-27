@@ -1,5 +1,6 @@
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
+import Button from '../../components/ui/Button'
 import EmptyState from '../../components/common/EmptyState'
 import { AlertIcon, UserIcon } from '../../components/ui/Icons'
 import DischargeCard from '../../features/hospital/DischargeCard'
@@ -7,24 +8,17 @@ import ProfileCard, {
   ProfileCardSkeleton,
 } from '../../features/auth/ProfileCard'
 import { useAuth } from '../../features/auth/useAuth'
-import {
-  DUMMY_DISCHARGES,
-  getDummyPatient,
-} from '../../dummy/dischargePatients'
+import { useRecentDischarges } from '../../features/hospital/useDischarges'
 import { HOSPITAL_PATHS, PATHS } from '../../constants/paths'
 import styles from './HospitalHomePage.module.css'
 
-/*
- * TODO: 퇴원 예정자 등록 화면, todak-todag 작성 화면 연결
- * TODO: 서버에 퇴원건이 쌓이면 DUMMY_DISCHARGES를 useRecentDischarges()로 교체
- *       (features/hospital/useDischarges.js에 GET /discharges 연동이 준비돼 있다)
- */
+/* TODO: Care Plan 작성 화면, 퇴원처리 연결 */
 function HospitalHomePage() {
   const navigate = useNavigate()
   // 등록 화면에서 넘어올 때만 들어 있다 (새로고침하면 사라진다)
   const notice = useLocation().state?.notice
   const me = useAuth()
-  const discharges = DUMMY_DISCHARGES
+  const discharges = useRecentDischarges()
 
   // 비로그인이면 로그인 화면으로 (다른 오류는 아래에서 다시 시도할 수 있게 둔다)
   if (me.status === 'error' && me.error?.status === 401) {
@@ -49,7 +43,36 @@ function HospitalHomePage() {
   }
 
   const renderDischarges = () => {
-    if (discharges.length === 0) {
+    if (discharges.status === 'loading') {
+      return (
+        <p className={styles.state} role="status">
+          연계 환자를 불러오는 중이에요…
+        </p>
+      )
+    }
+
+    if (discharges.status === 'error') {
+      return (
+        <EmptyState
+          tone="error"
+          icon={AlertIcon}
+          title="연계 환자를 불러오지 못했어요"
+          description={getErrorMessage(discharges.error)}
+          action={
+            <Button
+              variant="outline"
+              size="md"
+              block={false}
+              onClick={discharges.reload}
+            >
+              다시 시도
+            </Button>
+          }
+        />
+      )
+    }
+
+    if (discharges.data.length === 0) {
       return (
         <EmptyState
           icon={UserIcon}
@@ -61,14 +84,14 @@ function HospitalHomePage() {
 
     return (
       <ul className={styles.list}>
-        {discharges.map((discharge) => (
+        {discharges.data.map((discharge) => (
           <li key={discharge.dischargeId}>
             <DischargeCard
               discharge={discharge}
-              // 서버가 환자 이름·나이·성별·작성여부를 주지 않아 임시 값으로 채운다
-              patient={getDummyPatient(discharge.patientId)}
-              // TODO: todak-todag 작성 화면이 생기면 연결
+              // TODO: Care Plan 작성 화면이 생기면 연결
               onWrite={() => {}}
+              // TODO: 퇴원처리가 생기면 연결
+              onComplete={() => {}}
             />
           </li>
         ))}
