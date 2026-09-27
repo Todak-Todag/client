@@ -126,6 +126,9 @@ export function getResult(serviceResultId, { signal } = {}) {
  * - Care Plan이 CONFIRMED일 때만 결과가 있다. IN_PROGRESS는 빈 목록,
  *   Care Plan이 없거나 UNDER_REVIEW·COMPLETED면 403 AUTH_FORBIDDEN.
  *   (schedule-service가 조회하는 care-plan 내부 API가 CONFIRMED/IN_PROGRESS만 찾고, 못 찾은 404를 403으로 바꾼다)
+ * - 기록은 매칭 결과를 받을 때마다 쌓인다. 다시 요청해도 실패하면 같은 희망 일정(servicePreferenceId)에
+ *   FAILED가 또 생기고, 일정 변경으로 재매칭되면 MATCHED가 또 생긴다.
+ * - MATCHED 기록의 preferredTimeSlot은 항상 null이다 (성공 이벤트에 시간대가 없음)
  * - size는 10/30/50만 허용하고 그 외는 10. 정렬은 createdAt 고정(기본 DESC).
  *
  * @param {{ status?: 'MATCHED'|'FAILED'|'EXPIRED', page?: number, size?: 10|30|50, signal?: AbortSignal }} params
@@ -138,4 +141,28 @@ export function getResult(serviceResultId, { signal } = {}) {
  */
 export function getMatchingAttempts({ status, page, size, signal } = {}) {
   return request('/matching-attempts', { query: { status, page, size }, signal })
+}
+
+/**
+ * 매칭 실패 건 다시 요청 (퇴원 예정자 전용, 202 Accepted)
+ * 서버는 재매칭 이벤트만 적재하고 바로 응답한다. 결과는 나중에 새 매칭 시도 기록(MATCHED/FAILED)으로 쌓이며,
+ * 원래 FAILED 기록은 일정이 생기기 전까지 목록에 그대로 남는다.
+ *
+ * 서버 검증 (ServiceMatchingAttemptCommandService · MatchingAttemptValidator)
+ * - 없는 기록·남의 기록: 403 AUTH_FORBIDDEN
+ * - FAILED가 아님: 409 MATCHING_ATTEMPT_NOT_RETRYABLE
+ * - 같은 기록으로 이미 요청함 (결과가 나온 뒤에도 계속): 409 MATCHING_ATTEMPT_RETRY_ALREADY_REQUESTED
+ * - 날짜가 Care Plan 기간(종료일 - 29일 ~ 종료일) 밖: 400 MATCHING_ATTEMPT_RETRY_EXCEEDS_CARE_PLAN_RANGE
+ *   (오늘 이전 날짜는 서버가 막지 않는다)
+ * - date 누락: 400 INVALID_PARAMETER
+ *
+ * @param {{ date: string, preferredTimeSlot?: 'MORNING'|'AFTERNOON'|null }} body date는 'YYYY-MM-DD'
+ * @returns {Promise<{ matchingAttemptId: string, servicePreferenceId: string, date: string,
+ *   preferredTimeSlot: 'MORNING'|'AFTERNOON'|null }>}
+ */
+export function retryMatchingAttempt(matchingAttemptId, { date, preferredTimeSlot }) {
+  return request(`/matching-attempts/${matchingAttemptId}/retry`, {
+    method: 'POST',
+    body: { date, preferredTimeSlot },
+  })
 }

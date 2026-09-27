@@ -17,9 +17,10 @@ const monthKey = ({ year, month }) => year * 12 + month
  * @param {string} max 고를 수 있는 마지막 날 'YYYY-MM-DD'
  * @param {(date: string) => void} onChange
  * @param {string} label 스크린리더용 이름
+ * @param {string} defaultMonth 선택한 날짜가 없을 때 처음 보여줄 달의 아무 날 'YYYY-MM-DD' (없으면 min의 달)
  */
-function MonthCalendar({ value, min, max, onChange, label = '날짜 선택' }) {
-  const [visible, setVisible] = useState(() => toMonth(value ?? min))
+function MonthCalendar({ value, min, max, onChange, label = '날짜 선택', defaultMonth }) {
+  const [visible, setVisible] = useState(() => toMonth(value ?? defaultMonth ?? min))
 
   const canPrev = monthKey(visible) > monthKey(toMonth(min))
   const canNext = monthKey(visible) < monthKey(toMonth(max))

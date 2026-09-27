@@ -28,7 +28,7 @@ export const NAV_PATH_BY_KEY = {
 export const TITLE_BY_PATH = {
   [PATHS.home]: '', // 홈은 로고만 표시 (디자인 시안)
   [PATHS.schedule]: '일정',
-  [PATHS.matching]: '매칭',
+  [PATHS.matching]: '매칭 현황',
   [PATHS.my]: '마이페이지',
 }
 
