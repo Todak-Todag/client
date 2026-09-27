@@ -1,6 +1,5 @@
-import { useId, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getErrorMessage } from '../../api/client'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import RegionSelectSheet from '../../features/auth/RegionSelectSheet'
@@ -9,7 +8,6 @@ import {
   getMinScheduledDate,
   validatePatientForm,
 } from '../../features/hospital/patientValidation'
-import { useProvideServices } from '../../features/hospital/useProvideServices'
 import { usePatientCreate } from '../../features/hospital/usePatientCreate'
 import { HOSPITAL_PATHS } from '../../constants/paths'
 import styles from './PatientCreatePage.module.css'
@@ -25,8 +23,6 @@ const EMPTY_FORM = {
   regionLabel: '',
   hospitalName: '',
   scheduledDate: '',
-  // 권고 사항으로 고른 provideServiceId 목록
-  serviceIds: [],
 }
 
 /*
@@ -40,11 +36,9 @@ const EMPTY_FORM = {
  */
 function PatientCreatePage() {
   const navigate = useNavigate()
-  const servicesLabelId = useId()
   const [form, setForm] = useState(EMPTY_FORM)
   const [errors, setErrors] = useState({})
   const [regionOpen, setRegionOpen] = useState(false)
-  const services = useProvideServices()
   const create = usePatientCreate()
 
   const handleChange = (event) => {
@@ -69,68 +63,6 @@ function PatientCreatePage() {
     setRegionOpen(false)
   }
 
-  const toggleService = (provideServiceId) => {
-    setForm((prev) => ({
-      ...prev,
-      serviceIds: prev.serviceIds.includes(provideServiceId)
-        ? prev.serviceIds.filter((id) => id !== provideServiceId)
-        : [...prev.serviceIds, provideServiceId],
-    }))
-  }
-
-  const renderServices = () => {
-    if (services.status === 'loading') {
-      return (
-        <p className={styles.serviceState} role="status">
-          권고 사항을 불러오는 중이에요…
-        </p>
-      )
-    }
-
-    if (services.status === 'error') {
-      return (
-        <p className={styles.serviceState} role="alert">
-          {getErrorMessage(services.error)}
-        </p>
-      )
-    }
-
-    if (services.data.length === 0) {
-      return (
-        <p className={styles.serviceState}>선택할 수 있는 서비스가 없어요.</p>
-      )
-    }
-
-    return (
-      <ul className={styles.serviceList}>
-        {services.data.map((service) => {
-          const checked = form.serviceIds.includes(service.provideServiceId)
-
-          return (
-            <li key={service.provideServiceId}>
-              <label
-                className={[
-                  styles.serviceRow,
-                  checked ? styles.serviceChecked : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-              >
-                <input
-                  type="checkbox"
-                  className={styles.checkbox}
-                  checked={checked}
-                  onChange={() => toggleService(service.provideServiceId)}
-                />
-                {service.provideServiceName}
-              </label>
-            </li>
-          )
-        })}
-      </ul>
-    )
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault()
 
@@ -145,7 +77,7 @@ function PatientCreatePage() {
 
     navigate(HOSPITAL_PATHS.home, {
       replace: true,
-      state: { notice: create.warning || `${form.name} 님을 등록했어요` },
+      state: { notice: `${form.name} 님을 등록했어요` },
     })
   }
 
@@ -255,15 +187,6 @@ function PatientCreatePage() {
           min={getMinScheduledDate()}
           error={errors.scheduledDate}
         />
-
-        <div className={styles.services}>
-          <span id={servicesLabelId} className={styles.servicesLabel}>
-            권고 사항
-          </span>
-          <div role="group" aria-labelledby={servicesLabelId}>
-            {renderServices()}
-          </div>
-        </div>
 
         {create.error && (
           <p className={styles.formError} role="alert">

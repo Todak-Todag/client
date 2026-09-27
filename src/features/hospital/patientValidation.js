@@ -80,7 +80,7 @@ export function validatePatientForm(form) {
 /**
  * 화면 입력값을 서버가 받는 모양으로 바꾼다.
  *
- * passwordConfirm·regionLabel·serviceIds는 이 요청에 들어가지 않는다.
+ * passwordConfirm·regionLabel은 화면 전용이라 이 요청에 들어가지 않는다.
  * 지역을 고르지 않았으면 regionId와 address를 아예 보내지 않는다.
  * (서버: 지역이 없는데 주소가 오면 USER_INVALID_CREATE_PATIENT_REGION)
  */
@@ -106,14 +106,5 @@ export function toDischargeRequest(form, patientId) {
     patientId,
     hospitalName: form.hospitalName.trim(),
     scheduledDate: form.scheduledDate,
-  }
-}
-
-/** Care Plan 생성 요청 (POST /care-plans). 권고 사항이 여기 담긴다 */
-export function toCarePlanRequest(form, patientId, dischargeId) {
-  return {
-    patientId,
-    dischargeId,
-    provideServiceIds: form.serviceIds,
   }
 }

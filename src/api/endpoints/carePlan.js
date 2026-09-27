@@ -152,6 +152,10 @@ export function deleteServicePreference(servicePreferenceId) {
 /**
  * Care Plan 생성 (HOSPITAL_STAFF, PATIENT)
  *
+ * 실제 퇴원이 완료된 퇴원건에만 만들 수 있다.
+ * 아직 SCHEDULED 상태면 409 DISCHARGE_NOT_COMPLETED가 난다.
+ * (PATCH /discharges/{id}/completed 로 퇴원 완료 처리가 먼저다)
+ *
  * provideServiceIds에 병원 담당자의 권고 서비스를 담는다. 비어 있어도 된다.
  * @param {{ patientId: string, dischargeId: string, note?: string,
  *   provideServiceIds?: string[] }} body

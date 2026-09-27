@@ -1,28 +1,22 @@
 import { useRef, useState } from 'react'
 import { getErrorMessage } from '../../api/client'
-import { createCarePlan } from '../../api/endpoints/carePlan'
 import { createPatient } from '../../api/endpoints/auth'
 import { createDischarge } from '../../api/endpoints/discharge'
-import {
-  toCarePlanRequest,
-  toDischargeRequest,
-  toPatientRequest,
-} from './patientValidation'
+import { toDischargeRequest, toPatientRequest } from './patientValidation'
 
 /**
  * 퇴원 예정자 등록.
  *
- * 서버 호출 세 번이 이어지고, 중간에 실패해도 되돌릴 방법이 없다.
+ * 서버 호출 두 번이 이어지고, 중간에 실패해도 되돌릴 방법이 없다.
  * (환자 계정을 지우는 API가 없어 처음부터 다시 하면 아이디 중복으로 막힌다)
  * 그래서 성공한 단계의 결과를 기억해두고 실패한 지점부터 다시 시도한다.
  *
- * 마지막 Care Plan 생성은 실패해도 등록 자체는 성공으로 본다.
- * 환자 계정과 퇴원건은 이미 만들어졌고, 권고 사항은 나중에 다시 등록할 수 있다.
+ * Care Plan은 여기서 만들지 않는다. 서버가 실제 퇴원이 완료된 뒤에만
+ * 생성을 허용하기 때문이다. (DISCHARGE_NOT_COMPLETED 409)
  */
 export function usePatientCreate() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
-  const [warning, setWarning] = useState('')
 
   // 이미 성공한 단계는 다시 호출하지 않는다
   const doneRef = useRef({ patientId: null, dischargeId: null })
@@ -34,7 +28,6 @@ export function usePatientCreate() {
   const submit = async (form) => {
     setSubmitting(true)
     setError('')
-    setWarning('')
 
     try {
       if (!doneRef.current.patientId) {
@@ -54,26 +47,11 @@ export function usePatientCreate() {
       return false
     }
 
-    // 권고 사항 저장이 실패해도 등록은 성공으로 본다
-    try {
-      await createCarePlan(
-        toCarePlanRequest(
-          form,
-          doneRef.current.patientId,
-          doneRef.current.dischargeId,
-        ),
-      )
-    } catch (caught) {
-      setWarning(
-        `등록은 완료됐지만 권고 사항을 저장하지 못했어요. (${getErrorMessage(caught)})`,
-      )
-    }
-
     setSubmitting(false)
     return true
   }
 
-  return { submit, submitting, error, warning }
+  return { submit, submitting, error }
 }
 
 /** 어디까지 됐는지 알려줘야 사용자가 다시 시도할 수 있다 */
