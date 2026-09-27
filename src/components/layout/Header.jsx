@@ -1,3 +1,4 @@
+import { ChevronLeftIcon } from '../ui/Icons'
 import styles from './Header.module.css'
 import defaultLogo from '../../assets/images/logo2.webp'
 
@@ -33,19 +34,7 @@ function Header({
           onClick={onBack}
           aria-label="뒤로 가기"
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
+          <ChevronLeftIcon className={styles.backIcon} />
         </button>
       )
     }
