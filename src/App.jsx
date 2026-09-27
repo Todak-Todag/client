@@ -20,7 +20,7 @@ import MatchingPage from './pages/patient/MatchingPage'
 import MyPage from './pages/patient/MyPage'
 import NotFoundPage from './pages/NotFoundPage'
 import ProviderHomePage from './pages/provider/HomePage'
-import ProviderMatchingPage from './pages/provider/MatchingPage'
+import ProviderSchedulesByDatePage from './pages/provider/SchedulesByDatePage'
 import ProviderMyPage from './pages/provider/MyPage'
 import ProviderPasswordPage from './pages/provider/PasswordPage'
 import ProviderResultDetailPage from './pages/provider/ResultDetailPage'
@@ -81,7 +81,7 @@ function App() {
         <Route element={<ProviderLayout />}>
           <Route path={PROVIDER_PATHS.home} element={<ProviderHomePage />} />
           <Route path={PROVIDER_PATHS.schedule} element={<ProviderSchedulePage />} />
-          <Route path={PROVIDER_PATHS.matching} element={<ProviderMatchingPage />} />
+          <Route path={PROVIDER_PATHS.matching} element={<ProviderSchedulesByDatePage />} />
           <Route path={PROVIDER_PATHS.my} element={<ProviderMyPage />} />
         </Route>
 

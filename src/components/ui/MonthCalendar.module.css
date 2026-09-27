@@ -68,6 +68,7 @@
 }
 
 .day {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -114,4 +115,41 @@
   .nav:hover:not(:disabled) {
     background-color: var(--color-bg);
   }
+}
+
+/* 날짜 아래 상태 점 (일정 유무 표시) */
+.dots {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  display: flex;
+  gap: 2px;
+  transform: translateX(-50%);
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--radius-full);
+}
+
+.danger {
+  background-color: var(--color-danger);
+}
+
+.primary {
+  background-color: var(--color-primary);
+}
+
+.success {
+  background-color: var(--color-success);
+}
+
+.neutral {
+  background-color: var(--color-text-muted);
+}
+
+/* 선택된 날짜 위에서는 점이 배경에 묻히지 않도록 흰색으로 */
+.selected .dot {
+  background-color: var(--color-surface);
 }

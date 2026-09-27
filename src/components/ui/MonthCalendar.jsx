@@ -17,19 +17,35 @@ const monthKey = ({ year, month }) => year * 12 + month
  * @param {string} max 고를 수 있는 마지막 날 'YYYY-MM-DD'
  * @param {(date: string) => void} onChange
  * @param {string} label 스크린리더용 이름
+ * @param {Record<string, string[]>} markers 날짜별 점 색 (예: { '2026-09-26': ['danger', 'success'] })
+ * @param {(month: { year: number, month: number }) => void} onMonthChange 보이는 달이 바뀔 때
  */
-function MonthCalendar({ value, min, max, onChange, label = '날짜 선택' }) {
+function MonthCalendar({
+  value,
+  min,
+  max,
+  onChange,
+  label = '날짜 선택',
+  markers,
+  onMonthChange,
+}) {
   const [visible, setVisible] = useState(() => toMonth(value ?? min))
 
   const canPrev = monthKey(visible) > monthKey(toMonth(min))
   const canNext = monthKey(visible) < monthKey(toMonth(max))
 
   const move = (step) => {
-    setVisible(({ year, month }) => {
-      const next = month + step
-      if (next < 1) return { year: year - 1, month: 12 }
-      if (next > 12) return { year: year + 1, month: 1 }
-      return { year, month: next }
+    setVisible((current) => {
+      const next = current.month + step
+      const moved =
+        next < 1
+          ? { year: current.year - 1, month: 12 }
+          : next > 12
+            ? { year: current.year + 1, month: 1 }
+            : { year: current.year, month: next }
+
+      onMonthChange?.(moved)
+      return moved
     })
   }
 
@@ -72,6 +88,7 @@ function MonthCalendar({ value, min, max, onChange, label = '날짜 선택' }) {
           // 'YYYY-MM-DD'는 문자열 비교가 날짜 비교와 같다
           const disabled = date < min || date > max
           const selected = date === value
+          const dots = markers?.[date] ?? []
 
           return (
             <button
@@ -84,6 +101,13 @@ function MonthCalendar({ value, min, max, onChange, label = '날짜 선택' }) {
               aria-label={formatDateLabel(date)}
             >
               {Number(date.slice(8))}
+              {dots.length > 0 && (
+                <span className={styles.dots} aria-hidden="true">
+                  {dots.map((tone) => (
+                    <span key={tone} className={`${styles.dot} ${styles[tone]}`} />
+                  ))}
+                </span>
+              )}
             </button>
           )
         })}
