@@ -7,8 +7,9 @@ import { useAsync } from '../../hooks/useAsync'
 
 /**
  * 희망 일정 → 서비스 종류 ID. 실패하면 이름만 비워 두도록 null
+ * 수행 결과 상세도 같은 방법으로 서비스 이름을 찾는다.
  */
-async function findProvideServiceIdByPreference(servicePreferenceId, signal) {
+export async function findProvideServiceIdByPreference(servicePreferenceId, signal) {
   try {
     const preference = await getServicePreference(servicePreferenceId, { signal })
     return preference.provideServiceId
