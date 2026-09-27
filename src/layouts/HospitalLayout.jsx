@@ -7,6 +7,7 @@ import {
   HOSPITAL_PATHS,
   HOSPITAL_TITLE_BY_PATH,
   getHospitalNavKeyByPath,
+  isHospitalSubPage,
 } from '../constants/paths'
 import styles from './AppLayout.module.css'
 
@@ -14,11 +15,16 @@ import styles from './AppLayout.module.css'
 function HospitalLayout() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
+  const isSubPage = isHospitalSubPage(pathname)
 
   return (
     <div className={styles.layout}>
       <Header
         title={HOSPITAL_TITLE_BY_PATH[pathname] ?? '토닥토닥'}
+        // 하위 화면에서는 로고 대신 뒤로가기를 보여준다
+        logo={isSubPage ? null : undefined}
+        showBack={isSubPage}
+        onBack={() => navigate(-1)}
         onLogoClick={() => navigate(HOSPITAL_PATHS.home)}
         // 알림 기능은 아직 없어 시안의 모양만 둔다. 누를 수 없으므로 버튼이 아닌 장식 요소
         right={

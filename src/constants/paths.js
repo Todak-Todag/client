@@ -46,6 +46,8 @@ export const HOSPITAL_PATHS = {
   schedule: '/hospital/schedule',
   matching: '/hospital/matching',
   my: '/hospital/my',
+  // 퇴원 예정자 등록 (탭이 아닌 하위 화면)
+  patientNew: '/hospital/patients/new',
 }
 
 /** 병원 담당자 네브바 key <-> 경로 매핑 */
@@ -62,6 +64,12 @@ export const HOSPITAL_TITLE_BY_PATH = {
   [HOSPITAL_PATHS.schedule]: '일정',
   [HOSPITAL_PATHS.matching]: '매칭',
   [HOSPITAL_PATHS.my]: '마이페이지',
+  [HOSPITAL_PATHS.patientNew]: '퇴원 예정자 프로필 등록',
+}
+
+/** 탭 루트가 아닌 하위 화면인지 (헤더에 로고 대신 뒤로가기를 보여준다) */
+export function isHospitalSubPage(pathname) {
+  return !Object.values(HOSPITAL_NAV_PATH_BY_KEY).includes(pathname)
 }
 
 /** 현재 병원 담당자 경로에서 활성화할 네브바 key를 구한다 */

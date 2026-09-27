@@ -15,6 +15,7 @@ import HospitalLayout from './layouts/HospitalLayout'
 import HospitalMatchingPage from './pages/hospital/HospitalMatchingPage'
 import HospitalMyPage from './pages/hospital/HospitalMyPage'
 import HospitalSchedulePage from './pages/hospital/HospitalSchedulePage'
+import PatientCreatePage from './pages/hospital/PatientCreatePage'
 import LoginPage from './pages/LoginPage'
 import MatchingPage from './pages/patient/MatchingPage'
 import MyPage from './pages/patient/MyPage'
@@ -115,6 +116,10 @@ function App() {
             element={<HospitalMatchingPage />}
           />
           <Route path={HOSPITAL_PATHS.my} element={<HospitalMyPage />} />
+          <Route
+            path={HOSPITAL_PATHS.patientNew}
+            element={<PatientCreatePage />}
+          />
         </Route>
 
         {/* 운영자·관리자 (역할 확인 후 진입) */}
