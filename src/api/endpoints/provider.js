@@ -44,16 +44,3 @@ export function deleteProvideWork(serviceOfferingId, provideWorkId) {
     method: 'DELETE',
   })
 }
-
-/**
- * 제공 서비스 등록 (서비스 제공자 전용)
- * @param {string} provideServiceId 제공할 서비스 종류 ID
- */
-export function createOffering(provideServiceId) {
-  return request('/service-offerings', { method: 'POST', body: { provideServiceId } })
-}
-
-/** 제공 서비스 삭제 */
-export function deleteOffering(serviceOfferingId) {
-  return request(`/service-offerings/${serviceOfferingId}`, { method: 'DELETE' })
-}

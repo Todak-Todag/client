@@ -8,6 +8,7 @@ import Button from '../../components/ui/Button'
 import { AlertIcon, CalendarIcon, ClockIcon } from '../../components/ui/Icons'
 import { useProviderSchedule } from '../../features/provider/useProviderSchedules'
 import SubPageLayout from '../../layouts/SubPageLayout'
+import { PROVIDER_PATHS } from '../../constants/paths'
 import { SCHEDULE_STATUS } from '../../constants/status'
 import { formatDateLabel, formatTimeRange, parseLocalDateTime } from '../../utils/date'
 import styles from './ResultDetailPage.module.css'
@@ -119,13 +120,7 @@ function ResultDetailPage() {
         </section>
 
         {result && (
-          <Button
-            variant="danger"
-            size="md"
-            block={false}
-            className={styles.delete}
-            onClick={() => setDialog('confirm')}
-          >
+          <Button variant="ghost" className={styles.delete} onClick={() => setDialog('confirm')}>
             수행 결과 삭제하기
           </Button>
         )}
@@ -147,7 +142,7 @@ function ResultDetailPage() {
         description="수행 결과가 삭제되어 다시 작성할 수 있어요."
         confirmLabel="확인"
         cancelLabel="닫기"
-        onConfirm={() => navigate(-1)}
+        onConfirm={() => navigate(PROVIDER_PATHS.home, { replace: true })}
         onClose={() => setDialog(null)}
       />
     </SubPageLayout>

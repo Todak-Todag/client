@@ -6,6 +6,7 @@ import ResultForm from '../../features/provider/ResultForm'
 import { useProviderSchedule } from '../../features/provider/useProviderSchedules'
 import SubPageLayout from '../../layouts/SubPageLayout'
 import { SCHEDULE_STATUS } from '../../constants/status'
+import { PROVIDER_PATHS } from '../../constants/paths'
 import styles from './FormPage.module.css'
 
 /** 서비스 수행 결과 등록 */
@@ -36,8 +37,7 @@ function ResultPage() {
         note,
       })
 
-      // 홈·날짜별 조회 어디서 들어왔든 보던 목록으로 돌아간다 (돌아가면서 목록도 다시 조회된다)
-      navigate(-1)
+      navigate(PROVIDER_PATHS.home, { replace: true })
     } catch (caught) {
       setError(getErrorMessage(caught))
     } finally {
