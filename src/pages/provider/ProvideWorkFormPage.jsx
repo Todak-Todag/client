@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
+import EmptyState from '../../components/common/EmptyState'
 import Button from '../../components/ui/Button'
+import { ListIcon } from '../../components/ui/Icons'
 import ProvideWorkForm from '../../features/provider/ProvideWorkForm'
 import { useMyOfferings } from '../../features/provider/useMyOfferings'
 import { useProvideWorks } from '../../features/provider/useProvideWorks'
@@ -21,6 +23,9 @@ function ProvideWorkFormPage() {
   const mode = provideWorkId ? 'edit' : 'create'
   const editing = works.find((work) => work.provideWorkId === provideWorkId)
   const loading = offerings.status === 'loading'
+
+  // 제공 서비스를 하나도 등록하지 않았으면 고를 선택지가 없어 폼을 띄우지 않는다
+  const noOfferings = (offerings.data ?? []).length === 0
 
   const submit = async (form) => {
     setSubmitting(true)
@@ -51,28 +56,56 @@ function ProvideWorkFormPage() {
     }
   }
 
-  return (
-    <SubPageLayout title={mode === 'edit' ? '일정 수정' : '일정 생성'}>
-      {loading ? (
+  const renderBody = () => {
+    if (loading) {
+      return (
         <p className={styles.state} role="status">
           불러오는 중이에요
         </p>
-      ) : (
-        <ProvideWorkForm
-          mode={mode}
-          offerings={offerings.data ?? []}
-          submitting={submitting}
-          initial={
-            editing && {
-              days: [editing.day],
-              startedAt: editing.startedAt,
-              finishedAt: editing.finishedAt,
-              serviceOfferingId: editing.serviceOfferingId,
-            }
+      )
+    }
+
+    if (noOfferings) {
+      return (
+        <EmptyState
+          icon={ListIcon}
+          title="등록한 제공 서비스가 없어요"
+          description="제공할 서비스를 먼저 등록해야 방문 일정을 만들 수 있어요."
+          action={
+            <Button
+              variant="outline"
+              size="md"
+              block={false}
+              onClick={() => navigate(PROVIDER_PATHS.offerings)}
+            >
+              제공 서비스 등록하러 가기
+            </Button>
           }
-          onSubmit={submit}
         />
-      )}
+      )
+    }
+
+    return (
+      <ProvideWorkForm
+        mode={mode}
+        offerings={offerings.data ?? []}
+        submitting={submitting}
+        initial={
+          editing && {
+            days: [editing.day],
+            startedAt: editing.startedAt,
+            finishedAt: editing.finishedAt,
+            serviceOfferingId: editing.serviceOfferingId,
+          }
+        }
+        onSubmit={submit}
+      />
+    )
+  }
+
+  return (
+    <SubPageLayout title={mode === 'edit' ? '일정 수정' : '일정 생성'}>
+      {renderBody()}
 
       {error && (
         <p className={styles.error} role="alert">
@@ -81,7 +114,7 @@ function ProvideWorkFormPage() {
       )}
 
       {mode === 'edit' && editing && (
-        <Button variant="ghost" className={styles.remove} onClick={remove}>
+        <Button variant="danger" className={styles.remove} onClick={remove}>
           이 일정 삭제하기
         </Button>
       )}

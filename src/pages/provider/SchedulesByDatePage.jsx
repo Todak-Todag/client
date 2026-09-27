@@ -162,7 +162,15 @@ function SchedulesByDatePage() {
             className={[styles.filter, filter === key ? styles.filterOn : '']
               .filter(Boolean)
               .join(' ')}
-            onClick={() => setFilter(key)}
+            onClick={(event) => {
+              setFilter(key)
+              // 고른 칩이 잘려 보이지 않도록 가로 목록 가운데로 끌어온다
+              event.currentTarget.scrollIntoView({
+                inline: 'center',
+                block: 'nearest',
+                behavior: 'smooth',
+              })
+            }}
           >
             {label}
           </button>

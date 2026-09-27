@@ -120,8 +120,8 @@
   color: var(--color-text-muted);
 }
 
-/* 위험 동작이라 화면 맨 아래에 둔다 */
+/* 위험 동작이라 화면 맨 아래 오른쪽에 작게 둔다 */
 .delete {
+  align-self: flex-end;
   margin-top: var(--space-xs);
-  color: var(--color-danger);
 }
