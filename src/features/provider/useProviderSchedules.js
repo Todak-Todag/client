@@ -63,6 +63,16 @@ async function findServiceOfferingId(serviceScheduleId, signal) {
   }
 }
 
+// 제공자가 할 일이 없는 일정은 목록에서 뺀다
+// CHANGED: 재매칭으로 자리를 넘긴 과거 이력
+// CANCELED: 취소된 방문
+// RESCHEDULING: 재매칭 결과를 기다리는 중이라 확정 전까지는 방문하지 않는다
+const HIDDEN_STATUSES = [
+  SCHEDULE_STATUS.CHANGED,
+  SCHEDULE_STATUS.CANCELED,
+  SCHEDULE_STATUS.RESCHEDULING,
+]
+
 // 화면에 보여줄 순서: 결과 작성 필요 → 수행 완료 필요 → 예정 → 진행 중 → 결과 작성 완료 → 미수행
 const BADGE_ORDER = [
   '결과 작성 필요',
@@ -84,18 +94,8 @@ function badgeOrder(schedule, now) {
 async function loadSchedulesByDate(signal, date) {
   const page = await getSchedules({ date, size: 50, signal })
 
-  // 제공자가 할 일이 없는 일정은 목록에서 뺀다
-  // CHANGED: 재매칭으로 자리를 넘긴 과거 이력
-  // CANCELED: 취소된 방문
-  // RESCHEDULING: 재매칭 결과를 기다리는 중이라 확정 전까지는 방문하지 않는다
-  const hiddenStatuses = [
-    SCHEDULE_STATUS.CHANGED,
-    SCHEDULE_STATUS.CANCELED,
-    SCHEDULE_STATUS.RESCHEDULING,
-  ]
-
   const schedules = (page?.content ?? []).filter(
-    (schedule) => !hiddenStatuses.includes(schedule.status),
+    (schedule) => !HIDDEN_STATUSES.includes(schedule.status),
   )
 
   if (schedules.length === 0) return []
@@ -139,6 +139,53 @@ export function useTodayProviderSchedules() {
 /** 선택한 날짜의 일정. 날짜가 바뀌면 다시 조회한다. */
 export function useProviderSchedulesByDate(date) {
   return useAsync(loadSchedulesByDate, date)
+}
+
+/**
+ * 한 달치 일정을 날짜별 점 색으로 묶는다 — { 'YYYY-MM-DD': ['danger', 'primary'] }
+ *
+ * 서버에 월 단위 집계 API가 없어, 내 일정 목록을 페이지로 훑어 해당 달만 골라낸다.
+ * 집계가 생기면 이 함수만 교체한다.
+ *
+ * @param {string} yearMonth 'YYYY-MM'
+ */
+async function loadMonthlyMarkers(signal, yearMonth) {
+  const size = 50
+  const markers = {}
+  const now = new Date()
+
+  let page = 0
+  let totalPages = 1
+
+  while (page < totalPages) {
+    const result = await getSchedules({ page, size, signal })
+
+    totalPages = result?.pageInfo?.totalPages ?? 1
+
+    ;(result?.content ?? [])
+      .filter(
+        (schedule) =>
+          schedule.date.startsWith(yearMonth) && !HIDDEN_STATUSES.includes(schedule.status),
+      )
+      .forEach((schedule) => {
+        // 결과 유무는 목록만으로 알 수 없어 '작성 완료'와 '작성 필요'를 구분하지 않는다
+        const { variant } = getProviderScheduleView(schedule, false, now)
+        const tones = markers[schedule.date] ?? []
+
+        if (!tones.includes(variant)) {
+          markers[schedule.date] = [...tones, variant]
+        }
+      })
+
+    page += 1
+  }
+
+  return markers
+}
+
+/** 달력에 찍을 날짜별 점. 보이는 달이 바뀌면 다시 조회한다. */
+export function useProviderMonthlyMarkers(yearMonth) {
+  return useAsync(loadMonthlyMarkers, yearMonth)
 }
 
 /** 일정 한 건 + 서비스 이름 + 수행 결과 */

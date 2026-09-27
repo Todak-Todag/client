@@ -1,4 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import AdminHomePage from './pages/admin/AdminHomePage'
+import AdminLayout from './layouts/AdminLayout'
+import AdminManagePage from './pages/admin/AdminManagePage'
+import AdminMyPage from './pages/admin/AdminMyPage'
 import AppLayout from './layouts/AppLayout'
 import CarePlanReviewPage from './pages/patient/CarePlanReviewPage'
 import CarePlanServiceAddPage from './pages/patient/CarePlanServiceAddPage'
@@ -6,6 +10,11 @@ import CarePlanServicePage from './pages/patient/CarePlanServicePage'
 import ProviderLayout from './layouts/ProviderLayout'
 import ConsentPage from './pages/user/ConsentPage'
 import HomeEntry from './pages/HomeEntry'
+import HospitalHomePage from './pages/hospital/HospitalHomePage'
+import HospitalLayout from './layouts/HospitalLayout'
+import HospitalMatchingPage from './pages/hospital/HospitalMatchingPage'
+import HospitalMyPage from './pages/hospital/HospitalMyPage'
+import HospitalSchedulePage from './pages/hospital/HospitalSchedulePage'
 import LoginPage from './pages/LoginPage'
 import MatchingPage from './pages/patient/MatchingPage'
 import MyPage from './pages/patient/MyPage'
@@ -15,7 +24,7 @@ import ServiceResultPage from './pages/patient/ServiceResultPage'
 import WithdrawPage from './pages/patient/WithdrawPage'
 import NotFoundPage from './pages/NotFoundPage'
 import ProviderHomePage from './pages/provider/HomePage'
-import ProviderMatchingPage from './pages/provider/MatchingPage'
+import ProviderSchedulesByDatePage from './pages/provider/SchedulesByDatePage'
 import ProviderMyPage from './pages/provider/MyPage'
 import ProviderPasswordPage from './pages/provider/PasswordPage'
 import ProviderResultDetailPage from './pages/provider/ResultDetailPage'
@@ -27,7 +36,13 @@ import SchedulePage from './pages/patient/SchedulePage'
 import SignupPage from './pages/user/SignupPage'
 import SignupFormPage from './pages/user/SignupFormPage'
 import SocialWorkerHomePage from './pages/social-worker/SocialWorkerHomePage'
-import { PATHS, PROVIDER_PATHS, SOCIAL_WORKER_PATHS } from './constants/paths'
+import {
+  ADMIN_PATHS,
+  HOSPITAL_PATHS,
+  PATHS,
+  PROVIDER_PATHS,
+  SOCIAL_WORKER_PATHS,
+} from './constants/paths'
 import SocialWorkerLayout from './layouts/SocialWorkerLayout'
 import SocialWorkerMyPage from './pages/social-worker/SocialWorkerMyPage'
 
@@ -76,7 +91,7 @@ function App() {
         <Route element={<ProviderLayout />}>
           <Route path={PROVIDER_PATHS.home} element={<ProviderHomePage />} />
           <Route path={PROVIDER_PATHS.schedule} element={<ProviderSchedulePage />} />
-          <Route path={PROVIDER_PATHS.matching} element={<ProviderMatchingPage />} />
+          <Route path={PROVIDER_PATHS.matching} element={<ProviderSchedulesByDatePage />} />
           <Route path={PROVIDER_PATHS.my} element={<ProviderMyPage />} />
         </Route>
 
@@ -96,6 +111,27 @@ function App() {
             path={SOCIAL_WORKER_PATHS.my}
             element={<SocialWorkerMyPage />}
           />
+        </Route>
+
+        {/* 병원 담당자 — 헤더 + 네브바가 붙는 화면 */}
+        <Route element={<HospitalLayout />}>
+          <Route path={HOSPITAL_PATHS.home} element={<HospitalHomePage />} />
+          <Route
+            path={HOSPITAL_PATHS.schedule}
+            element={<HospitalSchedulePage />}
+          />
+          <Route
+            path={HOSPITAL_PATHS.matching}
+            element={<HospitalMatchingPage />}
+          />
+          <Route path={HOSPITAL_PATHS.my} element={<HospitalMyPage />} />
+        </Route>
+
+        {/* 운영자·관리자 (역할 확인 후 진입) */}
+        <Route element={<AdminLayout />}>
+          <Route path={ADMIN_PATHS.home} element={<AdminHomePage />} />
+          <Route path={ADMIN_PATHS.manage} element={<AdminManagePage />} />
+          <Route path={ADMIN_PATHS.my} element={<AdminMyPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/404" replace />} />

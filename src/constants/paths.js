@@ -45,6 +45,73 @@ export function getNavKeyByPath(pathname) {
   return entry ? entry[0] : 'home'
 }
 
+/** 병원 담당자 화면 경로 (역할별로 화면 구성이 달라 /hospital 아래로 둔다) */
+export const HOSPITAL_PATHS = {
+  home: '/hospital',
+  schedule: '/hospital/schedule',
+  matching: '/hospital/matching',
+  my: '/hospital/my',
+}
+
+/** 병원 담당자 네브바 key <-> 경로 매핑 */
+export const HOSPITAL_NAV_PATH_BY_KEY = {
+  home: HOSPITAL_PATHS.home,
+  schedule: HOSPITAL_PATHS.schedule,
+  matching: HOSPITAL_PATHS.matching,
+  my: HOSPITAL_PATHS.my,
+}
+
+/** 병원 담당자 경로별 헤더 제목 */
+export const HOSPITAL_TITLE_BY_PATH = {
+  [HOSPITAL_PATHS.home]: '',
+  [HOSPITAL_PATHS.schedule]: '일정',
+  [HOSPITAL_PATHS.matching]: '매칭',
+  [HOSPITAL_PATHS.my]: '마이페이지',
+}
+
+/** 현재 병원 담당자 경로에서 활성화할 네브바 key를 구한다 */
+export function getHospitalNavKeyByPath(pathname) {
+  const entry = Object.entries(HOSPITAL_NAV_PATH_BY_KEY).find(([, path]) =>
+    path === HOSPITAL_PATHS.home
+      ? pathname === HOSPITAL_PATHS.home
+      : pathname.startsWith(path),
+  )
+  return entry ? entry[0] : 'home'
+}
+
+/**
+ * 운영자·관리자 화면 경로.
+ *
+ * 승인 API가 hasAnyRole('MASTER', 'ADMIN')이라 두 역할이 같은 화면을 쓴다.
+ * MASTER 전용 기능(운영자 등록 등)은 이 영역 안에서 역할로 가린다.
+ */
+export const ADMIN_PATHS = {
+  home: '/admin',
+  manage: '/admin/manage',
+  my: '/admin/my',
+}
+
+/** 운영자·관리자 네브바 key <-> 경로 매핑 */
+export const ADMIN_NAV_PATH_BY_KEY = {
+  home: ADMIN_PATHS.home,
+  manage: ADMIN_PATHS.manage,
+  my: ADMIN_PATHS.my,
+}
+
+/** 운영자·관리자 경로별 헤더 제목 */
+export const ADMIN_TITLE_BY_PATH = {
+  [ADMIN_PATHS.home]: '관리자 홈',
+  [ADMIN_PATHS.manage]: '관리',
+  [ADMIN_PATHS.my]: '마이페이지',
+}
+
+/** 현재 관리자 경로에서 활성화할 네브바 key를 구한다 */
+export function getAdminNavKeyByPath(pathname) {
+  if (pathname.startsWith(ADMIN_PATHS.manage)) return 'manage'
+  if (pathname.startsWith(ADMIN_PATHS.my)) return 'my'
+  return 'home'
+}
+
 /** 서비스 제공자 화면 경로 (역할이 달라 화면 구성이 겹치지 않으므로 /provider 아래로 둔다) */
 export const PROVIDER_PATHS = {
   home: '/provider',
