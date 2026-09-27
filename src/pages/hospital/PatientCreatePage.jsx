@@ -56,8 +56,10 @@ function PatientCreatePage() {
   const handleSelectRegion = (region) => {
     setForm((prev) => ({
       ...prev,
-      regionId: region.regionId,
-      regionLabel: formatRegion(region),
+      regionId: region ? region.regionId : '',
+      regionLabel: region ? formatRegion(region) : '',
+      // 지역 없이 주소만 보내면 서버가 거절한다 (USER_INVALID_CREATE_PATIENT_REGION)
+      address: region ? prev.address : '',
     }))
     setErrors((prev) => ({ ...prev, address: '' }))
     setRegionOpen(false)
@@ -264,6 +266,7 @@ function PatientCreatePage() {
         onClose={() => setRegionOpen(false)}
         selectedId={form.regionId}
         onSelect={handleSelectRegion}
+        clearable
       />
     </div>
   )
