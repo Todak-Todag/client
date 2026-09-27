@@ -26,7 +26,6 @@ import NotFoundPage from './pages/NotFoundPage'
 import ProviderHomePage from './pages/provider/HomePage'
 import ProviderSchedulesByDatePage from './pages/provider/SchedulesByDatePage'
 import ProviderMyPage from './pages/provider/MyPage'
-import ProviderOfferingsPage from './pages/provider/OfferingsPage'
 import ProviderPasswordPage from './pages/provider/PasswordPage'
 import ProviderResultDetailPage from './pages/provider/ResultDetailPage'
 import ProviderResultPage from './pages/provider/ResultPage'
@@ -87,7 +86,6 @@ function App() {
         <Route path={PROVIDER_PATHS.result} element={<ProviderResultPage />} />
         <Route path={PROVIDER_PATHS.resultDetail} element={<ProviderResultDetailPage />} />
         <Route path={PROVIDER_PATHS.password} element={<ProviderPasswordPage />} />
-        <Route path={PROVIDER_PATHS.offerings} element={<ProviderOfferingsPage />} />
 
         {/* 서비스 제공자 — 헤더 + 네브바가 붙는 화면 */}
         <Route element={<ProviderLayout />}>

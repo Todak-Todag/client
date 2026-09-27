@@ -13,11 +13,6 @@ import { toLocalDateString } from '../../utils/date'
 // 내 제공 서비스는 자주 바뀌지 않아 성공한 결과만 보관한다
 let offeringCache = null
 
-/** 제공 서비스를 등록·삭제한 뒤 이름 캐시를 비운다 */
-export function clearOfferingCache() {
-  offeringCache = null
-}
-
 /** 제공 서비스 ID → 서비스 이름. 실패해도 목록은 보여줄 수 있도록 빈 Map을 돌려준다. */
 async function loadOfferingNames(signal) {
   if (offeringCache) return offeringCache
