@@ -24,17 +24,6 @@
   color: var(--color-text);
 }
 
-.times {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.tilde {
-  color: var(--color-text-muted);
-}
-
 /* 수행 여부 — 공용 Button 두 개를 한 칸씩 나눠 토글처럼 쓴다 */
 .toggle {
   display: grid;

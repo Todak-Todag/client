@@ -20,6 +20,8 @@ function HomePage() {
   const me = useAuth()
   const schedules = useTodayProviderSchedules()
   const [completingId, setCompletingId] = useState(null)
+  // 수행 완료 처리 실패 안내 (목록은 그대로 두고 문구만 보여준다)
+  const [actionError, setActionError] = useState('')
 
   // 재발급까지 실패한 세션 만료
   if (schedules.status === 'error' && schedules.error?.status === 401) {
@@ -29,12 +31,13 @@ function HomePage() {
   /** 방문이 끝난 일정을 수행 완료로 확정한다 (결과 작성은 다음 단계) */
   const complete = async (schedule) => {
     setCompletingId(schedule.serviceScheduleId)
+    setActionError('')
 
     try {
       await completeSchedule(schedule.serviceScheduleId, 'COMPLETED')
       schedules.reload()
     } catch (error) {
-      window.alert(getErrorMessage(error))
+      setActionError(getErrorMessage(error))
     } finally {
       setCompletingId(null)
     }
@@ -112,6 +115,13 @@ function HomePage() {
       )}
 
       <h2 className={styles.heading}>오늘 방문 케어 대상자</h2>
+
+      {actionError && (
+        <p className={styles.error} role="alert">
+          {actionError}
+        </p>
+      )}
+
       {renderSchedules()}
     </section>
   )

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
 import { updatePassword } from '../../api/endpoints/auth'
+import ConfirmDialog from '../../components/common/ConfirmDialog'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import SubPageLayout from '../../layouts/SubPageLayout'
@@ -14,6 +15,7 @@ function PasswordPage() {
   const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirm: '' })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [done, setDone] = useState(false)
 
   const change = (key) => (event) => setForm({ ...form, [key]: event.target.value })
 
@@ -31,8 +33,7 @@ function PasswordPage() {
         newPassword: form.newPassword,
       })
 
-      window.alert('비밀번호가 변경되었어요. 다시 로그인해 주세요.')
-      navigate(PATHS.login, { replace: true })
+      setDone(true)
     } catch (caught) {
       setError(getErrorMessage(caught))
     } finally {
@@ -80,6 +81,16 @@ function PasswordPage() {
           변경하기
         </Button>
       </form>
+
+      <ConfirmDialog
+        open={done}
+        title="비밀번호가 변경되었어요"
+        description="보안을 위해 다시 로그인해 주세요."
+        confirmLabel="로그인하러 가기"
+        cancelLabel="닫기"
+        onConfirm={() => navigate(PATHS.login, { replace: true })}
+        onClose={() => navigate(PATHS.login, { replace: true })}
+      />
     </SubPageLayout>
   )
 }

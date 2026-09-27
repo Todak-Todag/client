@@ -133,6 +133,7 @@ export const PROVIDER_PATHS = {
   matching: '/provider/matching',
   my: '/provider/my',
   password: '/provider/my/password',
+  offerings: '/provider/my/offerings',
   result: '/provider/results/:serviceScheduleId',
   resultDetail: '/provider/results/:serviceScheduleId/detail',
 }

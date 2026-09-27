@@ -69,6 +69,12 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* 공용 ChevronLeftIcon은 크기를 정하지 않으므로 여기서 지정한다 */
+.backIcon {
+  width: 24px;
+  height: 24px;
+}
+
 /* 헤더 높이만큼 본문을 밀어주는 스페이서 */
 .spacer {
   height: calc(var(--header-height) + env(safe-area-inset-top));

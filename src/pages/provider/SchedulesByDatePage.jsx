@@ -44,6 +44,8 @@ function SchedulesByDatePage() {
   const [yearMonth, setYearMonth] = useState(today.slice(0, 7))
   const [filter, setFilter] = useState('ALL')
   const [completingId, setCompletingId] = useState(null)
+  // 수행 완료 처리 실패 안내 (목록은 그대로 두고 문구만 보여준다)
+  const [actionError, setActionError] = useState('')
 
   const schedules = useProviderSchedulesByDate(selectedDate)
   const markers = useProviderMonthlyMarkers(yearMonth)
@@ -64,13 +66,14 @@ function SchedulesByDatePage() {
 
   const complete = async (schedule) => {
     setCompletingId(schedule.serviceScheduleId)
+    setActionError('')
 
     try {
       await completeSchedule(schedule.serviceScheduleId, 'COMPLETED')
       schedules.reload()
       markers.reload()
     } catch (error) {
-      window.alert(getErrorMessage(error))
+      setActionError(getErrorMessage(error))
     } finally {
       setCompletingId(null)
     }
@@ -162,12 +165,26 @@ function SchedulesByDatePage() {
             className={[styles.filter, filter === key ? styles.filterOn : '']
               .filter(Boolean)
               .join(' ')}
-            onClick={() => setFilter(key)}
+            onClick={(event) => {
+              setFilter(key)
+              // 고른 칩이 잘려 보이지 않도록 가로 목록 가운데로 끌어온다
+              event.currentTarget.scrollIntoView({
+                inline: 'center',
+                block: 'nearest',
+                behavior: 'smooth',
+              })
+            }}
           >
             {label}
           </button>
         ))}
       </div>
+
+      {actionError && (
+        <p className={styles.error} role="alert">
+          {actionError}
+        </p>
+      )}
 
       {renderSchedules()}
     </section>
