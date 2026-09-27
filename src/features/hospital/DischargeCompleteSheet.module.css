@@ -1,0 +1,22 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.guide {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text-sub);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-xs);
+  padding-bottom: var(--space-sm);
+}
+
+.action {
+  flex: 1 1 0;
+}

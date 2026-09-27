@@ -15,6 +15,7 @@ import HospitalLayout from './layouts/HospitalLayout'
 import HospitalMatchingPage from './pages/hospital/HospitalMatchingPage'
 import HospitalMyPage from './pages/hospital/HospitalMyPage'
 import HospitalSchedulePage from './pages/hospital/HospitalSchedulePage'
+import CarePlanCreatePage from './pages/hospital/CarePlanCreatePage'
 import PatientCreatePage from './pages/hospital/PatientCreatePage'
 import LoginPage from './pages/LoginPage'
 import MatchingPage from './pages/patient/MatchingPage'
@@ -130,6 +131,10 @@ function App() {
           <Route
             path={HOSPITAL_PATHS.patientNew}
             element={<PatientCreatePage />}
+          />
+          <Route
+            path={HOSPITAL_PATHS.carePlanNew}
+            element={<CarePlanCreatePage />}
           />
         </Route>
 
