@@ -100,19 +100,7 @@ function HomePage() {
 
   // 배지·본문이 Care Plan에 따라 정해지므로 둘 다 받을 때까지 화면 전체를 자리표시로 둔다
   if (me.status === 'loading' || carePlan.status === 'loading') {
-    return (
-      <div className={styles.page} aria-busy="true">
-        <h1 className={styles.srOnly}>홈</h1>
-        <ProfileCardSkeleton />
-        <div className={styles.list}>
-          <ScheduleCardSkeleton />
-          <ScheduleCardSkeleton />
-        </div>
-        <p className={styles.loadingText} role="status">
-          정보를 불러오는 중이에요…
-        </p>
-      </div>
-    )
+    return <HomePageSkeleton />
   }
 
   // Care Plan을 못 불러와도 이름은 보여준다
@@ -178,6 +166,25 @@ function HomePage() {
       />
 
       {renderBody()}
+    </div>
+  )
+}
+
+/**
+ * 홈 자리표시. 역할이 정해지기 전(HomeEntry)에도 쓰므로 특정 역할의 내용 없이 모양만 보여준다
+ */
+export function HomePageSkeleton() {
+  return (
+    <div className={styles.page} aria-busy="true">
+      <h1 className={styles.srOnly}>홈</h1>
+      <ProfileCardSkeleton />
+      <div className={styles.list}>
+        <ScheduleCardSkeleton />
+        <ScheduleCardSkeleton />
+      </div>
+      <p className={styles.loadingText} role="status">
+        정보를 불러오는 중이에요…
+      </p>
     </div>
   )
 }
