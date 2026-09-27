@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-lg);
-  background-color: oklch(22% 0.012 50 / 0.45);
+  background-color: var(--color-scrim);
 }
 
 .dialog {

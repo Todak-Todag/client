@@ -119,6 +119,18 @@ function MyPage() {
         </div>
       )}
 
+      <h2 className={styles.heading}>서비스 관리</h2>
+
+      <div className={styles.card}>
+        <Button
+          variant="ghost"
+          className={styles.link}
+          onClick={() => navigate(PROVIDER_PATHS.offerings)}
+        >
+          제공 서비스 관리
+        </Button>
+      </div>
+
       <h2 className={styles.heading}>계정 관리</h2>
 
       <div className={styles.card}>

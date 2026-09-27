@@ -12,8 +12,6 @@
   color: var(--color-danger);
 }
 
-/* 공용 Button(ghost) 위에 위험 동작 색만 덧입힌다 */
 .remove {
   margin-top: var(--space-md);
-  color: var(--color-danger);
 }
