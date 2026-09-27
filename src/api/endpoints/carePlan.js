@@ -148,3 +148,15 @@ export function updateServicePreference(servicePreferenceId, body) {
 export function deleteServicePreference(servicePreferenceId) {
   return request(`/service-preferences/${servicePreferenceId}`, { method: 'DELETE' })
 }
+
+/**
+ * Care Plan 생성 (HOSPITAL_STAFF, PATIENT)
+ *
+ * provideServiceIds에 병원 담당자의 권고 서비스를 담는다. 비어 있어도 된다.
+ * @param {{ patientId: string, dischargeId: string, note?: string,
+ *   provideServiceIds?: string[] }} body
+ * @returns {Promise<{ carePlanId: string }>}
+ */
+export function createCarePlan(body) {
+  return request('/care-plans', { method: 'POST', body })
+}

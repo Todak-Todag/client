@@ -1,4 +1,5 @@
 import { useId, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
@@ -9,6 +10,8 @@ import {
   validatePatientForm,
 } from '../../features/hospital/patientValidation'
 import { useProvideServices } from '../../features/hospital/useProvideServices'
+import { usePatientCreate } from '../../features/hospital/usePatientCreate'
+import { HOSPITAL_PATHS } from '../../constants/paths'
 import styles from './PatientCreatePage.module.css'
 
 const EMPTY_FORM = {
@@ -30,18 +33,19 @@ const EMPTY_FORM = {
  * 퇴원 예정자 등록
  *
  * 등록은 서버 호출 3번이 이어진다.
- *   POST /users/patients  → patientId
+ *   POST /users/patient  → patientId
  *   POST /discharges      → dischargeId
  *   POST /care-plans      → carePlanId (권고 사항을 provideServiceIds로 담는다)
  *
- * TODO: 등록 처리
  */
 function PatientCreatePage() {
+  const navigate = useNavigate()
   const servicesLabelId = useId()
   const [form, setForm] = useState(EMPTY_FORM)
   const [errors, setErrors] = useState({})
   const [regionOpen, setRegionOpen] = useState(false)
   const services = useProvideServices()
+  const create = usePatientCreate()
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -127,7 +131,7 @@ function PatientCreatePage() {
     )
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
 
     const nextErrors = validatePatientForm(form)
@@ -136,8 +140,13 @@ function PatientCreatePage() {
       return
     }
 
-    // TODO: 등록 처리 (users/patients → discharges → care-plans)
-    console.log(form)
+    const done = await create.submit(form)
+    if (!done) return
+
+    navigate(HOSPITAL_PATHS.home, {
+      replace: true,
+      state: { notice: create.warning || `${form.name} 님을 등록했어요` },
+    })
   }
 
   return (
@@ -256,7 +265,17 @@ function PatientCreatePage() {
           </div>
         </div>
 
-        <Button type="submit" className={styles.submit}>
+        {create.error && (
+          <p className={styles.formError} role="alert">
+            {create.error}
+          </p>
+        )}
+
+        <Button
+          type="submit"
+          className={styles.submit}
+          loading={create.submitting}
+        >
           등록하기
         </Button>
       </form>

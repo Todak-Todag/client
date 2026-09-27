@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
 import EmptyState from '../../components/common/EmptyState'
 import { AlertIcon, UserIcon } from '../../components/ui/Icons'
@@ -21,6 +21,8 @@ import styles from './HospitalHomePage.module.css'
  */
 function HospitalHomePage() {
   const navigate = useNavigate()
+  // 등록 화면에서 넘어올 때만 들어 있다 (새로고침하면 사라진다)
+  const notice = useLocation().state?.notice
   const me = useAuth()
   const discharges = DUMMY_DISCHARGES
 
@@ -77,6 +79,12 @@ function HospitalHomePage() {
   return (
     <div className={styles.page}>
       <h1 className={styles.srOnly}>병원 담당자 홈</h1>
+
+      {notice && (
+        <p className={styles.notice} role="status">
+          {notice}
+        </p>
+      )}
 
       {renderProfile()}
 
