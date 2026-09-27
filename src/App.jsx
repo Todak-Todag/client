@@ -10,6 +10,11 @@ import CarePlanServicePage from './pages/patient/CarePlanServicePage'
 import ProviderLayout from './layouts/ProviderLayout'
 import ConsentPage from './pages/user/ConsentPage'
 import HomeEntry from './pages/HomeEntry'
+import HospitalHomePage from './pages/hospital/HospitalHomePage'
+import HospitalLayout from './layouts/HospitalLayout'
+import HospitalMatchingPage from './pages/hospital/HospitalMatchingPage'
+import HospitalMyPage from './pages/hospital/HospitalMyPage'
+import HospitalSchedulePage from './pages/hospital/HospitalSchedulePage'
 import LoginPage from './pages/LoginPage'
 import MatchingPage from './pages/patient/MatchingPage'
 import MyPage from './pages/patient/MyPage'
@@ -29,6 +34,7 @@ import SignupFormPage from './pages/user/SignupFormPage'
 import SocialWorkerHomePage from './pages/social-worker/SocialWorkerHomePage'
 import {
   ADMIN_PATHS,
+  HOSPITAL_PATHS,
   PATHS,
   PROVIDER_PATHS,
   SOCIAL_WORKER_PATHS,
@@ -95,6 +101,20 @@ function App() {
             path={SOCIAL_WORKER_PATHS.my}
             element={<SocialWorkerMyPage />}
           />
+        </Route>
+
+        {/* 병원 담당자 — 헤더 + 네브바가 붙는 화면 */}
+        <Route element={<HospitalLayout />}>
+          <Route path={HOSPITAL_PATHS.home} element={<HospitalHomePage />} />
+          <Route
+            path={HOSPITAL_PATHS.schedule}
+            element={<HospitalSchedulePage />}
+          />
+          <Route
+            path={HOSPITAL_PATHS.matching}
+            element={<HospitalMatchingPage />}
+          />
+          <Route path={HOSPITAL_PATHS.my} element={<HospitalMyPage />} />
         </Route>
 
         {/* 운영자·관리자 (역할 확인 후 진입) */}
