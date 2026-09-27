@@ -1,7 +1,9 @@
 import { useId, useState } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
+import { createCarePlan } from '../../api/endpoints/carePlan'
 import Button from '../../components/ui/Button'
+import { getCarePlanCreateErrorMessage } from '../../features/hospital/carePlanCreateErrors'
 import { useProvideServices } from '../../features/hospital/useProvideServices'
 import { HOSPITAL_PATHS } from '../../constants/paths'
 import styles from './CarePlanCreatePage.module.css'
@@ -11,14 +13,15 @@ import styles from './CarePlanCreatePage.module.css'
  *
  * 홈 카드의 '작성하기'에서 patientId와 dischargeId를 받아 온다.
  * 퇴원이 완료된 건에서만 들어올 수 있다 (서버가 그때만 생성을 허용한다)
- *
- * TODO: 생성 처리 (POST /care-plans)
  */
 function CarePlanCreatePage() {
   const labelId = useId()
+  const navigate = useNavigate()
   const { state } = useLocation()
   const services = useProvideServices()
   const [serviceIds, setServiceIds] = useState([])
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   const patientId = state?.patientId
   const dischargeId = state?.dischargeId
@@ -26,6 +29,27 @@ function CarePlanCreatePage() {
   // 홈을 거치지 않고 직접 들어온 경우
   if (!patientId || !dischargeId) {
     return <Navigate to={HOSPITAL_PATHS.home} replace />
+  }
+
+  const handleSubmit = async () => {
+    setSubmitting(true)
+    setError('')
+
+    try {
+      await createCarePlan({
+        patientId,
+        dischargeId,
+        provideServiceIds: serviceIds,
+      })
+
+      navigate(HOSPITAL_PATHS.home, {
+        replace: true,
+        state: { notice: 'Care Plan을 생성했어요' },
+      })
+    } catch (caught) {
+      setError(getCarePlanCreateErrorMessage(caught))
+      setSubmitting(false)
+    }
   }
 
   const toggleService = (provideServiceId) => {
@@ -98,8 +122,15 @@ function CarePlanCreatePage() {
         </div>
       </div>
 
-      {/* TODO: 생성 처리 연결 */}
-      <Button onClick={() => {}}>생성하기</Button>
+      {error && (
+        <p className={styles.formError} role="alert">
+          {error}
+        </p>
+      )}
+
+      <Button loading={submitting} onClick={handleSubmit}>
+        생성하기
+      </Button>
     </div>
   )
 }
