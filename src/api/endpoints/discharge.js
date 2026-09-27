@@ -24,3 +24,14 @@ export function searchDischarges({
     signal,
   })
 }
+
+/**
+ * 퇴원건 생성 (병원 담당자 전용)
+ *
+ * scheduledDate는 미래 날짜여야 한다. (서버 @Future — 오늘도 거부)
+ * @param {{ patientId: string, hospitalName: string, scheduledDate: string }} body
+ * @returns {Promise<{ dischargeId: string }>}
+ */
+export function createDischarge(body) {
+  return request('/discharges', { method: 'POST', body })
+}

@@ -7,7 +7,7 @@ import {
   getAccountErrorMessage,
   isInvalidCurrentPassword,
 } from '../../features/auth/accountErrors'
-import { PASSWORD_PATTERN } from '../../features/auth/signupValidation'
+import { PASSWORD_PATTERN } from '../../constants/validation'
 import SubPageLayout from '../../layouts/SubPageLayout'
 import { PATHS } from '../../constants/paths'
 import layout from './CarePlanPage.module.css'

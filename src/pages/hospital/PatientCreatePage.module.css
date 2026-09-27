@@ -1,0 +1,31 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-xs);
+  padding-bottom: var(--space-lg);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.regionButton {
+  margin-top: calc(var(--space-2xs) * -1);
+}
+
+.submit {
+  margin-top: var(--space-md);
+}
+
+.formError {
+  margin: var(--space-md) 0 0;
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--color-danger-soft);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-normal);
+  color: var(--color-danger);
+}

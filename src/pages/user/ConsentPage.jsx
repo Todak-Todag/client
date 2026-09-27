@@ -1,4 +1,9 @@
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 import { useState } from 'react'
 import { getErrorMessage } from '../../api/client'
 import BottomSheet from '../../components/ui/BottomSheet'
@@ -12,7 +17,8 @@ import {
 } from '../../components/ui/Icons'
 import { getSignupType } from '../../features/auth/signupTypes'
 import { useConsentDocuments } from '../../features/auth/useConsentDocuments'
-import { getConsentDocument } from '../../api/endpoints/consent'
+import { createConsent, getConsentDocument } from '../../api/endpoints/consent'
+import { logout } from '../../api/endpoints/auth'
 import { PATHS } from '../../constants/paths'
 import styles from './ConsentPage.module.css'
 
@@ -39,9 +45,20 @@ function ConsentPage() {
   const [checkedIds, setCheckedIds] = useState([]);
   const [viewingId, setViewingId] = useState(null);
   const [contents, setContents] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const { pathname } = useLocation();
   const signupType = getSignupType(searchParams.get('type'));
 
-  if (!signupType) return <Navigate to={PATHS.signup} replace />
+  /*
+   * 두 가지 경로로 들어온다.
+   * - /signup/consent : 회원가입 중. 동의 내역을 가입 폼으로 넘긴다
+   * - /consent        : 이미 만들어진 계정(병원이 등록한 퇴원 예정자)의 첫 로그인.
+   *                     POST /consents로 바로 제출한다
+   */
+  const isAccountMode = pathname === PATHS.consent;
+
+  if (!isAccountMode && !signupType) return <Navigate to={PATHS.signup} replace />
 
   const docs = documents.data ?? [];
   const isChecked = (id) => checkedIds.includes(id);
@@ -78,7 +95,44 @@ function ConsentPage() {
     }
   }
 
+  /** 기존 계정: 동의를 제출하고 다시 로그인하게 한다 */
+  const submitAccountConsent = async () => {
+    setSubmitting(true)
+    setSubmitError('')
+
+    try {
+      await createConsent(checkedIds)
+    } catch (error) {
+      // 임시 토큰은 3분이라 약관을 읽는 동안 만료될 수 있다
+      if (error.status === 401) {
+        navigate(PATHS.login, {
+          replace: true,
+          state: { notice: '동의 가능 시간이 지났어요. 다시 로그인해 주세요.' },
+        })
+        return
+      }
+
+      setSubmitError(getErrorMessage(error))
+      setSubmitting(false)
+      return
+    }
+
+    // 동의로 계정이 승인됐지만 지금 토큰에는 예전 역할이 담겨 있다.
+    // 새 역할이 든 토큰을 받으려면 다시 로그인해야 한다
+    await logout().catch(() => {})
+
+    navigate(PATHS.login, {
+      replace: true,
+      state: { notice: '약관 동의가 완료됐어요. 다시 로그인해 주세요.' },
+    })
+  }
+
   const handleSubmit = () => {
+    if (isAccountMode) {
+      submitAccountConsent()
+      return
+    }
+
     const agreements = docs.map((doc) => ({
       termsId: doc.consentDocumentVersionId,
       agreed: isChecked(doc.consentDocumentVersionId)
@@ -108,7 +162,10 @@ function ConsentPage() {
         title="약관 동의"
         logo={null}
         showBack
-        onBack={() => navigate(-1)}
+        // 계정 모드는 로그인 직후라 돌아갈 이전 화면이 없다. 로그인으로 보낸다
+        onBack={() =>
+          isAccountMode ? navigate(PATHS.login, { replace: true }) : navigate(-1)
+        }
       />
       <HeaderSpacer />
 
@@ -118,7 +175,9 @@ function ConsentPage() {
         약관에 동의해 주세요.
       </h1>
       <p className={styles.description}>
-        필수 약관에 모두 동의하면 서비스를 시작할 수 있어요.
+        {isAccountMode
+          ? '필수 약관에 모두 동의해야 서비스를 이용할 수 있어요.'
+          : '필수 약관에 모두 동의하면 서비스를 시작할 수 있어요.'}
       </p>
 
       {documents.status === 'loading' && (
@@ -183,13 +242,22 @@ function ConsentPage() {
       <div className={styles.notice}>
         <InfoIcon className={styles.noticeIcon} />
         <p className={styles.noticeText}>
-          선택 약관은 동의하지 않아도 가입할 수 있어요.
+          {isAccountMode
+            ? '동의를 마치면 다시 로그인해 주세요. 선택 약관은 동의하지 않아도 이용할 수 있어요.'
+            : '선택 약관은 동의하지 않아도 가입할 수 있어요.'}
         </p>
       </div>
 
       <div className={styles.submitArea}>
+        {submitError && (
+          <p className={styles.submitError} role="alert">
+            {submitError}
+          </p>
+        )}
+
         <Button
           disabled={!canSubmit}
+          loading={submitting}
           onClick={handleSubmit}
         >
           동의하고 시작하기

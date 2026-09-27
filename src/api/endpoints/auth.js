@@ -55,3 +55,16 @@ export function updatePassword({ currentPassword, newPassword }) {
 export function withdraw({ currentPassword }) {
   return request('/users/me', { method: 'DELETE', body: { currentPassword } })
 }
+
+/**
+ * 퇴원 예정자 계정 생성 (병원 담당자 전용)
+ *
+ * 지역을 보내면 주소도 함께 보내야 한다. (서버가 짝을 맞춰 검증한다)
+ * @param {{ username: string, password: string, name: string, phone: string,
+ *   regionId?: string, address?: string }} body
+ * @returns {Promise<{ patientId: string, hospitalStaffId: string, name: string,
+ *   phone: string, regionId: string|null }>}
+ */
+export function createPatient(body) {
+  return request('/users/patient', { method: 'POST', body })
+}

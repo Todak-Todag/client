@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { getErrorMessage } from '../../api/client'
 import EmptyState from '../../components/common/EmptyState'
 import { AlertIcon, UserIcon } from '../../components/ui/Icons'
@@ -11,7 +11,7 @@ import {
   DUMMY_DISCHARGES,
   getDummyPatient,
 } from '../../dummy/dischargePatients'
-import { PATHS } from '../../constants/paths'
+import { HOSPITAL_PATHS, PATHS } from '../../constants/paths'
 import styles from './HospitalHomePage.module.css'
 
 /*
@@ -20,6 +20,9 @@ import styles from './HospitalHomePage.module.css'
  *       (features/hospital/useDischarges.js에 GET /discharges 연동이 준비돼 있다)
  */
 function HospitalHomePage() {
+  const navigate = useNavigate()
+  // 등록 화면에서 넘어올 때만 들어 있다 (새로고침하면 사라진다)
+  const notice = useLocation().state?.notice
   const me = useAuth()
   const discharges = DUMMY_DISCHARGES
 
@@ -77,6 +80,12 @@ function HospitalHomePage() {
     <div className={styles.page}>
       <h1 className={styles.srOnly}>병원 담당자 홈</h1>
 
+      {notice && (
+        <p className={styles.notice} role="status">
+          {notice}
+        </p>
+      )}
+
       {renderProfile()}
 
       <section className={styles.section} aria-labelledby="recent-patients">
@@ -87,8 +96,7 @@ function HospitalHomePage() {
           <button
             type="button"
             className={styles.addButton}
-            // TODO: 퇴원 예정자 등록 화면이 생기면 연결
-            onClick={() => {}}
+            onClick={() => navigate(HOSPITAL_PATHS.patientNew)}
           >
             퇴원 예정자 등록 +
           </button>

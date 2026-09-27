@@ -14,7 +14,22 @@ function groupByProvince(regions) {
   return Object.entries(groups)
 }
 
-function RegionSelectSheet({ open, onClose, selectedId, onSelect }) {
+/**
+ * 서비스 가능 지역 선택 시트
+ *
+ * @param {boolean} open 열림 여부
+ * @param {() => void} onClose 닫기
+ * @param {string} selectedId 현재 선택된 regionId
+ * @param {(region: object|null) => void} onSelect 지역을 고르면 호출. 해제하면 null
+ * @param {boolean} clearable 지역이 선택 사항인 화면에서 '선택 안 함'을 함께 보여준다
+ */
+function RegionSelectSheet({
+  open,
+  onClose,
+  selectedId,
+  onSelect,
+  clearable = false,
+}) {
   const regions = useRegions()
   const grouped = groupByProvince(regions.data ?? [])
 
@@ -32,6 +47,23 @@ function RegionSelectSheet({ open, onClose, selectedId, onSelect }) {
 
       {regions.status === 'success' && grouped.length === 0 && (
         <p className={styles.state}>선택할 수 있는 지역이 없어요.</p>
+      )}
+
+      {clearable && regions.status === 'success' && (
+        <ul className={styles.list}>
+          <li>
+            <button
+              type="button"
+              className={[styles.item, selectedId ? '' : styles.selected]
+                .filter(Boolean)
+                .join(' ')}
+              aria-pressed={!selectedId}
+              onClick={() => onSelect(null)}
+            >
+              선택 안 함
+            </button>
+          </li>
+        </ul>
       )}
 
       {grouped.map(([province, list]) => (

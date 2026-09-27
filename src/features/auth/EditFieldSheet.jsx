@@ -4,7 +4,7 @@ import BottomSheet from '../../components/ui/BottomSheet'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import { getAccountErrorMessage } from './accountErrors'
-import { NAME_PATTERN, PHONE_PATTERN } from './signupValidation'
+import { NAME_PATTERN, PHONE_PATTERN } from '../../constants/validation'
 import styles from './EditFieldSheet.module.css'
 
 const FIELDS = {

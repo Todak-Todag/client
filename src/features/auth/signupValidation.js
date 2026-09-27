@@ -1,18 +1,17 @@
-const USERNAME_PATTERN = /^(?=.*[A-Za-z])(?=.*\d)[a-z][A-Za-z0-9]{5,}$/
-
-/** 8자 이상, 영문·숫자·특수문자 각각 1개 이상, 공백 없음 (최대 20자는 따로 확인) */
-export const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9\s])\S{8,}$/
-
-export const NAME_PATTERN = /^[A-Za-z가-힣]+$/
-
-export const PHONE_PATTERN = /^\d{9,11}$/
+import {
+  MAX_ACCOUNT_LENGTH,
+  NAME_PATTERN,
+  PASSWORD_PATTERN,
+  PHONE_PATTERN,
+  USERNAME_PATTERN,
+} from '../../constants/validation'
 
 export function validateSignupForm(form) {
   const errors = {}
 
   if (!form.username) {
     errors.username = '아이디를 입력해 주세요.'
-  } else if (form.username.length > 20) {
+  } else if (form.username.length > MAX_ACCOUNT_LENGTH) {
     errors.username = '아이디는 최대 20자입니다.'
   } else if (!USERNAME_PATTERN.test(form.username)) {
     errors.username =
@@ -21,7 +20,7 @@ export function validateSignupForm(form) {
 
   if (!form.password) {
     errors.password = '비밀번호를 입력해 주세요.'
-  } else if (form.password.length > 20) {
+  } else if (form.password.length > MAX_ACCOUNT_LENGTH) {
     errors.password = '비밀번호는 최대 20자입니다.'
   } else if (!PASSWORD_PATTERN.test(form.password)) {
     errors.password =

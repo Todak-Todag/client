@@ -15,6 +15,7 @@ import HospitalLayout from './layouts/HospitalLayout'
 import HospitalMatchingPage from './pages/hospital/HospitalMatchingPage'
 import HospitalMyPage from './pages/hospital/HospitalMyPage'
 import HospitalSchedulePage from './pages/hospital/HospitalSchedulePage'
+import PatientCreatePage from './pages/hospital/PatientCreatePage'
 import LoginPage from './pages/LoginPage'
 import MatchingPage from './pages/patient/MatchingPage'
 import MyPage from './pages/patient/MyPage'
@@ -54,6 +55,7 @@ function App() {
         <Route path={PATHS.login} element={<LoginPage />} />
         <Route path={PATHS.signup} element={<SignupPage />} />
         <Route path={PATHS.signupConsent} element={<ConsentPage />} />
+        <Route path={PATHS.consent} element={<ConsentPage />} />
         <Route path={PATHS.signupForm} element={<SignupFormPage />} />
 
         {/* 헤더 + 네브바가 붙는 화면 */}
@@ -125,6 +127,10 @@ function App() {
             element={<HospitalMatchingPage />}
           />
           <Route path={HOSPITAL_PATHS.my} element={<HospitalMyPage />} />
+          <Route
+            path={HOSPITAL_PATHS.patientNew}
+            element={<PatientCreatePage />}
+          />
         </Route>
 
         {/* 운영자·관리자 (역할 확인 후 진입) */}

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { getMe, login } from '../api/endpoints/auth'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
@@ -14,6 +14,8 @@ const EMPTY_FORM = { username: '', password: '' }
 
 function LoginPage() {
   const navigate = useNavigate()
+  // 약관 동의를 마치고 돌아올 때만 들어 있다 (새로고침하면 사라진다)
+  const notice = useLocation().state?.notice
   const [form, setForm] = useState(EMPTY_FORM)
   const [errors, setErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
@@ -45,9 +47,22 @@ function LoginPage() {
     try {
       await login({ username: form.username.trim(), password: form.password })
 
-      // 역할마다 첫 화면이 달라서 내 정보를 확인한 뒤 이동한다.
-      // 내 정보 조회가 실패해도 로그인 자체는 성공이므로 기본 홈으로 보낸다.
-      const me = await getMe().catch(() => null)
+      /*
+       * 역할마다 첫 화면이 달라서 내 정보를 확인한 뒤 이동한다.
+       *
+       * 병원이 등록한 퇴원 예정자는 약관 동의 전까지 WITHDRAWN 상태라
+       * /users/me가 404 USER_NOT_FOUND다. (서버는 3분짜리 임시 토큰만 내준다)
+       * 이때는 약관 동의 화면으로 보낸다.
+       *
+       * 그 밖의 조회 실패는 로그인 자체가 성공했으므로 기본 홈으로 보낸다.
+       */
+      const me = await getMe().catch((caught) => caught)
+
+      if (me?.status === 404 && me?.code === 'USER_NOT_FOUND') {
+        navigate(PATHS.consent, { replace: true })
+        return
+      }
+
       navigate(getHomePathByRole(me?.role), { replace: true })
     } catch (error) {
       // 자격 증명 오류(409)는 서버가 '아이디 또는 비밀번호가 일치하지 않습니다.'를 내려준다.
@@ -65,6 +80,12 @@ function LoginPage() {
         <h1 className={styles.serviceName}>todak-todag</h1>
         <p className={styles.tagline}>당신을 위한 맞춤형 케어 플랫폼</p>
       </div>
+
+      {notice && (
+        <p className={styles.notice} role="status">
+          {notice}
+        </p>
+      )}
 
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <Input
