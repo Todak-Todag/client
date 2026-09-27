@@ -10,6 +10,11 @@ export const PATHS = {
   scheduleDetail: '/schedule/:serviceScheduleId',
   matching: '/matching',
   my: '/my',
+  // 마이페이지 하위 화면 (뒤로가기 헤더만 있는 화면)
+  myResults: '/my/results',
+  myResultDetail: '/my/results/:serviceResultId',
+  myPassword: '/my/password',
+  myWithdraw: '/my/withdraw',
   // 케어플랜 검토·확정 (UNDER_REVIEW 전용, 네브바 없는 하위 화면)
   carePlan: '/care-plans/:carePlanId',
   carePlanServiceNew: '/care-plans/:carePlanId/services/new',

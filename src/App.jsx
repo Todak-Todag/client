@@ -9,6 +9,10 @@ import HomeEntry from './pages/HomeEntry'
 import LoginPage from './pages/LoginPage'
 import MatchingPage from './pages/patient/MatchingPage'
 import MyPage from './pages/patient/MyPage'
+import PatientPasswordPage from './pages/patient/PasswordPage'
+import ServiceResultDetailPage from './pages/patient/ServiceResultDetailPage'
+import ServiceResultPage from './pages/patient/ServiceResultPage'
+import WithdrawPage from './pages/patient/WithdrawPage'
 import NotFoundPage from './pages/NotFoundPage'
 import ProviderHomePage from './pages/provider/HomePage'
 import ProviderMatchingPage from './pages/provider/MatchingPage'
@@ -54,6 +58,12 @@ function App() {
 
         {/* 퇴원 예정자 — 일정 상세 (뒤로가기 헤더만 있는 화면) */}
         <Route path={PATHS.scheduleDetail} element={<ScheduleDetailPage />} />
+
+        {/* 퇴원 예정자 — 마이페이지 하위 화면 (뒤로가기 헤더만 있는 화면) */}
+        <Route path={PATHS.myResults} element={<ServiceResultPage />} />
+        <Route path={PATHS.myResultDetail} element={<ServiceResultDetailPage />} />
+        <Route path={PATHS.myPassword} element={<PatientPasswordPage />} />
+        <Route path={PATHS.myWithdraw} element={<WithdrawPage />} />
 
         {/* 서비스 제공자 — 뒤로가기 헤더만 있는 화면 */}
         <Route path={PROVIDER_PATHS.scheduleNew} element={<ProvideWorkFormPage />} />
