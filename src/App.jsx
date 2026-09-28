@@ -9,6 +9,7 @@ import CarePlanServiceAddPage from './pages/patient/CarePlanServiceAddPage'
 import CarePlanServicePage from './pages/patient/CarePlanServicePage'
 import ProviderLayout from './layouts/ProviderLayout'
 import ConsentPage from './pages/user/ConsentPage'
+import DeviceFrame from './components/layout/DeviceFrame'
 import HomeEntry from './pages/HomeEntry'
 import HospitalHomePage from './pages/hospital/HospitalHomePage'
 import HospitalLayout from './layouts/HospitalLayout'
@@ -52,103 +53,105 @@ import SocialWorkerMyPage from './pages/social-worker/SocialWorkerMyPage'
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* 헤더/네브바 없는 화면 */}
-        <Route path={PATHS.login} element={<LoginPage />} />
-        <Route path={PATHS.signup} element={<SignupPage />} />
-        <Route path={PATHS.signupConsent} element={<ConsentPage />} />
-        <Route path={PATHS.consent} element={<ConsentPage />} />
-        <Route path={PATHS.signupForm} element={<SignupFormPage />} />
+      <DeviceFrame>
+        <Routes>
+          {/* 헤더/네브바 없는 화면 */}
+          <Route path={PATHS.login} element={<LoginPage />} />
+          <Route path={PATHS.signup} element={<SignupPage />} />
+          <Route path={PATHS.signupConsent} element={<ConsentPage />} />
+          <Route path={PATHS.consent} element={<ConsentPage />} />
+          <Route path={PATHS.signupForm} element={<SignupFormPage />} />
 
-        {/* 헤더 + 네브바가 붙는 화면 */}
-        <Route element={<AppLayout />}>
-          <Route path={PATHS.home} element={<HomeEntry />} />
-          <Route path={PATHS.schedule} element={<SchedulePage />} />
-          <Route path={PATHS.matching} element={<MatchingPage />} />
-          <Route path={PATHS.my} element={<MyPage />} />
+          {/* 헤더 + 네브바가 붙는 화면 */}
+          <Route element={<AppLayout />}>
+            <Route path={PATHS.home} element={<HomeEntry />} />
+            <Route path={PATHS.schedule} element={<SchedulePage />} />
+            <Route path={PATHS.matching} element={<MatchingPage />} />
+            <Route path={PATHS.my} element={<MyPage />} />
 
-          <Route path="/404" element={<NotFoundPage />} />
-        </Route>
+            <Route path="/404" element={<NotFoundPage />} />
+          </Route>
 
-        {/* 퇴원 예정자 — 케어플랜 검토·확정 (뒤로가기 헤더만 있는 화면) */}
-        <Route path={PATHS.carePlan} element={<CarePlanReviewPage />} />
-        <Route path={PATHS.carePlanServiceNew} element={<CarePlanServiceAddPage />} />
-        <Route path={PATHS.carePlanService} element={<CarePlanServicePage />} />
+          {/* 퇴원 예정자 — 케어플랜 검토·확정 (뒤로가기 헤더만 있는 화면) */}
+          <Route path={PATHS.carePlan} element={<CarePlanReviewPage />} />
+          <Route path={PATHS.carePlanServiceNew} element={<CarePlanServiceAddPage />} />
+          <Route path={PATHS.carePlanService} element={<CarePlanServicePage />} />
 
-        {/* 퇴원 예정자 — 일정 상세 (뒤로가기 헤더만 있는 화면) */}
-        <Route path={PATHS.scheduleDetail} element={<ScheduleDetailPage />} />
+          {/* 퇴원 예정자 — 일정 상세 (뒤로가기 헤더만 있는 화면) */}
+          <Route path={PATHS.scheduleDetail} element={<ScheduleDetailPage />} />
 
-        {/* 퇴원 예정자 — 마이페이지 하위 화면 (뒤로가기 헤더만 있는 화면) */}
-        <Route path={PATHS.myResults} element={<ServiceResultPage />} />
-        <Route path={PATHS.myResultDetail} element={<ServiceResultDetailPage />} />
-        <Route path={PATHS.myPassword} element={<PatientPasswordPage />} />
-        <Route path={PATHS.myWithdraw} element={<WithdrawPage />} />
+          {/* 퇴원 예정자 — 마이페이지 하위 화면 (뒤로가기 헤더만 있는 화면) */}
+          <Route path={PATHS.myResults} element={<ServiceResultPage />} />
+          <Route path={PATHS.myResultDetail} element={<ServiceResultDetailPage />} />
+          <Route path={PATHS.myPassword} element={<PatientPasswordPage />} />
+          <Route path={PATHS.myWithdraw} element={<WithdrawPage />} />
 
-        {/* 서비스 제공자 — 뒤로가기 헤더만 있는 화면 */}
-        <Route path={PROVIDER_PATHS.scheduleNew} element={<ProvideWorkFormPage />} />
-        <Route path={PROVIDER_PATHS.scheduleEdit} element={<ProvideWorkFormPage />} />
-        <Route path={PROVIDER_PATHS.result} element={<ProviderResultPage />} />
-        <Route path={PROVIDER_PATHS.resultDetail} element={<ProviderResultDetailPage />} />
-        <Route path={PROVIDER_PATHS.password} element={<ProviderPasswordPage />} />
-        <Route path={PROVIDER_PATHS.offerings} element={<ProviderOfferingsPage />} />
+          {/* 서비스 제공자 — 뒤로가기 헤더만 있는 화면 */}
+          <Route path={PROVIDER_PATHS.scheduleNew} element={<ProvideWorkFormPage />} />
+          <Route path={PROVIDER_PATHS.scheduleEdit} element={<ProvideWorkFormPage />} />
+          <Route path={PROVIDER_PATHS.result} element={<ProviderResultPage />} />
+          <Route path={PROVIDER_PATHS.resultDetail} element={<ProviderResultDetailPage />} />
+          <Route path={PROVIDER_PATHS.password} element={<ProviderPasswordPage />} />
+          <Route path={PROVIDER_PATHS.offerings} element={<ProviderOfferingsPage />} />
 
-        {/* 서비스 제공자 — 헤더 + 네브바가 붙는 화면 */}
-        <Route element={<ProviderLayout />}>
-          <Route path={PROVIDER_PATHS.home} element={<ProviderHomePage />} />
-          <Route path={PROVIDER_PATHS.schedule} element={<ProviderSchedulePage />} />
-          <Route path={PROVIDER_PATHS.matching} element={<ProviderSchedulesByDatePage />} />
-          <Route path={PROVIDER_PATHS.my} element={<ProviderMyPage />} />
-        </Route>
+          {/* 서비스 제공자 — 헤더 + 네브바가 붙는 화면 */}
+          <Route element={<ProviderLayout />}>
+            <Route path={PROVIDER_PATHS.home} element={<ProviderHomePage />} />
+            <Route path={PROVIDER_PATHS.schedule} element={<ProviderSchedulePage />} />
+            <Route path={PROVIDER_PATHS.matching} element={<ProviderSchedulesByDatePage />} />
+            <Route path={PROVIDER_PATHS.my} element={<ProviderMyPage />} />
+          </Route>
 
-         {/* 사회복지사 — 비밀번호 변경 (기존 공용 뒤로가기 헤더 사용) */}
-        <Route
-          path={SOCIAL_WORKER_PATHS.password}
-          element={<ProviderPasswordPage />}
-        />
-
-        {/* 사회복지사 — 헤더 + 네브바가 붙는 화면 */}
-        <Route element={<SocialWorkerLayout />}>
+           {/* 사회복지사 — 비밀번호 변경 (기존 공용 뒤로가기 헤더 사용) */}
           <Route
-            path={SOCIAL_WORKER_PATHS.home}
-            element={<SocialWorkerHomePage />}
+            path={SOCIAL_WORKER_PATHS.password}
+            element={<ProviderPasswordPage />}
           />
-          <Route
-            path={SOCIAL_WORKER_PATHS.my}
-            element={<SocialWorkerMyPage />}
-          />
-        </Route>
 
-        {/* 병원 담당자 — 헤더 + 네브바가 붙는 화면 */}
-        <Route element={<HospitalLayout />}>
-          <Route path={HOSPITAL_PATHS.home} element={<HospitalHomePage />} />
-          <Route
-            path={HOSPITAL_PATHS.schedule}
-            element={<HospitalSchedulePage />}
-          />
-          <Route
-            path={HOSPITAL_PATHS.matching}
-            element={<HospitalMatchingPage />}
-          />
-          <Route path={HOSPITAL_PATHS.my} element={<HospitalMyPage />} />
-          <Route
-            path={HOSPITAL_PATHS.patientNew}
-            element={<PatientCreatePage />}
-          />
-          <Route
-            path={HOSPITAL_PATHS.carePlanNew}
-            element={<CarePlanCreatePage />}
-          />
-        </Route>
+          {/* 사회복지사 — 헤더 + 네브바가 붙는 화면 */}
+          <Route element={<SocialWorkerLayout />}>
+            <Route
+              path={SOCIAL_WORKER_PATHS.home}
+              element={<SocialWorkerHomePage />}
+            />
+            <Route
+              path={SOCIAL_WORKER_PATHS.my}
+              element={<SocialWorkerMyPage />}
+            />
+          </Route>
 
-        {/* 운영자·관리자 (역할 확인 후 진입) */}
-        <Route element={<AdminLayout />}>
-          <Route path={ADMIN_PATHS.home} element={<AdminHomePage />} />
-          <Route path={ADMIN_PATHS.manage} element={<AdminManagePage />} />
-          <Route path={ADMIN_PATHS.my} element={<AdminMyPage />} />
-        </Route>
+          {/* 병원 담당자 — 헤더 + 네브바가 붙는 화면 */}
+          <Route element={<HospitalLayout />}>
+            <Route path={HOSPITAL_PATHS.home} element={<HospitalHomePage />} />
+            <Route
+              path={HOSPITAL_PATHS.schedule}
+              element={<HospitalSchedulePage />}
+            />
+            <Route
+              path={HOSPITAL_PATHS.matching}
+              element={<HospitalMatchingPage />}
+            />
+            <Route path={HOSPITAL_PATHS.my} element={<HospitalMyPage />} />
+            <Route
+              path={HOSPITAL_PATHS.patientNew}
+              element={<PatientCreatePage />}
+            />
+            <Route
+              path={HOSPITAL_PATHS.carePlanNew}
+              element={<CarePlanCreatePage />}
+            />
+          </Route>
 
-        <Route path="*" element={<Navigate to="/404" replace />} />
-      </Routes>
+          {/* 운영자·관리자 (역할 확인 후 진입) */}
+          <Route element={<AdminLayout />}>
+            <Route path={ADMIN_PATHS.home} element={<AdminHomePage />} />
+            <Route path={ADMIN_PATHS.manage} element={<AdminManagePage />} />
+            <Route path={ADMIN_PATHS.my} element={<AdminMyPage />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/404" replace />} />
+        </Routes>
+      </DeviceFrame>
     </BrowserRouter>
   );
 }
