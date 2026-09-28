@@ -113,4 +113,6 @@
   --page-gutter: var(--space-md);
 
   --app-max-width: 480px;
+  /* 넓은 화면에서 배경 위에 띄우는 앱 화면 너비 (DeviceFrame) */
+  --device-width: 430px;
 }

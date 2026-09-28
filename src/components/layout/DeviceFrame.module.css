@@ -1,0 +1,42 @@
+/* 배경 이미지의 왼쪽 문구·오른쪽 아이콘과 앱 화면이 겹치지 않는 너비부터 배경을 띄운다 */
+@media (min-width: 1280px) {
+  .stage {
+    /* 앱 화면 가운데가 놓일 가로 위치 (창 왼쪽 기준). 이 값만 바꾸면 앱 화면이 좌우로 옮겨진다 */
+    --device-x: 53%;
+
+    position: relative;
+    height: 100dvh;
+    overflow: hidden;
+    /* 창이 이미지보다 세로로 길면 좌우가 잘리는데, 왼쪽 문구가 덜 잘리도록 왼쪽에 무게를 둔다 */
+    background: var(--color-bg) url('../../assets/images/background.webp')
+      30% center / cover no-repeat;
+  }
+
+  .device {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--device-x);
+    width: var(--device-width);
+    background-color: var(--color-bg);
+    box-shadow: 0 0 32px oklch(22% 0.012 50 / 0.12);
+    /* 가운데 맞춤 + position: fixed인 헤더·네브바·시트가 창이 아닌 이 영역을 기준으로 붙도록 한다 */
+    transform: translateX(-50%);
+  }
+
+  .screen {
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+
+  .screen::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 시트·확인창이 떠 있으면 뒤 화면 스크롤을 막는다 (좁은 화면에서는 body 잠금이 같은 역할) */
+  .screen:has([aria-modal='true'], dialog[open]) {
+    overflow-y: hidden;
+  }
+}
